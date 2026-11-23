@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" role="img" aria-labelledby="lunita-hola-title">
+  <title id="lunita-hola-title">Lunita, mascota oficial del Liceo Lunita de Chía, saludando alegremente</title>
+  <defs>
+    <radialGradient id="moonGlow" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#FFF2A6"/>
+      <stop offset="55%" stop-color="#FFD43B"/>
+      <stop offset="100%" stop-color="#F59F00"/>
+    </radialGradient>
+    <linearGradient id="scarfGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E3A8A"/>
+      <stop offset="100%" stop-color="#0B1838"/>
+    </linearGradient>
+    <linearGradient id="cheekGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FF8787" stop-opacity="0.75"/>
+      <stop offset="100%" stop-color="#FF6B6B" stop-opacity="0.45"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Soft ground shadow -->
+  <ellipse cx="132" cy="236" rx="56" ry="10" fill="#0B1838" opacity="0.12"/>
+
+  <!-- Floating sparkle stars -->
+  <path d="M46 66 L49 57 L52 66 L61 69 L52 72 L49 81 L46 72 L37 69 Z" fill="#FFD43B"/>
+  <circle cx="212" cy="54" r="4.5" fill="#38BDF8"/>
+  <circle cx="226" cy="74" r="3" fill="#FFD43B"/>
+
+  <!-- Left tiny arm (relaxed) -->
+  <path d="M74 148 C56 154, 48 168, 56 176 C62 182, 74 174, 80 164 Z" fill="#F59F00"/>
+  <path d="M74 149 C58 154, 51 166, 57 173 C62 178, 72 171, 78 162 Z" fill="#FFD43B"/>
+
+  <!-- Right tiny arm (waving up) -->
+  <path d="M174 134 C194 114, 212 96, 204 86 C197 78, 182 94, 166 116 Z" fill="#F59F00"/>
+  <path d="M172 132 C191 114, 207 97, 201 89 C196 83, 183 97, 167 118 Z" fill="#FFD43B"/>
+
+  <!-- Little navy boots -->
+  <g fill="#0B1838">
+    <rect x="92" y="206" width="28" height="22" rx="11"/>
+    <rect x="136" y="206" width="28" height="22" rx="11"/>
+    <rect x="90" y="218" width="32" height="12" rx="6" fill="#1E3A8A"/>
+    <rect x="134" y="218" width="32" height="12" rx="6" fill="#1E3A8A"/>
+  </g>
+
+  <!-- Main chubby crescent moon body -->
+  <path d="M158 34 C96 30, 52 78, 54 138 C56 196, 106 226, 164 214 C192 208, 212 192, 216 180 C219 171, 207 167, 198 172 C178 184, 146 182, 130 156 C114 130, 122 92, 150 74 C162 66, 174 62, 178 52 C182 42, 170 35, 158 34 Z" fill="#F59F00"/>
+  <path d="M155 38 C98 35, 57 80, 59 136 C61 190, 108 219, 162 208 C186 203, 205 190, 210 179 C190 190, 145 192, 125 159 C106 128, 117 87, 148 68 C160 60, 171 57, 173 49 C174 42, 164 38, 155 38 Z" fill="url(#moonGlow)"/>
+
+  <!-- Cute craters / subtle moon texture -->
+  <circle cx="80" cy="95" r="7" fill="#F59F00" opacity="0.22"/>
+  <circle cx="72" cy="112" r="4" fill="#F59F00" opacity="0.18"/>
+  <circle cx="105" cy="192" r="6" fill="#F59F00" opacity="0.18"/>
+
+  <!-- Cozy school scarf -->
+  <path d="M74 166 C98 180, 148 182, 178 171 C184 169, 187 180, 180 185 C148 197, 96 195, 70 179 C64 175, 68 163, 74 166 Z" fill="url(#scarfGrad)"/>
+  <!-- Scarf tail -->
+  <path d="M138 180 L164 178 L172 214 C173 218, 168 221, 163 220 L144 215 C140 214, 138 210, 138 206 Z" fill="#0B1838"/>
+  <!-- Gold stripe & star badge on scarf -->
+  <path d="M140 205 L170 206 L171 211 L141 210 Z" fill="#FFD43B"/>
+  <path d="M153 189 L155 194 L160 194 L156 197 L157 202 L153 199 L149 202 L150 197 L146 194 L151 194 Z" fill="#FFD43B"/>
+
+  <!-- Face: Big Duolingo-style glossy eyes -->
+  <g>
+    <!-- Left eye -->
+    <ellipse cx="94" cy="124" rx="13" ry="15" fill="#0B1838"/>
+    <circle cx="90" cy="119" r="5" fill="#FFFFFF"/>
+    <circle cx="98" cy="129" r="2.2" fill="#FFFFFF"/>
+
+    <!-- Right eye -->
+    <ellipse cx="132" cy="122" rx="13" ry="15" fill="#0B1838"/>
+    <circle cx="128" cy="117" r="5" fill="#FFFFFF"/>
+    <circle cx="136" cy="127" r="2.2" fill="#FFFFFF"/>
+
+    <!-- Rosy cheeks -->
+    <ellipse cx="77" cy="138" rx="9" ry="5.5" fill="url(#cheekGrad)"/>
+    <ellipse cx="146" cy="136" rx="9" ry="5.5" fill="url(#cheekGrad)"/>
+
+    <!-- Happy open smile -->
+    <path d="M104 139 C109 148, 121 148, 125 138 Z" fill="#0B1838"/>
+    <path d="M108 143 C112 146, 118 146, 121 142 C117 140, 112 140, 108 143 Z" fill="#FF6B6B"/>
+  </g>
+</svg>

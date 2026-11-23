@@ -1,0 +1,252 @@
+---
+import Sticker from '@/components/Sticker.astro';
+import { Image } from 'astro:assets';
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Emblem from '@/components/brand/Emblem.astro';
+import Icon from '@/components/Icon.astro';
+import NextSteps from '@/components/NextSteps.astro';
+import { ACHIEVEMENTS } from '@/data/site';
+import { FINES, HIMNO } from '@/data/institucional';
+import HymnPlayer from '@/components/HymnPlayer.astro';
+import { EMBLEM } from '@/components/brand/emblem';
+import vision from '@/assets/site/vision.webp';
+
+const valores: [string, string, string][] = [
+  ['Amor', 'El gran articulador de la convivencia: reconoce al otro y es motor para cumplir grandes sueños.', 't-red'],
+  ['Respeto', 'Valorar al otro, a uno mismo, a las instituciones y a los ecosistemas.', 't-sky'],
+  ['Responsabilidad', 'Reconocerse como ser social con deberes y derechos.', 't-green'],
+  ['Solidaridad', 'Empatía con las necesidades y alegrías del otro para construir soluciones juntos.', 't-orange'],
+  ['Honestidad', 'Generar ambientes de confianza amparados por la verdad.', 't-purple'],
+  ['Tolerancia', 'Reconocer la diferencia como pilar fundamental de la sociedad.', 't-yellow'],
+  ['Libertad', 'Tomar decisiones de manera libre y autónoma, también las comunitarias.', 't-sky'],
+  ['Paz', 'La única forma de convivencia posible, basada en la comunicación asertiva.', 't-green'],
+  ['Lealtad', 'Coherencia entre pensamiento y acción, fortalecida día a día.', 't-red'],
+  ['Equidad y justicia', 'Velan por el equilibrio en la convivencia social.', 't-orange'],
+  ['Fe', 'Reconocer la inspiración cristiana y un ser superior que fortalece el espíritu.', 't-purple'],
+  ['Disciplina', 'Autorregulación justa, como experiencia constructiva y no impositiva.', 't-blue'],
+];
+const toc = [['historia', 'Historia', 't-blue'], ['nombre', 'Nuestro nombre', 't-yellow'], ['mision', 'Misión y visión', 't-sky'], ['valores', 'Valores', 't-red'], ['fines', 'Fines educativos', 't-green'], ['simbolos', 'Símbolos', 't-purple'], ['himno', 'Himno', 't-blue'], ['logros', 'Logros', 't-orange'], ['/retos-2026/', 'Retos 2026', 't-yellow']];
+const highlights = [
+  ['Modelo propio STHEAMI', 'Proyectos interdisciplinarios y heutagogía: el estudiante gestiona su propio aprendizaje.', 'globe', 't-purple'],
+  ['Resultados destacados', 'Primeros lugares municipales en Pruebas Saber, con reconocimientos departamentales y nacionales.', 'award', 't-yellow'],
+  ['Bienestar socioemocional', 'Equipo de psicología, fonoaudiología, terapias de lenguaje y físicas, y apoyo a la inclusión.', 'heart', 't-red'],
+  ['El mundo como aula', 'Viajes pedagógicos internacionales para grado once que fortalecen su proyecto de vida.', 'rocket', 't-sky'],
+];
+---
+
+<Base title="El Cole: historia, misión, visión y valores" description="Conoce la historia del Liceo Lunita de Chía: más de 25 años de educación transformadora, su nombre inspirado en la diosa muisca de la luna, su misión, visión, valores y símbolos." breadcrumbs={[{ name: 'El Cole', href: '/el-cole/' }]}>
+  <PageHero kicker="El Cole" title='Más de 25 años <span class="hl">iluminando</span> Chía' lead="Una comunidad que cree en la educación como motor de cambio: educar con sentido, con amor y con propósito." crumbs={[{ name: 'El Cole', href: '/el-cole/' }]} theme="t-blue" pose="hola" />
+
+  <nav class="toc" aria-label="En esta página">
+    <div class="wrap"><ul>{toc.map(([id, l, t]) => <li><a class={t} href={id.startsWith('/') ? id : `#${id}`}>{l}</a></li>)}</ul></div>
+  </nav>
+
+  <section class="section" id="historia" aria-labelledby="h-historia">
+    <div class="wrap two">
+      <div>
+        <p class="kicker"><span class="dot"></span>Historia y trayectoria</p>
+        <h2 id="h-historia">Una respuesta pedagógica a las <span class="hl">realidades del territorio</span></h2>
+        <div class="prose">
+          <p>El Liceo Lunita de Chía es una institución educativa colombiana con más de 25 años de trayectoria, construida desde la convicción de que la educación es un <strong>proyecto de transformación social, humana y territorial</strong>.</p>
+          <p>Presta un servicio educativo principalmente a población de los estratos 0, 1, 2 y 3, con un alto porcentaje de estudiantes pertenecientes, descendientes o raizales del <strong>resguardo indígena de Chía</strong>, ofreciendo alta calidad académica sin perder su enfoque humano, cultural e inclusivo.</p>
+          <p>Su trayectoria se proyecta hacia 2030, alineada con los Objetivos de Desarrollo Sostenible, las orientaciones del Ministerio de Educación Nacional y los lineamientos de la UNESCO.</p>
+        </div>
+      </div>
+      <figure class="card pic"><Image src={vision} alt="Estudiantes del Liceo Lunita de Chía proponiendo soluciones innovadoras" widths={[480, 800]} sizes="(min-width: 960px) 45vw, 100vw" format="webp" quality={72} /></figure>
+    </div>
+    <div class="wrap">
+      <ul class="grid cols-4 hl-cards">
+        {highlights.map(([t, d, ic, th], i) => <li class={`card ${th}`} data-reveal style={`--d:${i}`}><Sticker name={ic} size={56} /><h3>{t}</h3><p>{d}</p></li>)}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section bg-yellow-l" id="nombre" aria-labelledby="h-nombre">
+    <div class="wrap two center">
+      <div class="emblem-art" data-reveal="pop"><Emblem size={300} animate decorative /></div>
+      <div>
+        <p class="kicker" style="color:var(--yellow-d)"><span class="dot"></span>Nuestro nombre</p>
+        <h2 id="h-nombre">Un homenaje a la <span class="hl">diosa Chía</span></h2>
+        <div class="prose">
+          <p>El nombre del Liceo Lunita de Chía rinde homenaje a la diosa Chía, también conocida como Chíe, venerada en la mitología muisca como la diosa de la luna. Considerada la esposa del sol (Sua o Zhúa), simboliza la fiesta, la alegría y la creatividad.</p>
+          <p>Según la tradición, por su naturaleza inquieta y luminosa, el ser supremo Chiminigagua le encomendó alumbrar la oscuridad de las noches. Tomamos esa inspiración ancestral como un llamado a iluminar el camino de nuestros estudiantes.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="mision" aria-labelledby="h-mision">
+    <div class="wrap">
+      <div class="section-head center"><p class="kicker"><span class="dot"></span>Horizonte institucional</p><h2 id="h-mision">Misión y <span class="hl">visión</span></h2></div>
+      <div class="grid cols-2">
+        <article class="card mv t-sky" data-reveal>
+          <Sticker name="sparkle" size={56} />
+          <h3>Misión</h3>
+          <p>Formar personas íntegras desde el grado preescolar hasta el grado once, a través de procesos que desarrollen habilidades, talentos y destrezas, para que transformen el medio en el que viven, basándose en los principios de valores, unidad familiar, identidad y compromiso, en un ambiente lúdico, de convivencia e interacción, por medio del arte, la cultura física, la gestión empresarial y la educación científica, de tal manera que se identifique un estudiante autónomo, líder, capaz de crear sus propias oportunidades.</p>
+        </article>
+        <article class="card mv t-purple" id="vision" data-reveal style="--d:1">
+          <Sticker name="rocket" size={56} />
+          <h3>Visión 2030</h3>
+          <p>En 2030, el Liceo Lunita de Chía será reconocido como un modelo internacional de excelencia educativa, destacándose por la formación integral de líderes éticos, innovadores y socialmente comprometidos. Inspirará a los estudiantes a aprender por convicción y no por obligación, fortaleciendo la inclusión, la identidad cultural del resguardo indígena y áreas como la educación aeroespacial, la robótica y el pensamiento crítico.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-2" id="valores" aria-labelledby="h-valores">
+    <div class="wrap">
+      <div class="section-head"><p class="kicker" style="color:var(--red-d)"><span class="dot"></span>Valores institucionales</p><h2 id="h-valores">Doce estrellas que <span class="hl">nos guían</span></h2><p>Toca cada valor para conocerlo.</p></div>
+      <ul class="values">
+        {valores.map(([n, t, th], i) => (
+          <li data-reveal="pop" style={`--d:${i % 4}`}>
+            <details class={`card value ${th}`}>
+              <summary><span class="num">{String(i + 1).padStart(2, '0')}</span>{n}<Icon name="chevron" size={18} class="chev" /></summary>
+              <p>{t}</p>
+            </details>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="section" id="fines" aria-labelledby="h-fines">
+    <div class="wrap">
+      <div class="section-head"><p class="kicker" style="color:var(--green-d)"><span class="dot"></span>Fines educativos</p><h2 id="h-fines">15 propósitos que <span class="hl">orientan cada clase</span></h2><p>De conformidad con el artículo 67 de la Constitución Política, la educación en el Liceo Lunita de Chía atiende a estos fines.</p></div>
+      <ol class="fines">
+        {FINES.map((f, i) => (
+          <li class:list={['card t-green', { extra: i >= 6 }]} data-reveal style={`--d:${i % 3}`}><span class="fn">{i + 1}</span><p>{f}</p></li>
+        ))}
+      </ol>
+      <p class="more-f"><button type="button" class="btn outline" data-more-fines aria-expanded="false">Ver los 15 fines</button></p>
+    </div>
+  </section>
+
+  <section class="section" id="simbolos" aria-labelledby="h-simbolos">
+    <div class="wrap">
+      <div class="section-head"><p class="kicker" style="color:var(--purple-d)"><span class="dot"></span>Símbolos</p><h2 id="h-simbolos">Escudo, bandera <span class="hl">e himno</span></h2></div>
+      <div class="grid cols-3 symbols">
+        <article class="card t-blue" data-reveal>
+          <div class="sym-art"><Emblem size={160} decorative /></div>
+          <h3>Escudo</h3>
+          <p>Circular, símbolo de unidad. El <strong>azul</strong> representa la inteligencia y el conocimiento; el <strong>amarillo</strong>, la juventud y la energía. La <strong>luna</strong> honra a Chía y la <strong>estrella</strong> representa a los niños.</p>
+          <div class="dl"><a class="btn sm outline" href="/brand/escudo.svg" download><Icon name="download" /> SVG</a><a class="btn sm outline" href="/brand/banner.svg" download><Icon name="download" /> Logo horizontal</a></div>
+        </article>
+        <article class="card t-sky" data-reveal style="--d:1">
+          <div class="sym-art">
+            <svg viewBox="0 0 240 170" width="210" role="img" aria-label="Bandera del Liceo Lunita de Chía">
+              <rect x="10" y="6" width="7" height="160" rx="3.5" fill="#afafaf" />
+              <path fill="#303296"><animate attributeName="d" dur="3s" repeatCount="indefinite" values="M17 10 C70 0 130 22 230 10 L230 110 C130 122 70 100 17 110Z;M17 10 C70 22 130 0 230 14 L230 114 C130 100 70 122 17 110Z;M17 10 C70 0 130 22 230 10 L230 110 C130 122 70 100 17 110Z" /></path>
+              <g transform="translate(92 22) scale(.16)"><path d={EMBLEM.moon} fill="#ffc800" /><path d={EMBLEM.star} fill="#ffc800" /></g>
+            </svg>
+          </div>
+          <h3>Bandera</h3>
+          <p>Rectangular, símbolo de estabilidad. El <strong>fondo azul</strong> es el cielo infinito y la sabiduría; la <strong>luna amarilla</strong> honra a Chía y la <strong>estrella</strong> simboliza a los estudiantes que iluminan el futuro.</p>
+        </article>
+        <article class="card t-purple" data-reveal style="--d:2">
+          <div class="sym-art"><Sticker name="music" size={110} /></div>
+          <h3>Himno</h3>
+          <p><strong>Muyscanto</strong>, himno del Resguardo Indígena de Chía con música del Liceo Lunita de Chía: una celebración de nuestras raíces muiscas.</p>
+          <a class="link" href="#himno">Escuchar y leer la letra <Icon name="arrow" /></a>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section block block-navy horizon" id="himno" aria-labelledby="h-himno">
+    <div class="wrap hymn">
+      <div>
+        <p class="kicker"><span class="dot"></span>Himno</p>
+        <h2 id="h-himno">{HIMNO.title}: <span class="hl">orgullo de raza</span></h2>
+        <p class="hymn-sub">{HIMNO.subtitle}</p>
+        <HymnPlayer src={HIMNO.audio} title={`${HIMNO.title} — ${HIMNO.subtitle}`} />
+        <p class="credit">{HIMNO.credit}.</p>
+      </div>
+      <div class="lyrics card">
+        {HIMNO.estrofas.map((e) => <p>{e}</p>)}
+      </div>
+    </div>
+    <div class="muisca zigzag hymn-band" aria-hidden="true"></div>
+  </section>
+
+  <section class="section bg-cloud" id="logros" aria-labelledby="h-logros">
+    <div class="wrap">
+      <div class="section-head"><p class="kicker" style="color:var(--orange-d)"><span class="dot"></span>Logros y reconocimientos</p><h2 id="h-logros">Una trayectoria <span class="hl">reconocida</span></h2><p>Nominaciones al Premio Compartir al Mejor Rector, reconocimientos de la Secretaría de Educación de Chía y un modelo destacado por su impacto social.</p></div>
+      <ol class="achv">
+        {ACHIEVEMENTS.map((a, i) => <li class="card" data-reveal style={`--d:${i % 3}`}><span class="yr">{a.year}</span><div><h3>{a.title}</h3><p>{a.org}</p></div></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <NextSteps items={['stheami', 'niveles', 'admisiones']} />
+</Base>
+
+<style>
+  .toc { position: sticky; top: calc(var(--header-h) + 14px); z-index: 10; background: #fff; border-bottom: 2px solid var(--line); }
+  .toc ul { display: flex; gap: 0.4rem; overflow-x: auto; list-style: none; margin: 0; padding: 0.6rem 0; scrollbar-width: none; }
+  .toc a { display: block; white-space: nowrap; padding: 0.4rem 0.9rem; border-radius: 12px; border: 2px solid var(--line); text-decoration: none; font-size: 0.85rem; font-weight: 800; color: var(--ink-2); }
+  .toc a:hover { background: var(--l); border-color: var(--c); color: var(--navy); }
+  .two { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 960px) { .two { grid-template-columns: 1.1fr 0.9fr; gap: 4rem; } }
+  .two.center { align-items: center; }
+  @media (min-width: 960px) { .two.center { grid-template-columns: 0.8fr 1.2fr; } }
+  h2 { font-size: var(--step-4); }
+  .pic { margin: 0; padding: 0; overflow: hidden; }
+  .pic :global(img) { width: 100%; }
+  .hl-cards { list-style: none; padding: 0; margin: 3rem auto 0; }
+  .hl-cards h3 { font-size: 1.1rem; margin: 0.9rem 0 0.3rem; }
+  .hl-cards p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+  .bg-yellow-l { background: var(--yellow-l); }
+  .emblem-art { display: grid; place-items: center; }
+  .emblem-art :global(.emblem) { width: min(70%, 300px); height: auto; }
+  .mv h3 { font-size: var(--step-3); margin-top: 1rem; }
+  .mv p { margin: 0; color: var(--ink-2); }
+  .values { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.8rem; grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 900px) { .values { grid-template-columns: repeat(4, 1fr); } }
+  .value { padding: 0; height: 100%; }
+  .value summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 0.6rem; padding: 1rem; font-weight: 900; color: var(--navy); font-size: 1.05rem; }
+  .value summary::-webkit-details-marker { display: none; }
+  .num { width: 34px; height: 34px; flex: none; border-radius: 10px; display: grid; place-items: center; background: var(--c); color: #fff; font-size: 0.85rem; box-shadow: 0 3px 0 var(--cd); }
+  .value :global(.chev) { margin-left: auto; color: var(--muted); transition: transform 0.25s; }
+  .value[open] { border-color: var(--c); background: color-mix(in oklab, var(--l) 60%, #fff); }
+  .value[open] :global(.chev) { transform: rotate(180deg); }
+  .value p { margin: 0; padding: 0 1rem 1rem; color: var(--ink-2); font-size: 0.93rem; }
+  .symbols .card { display: flex; flex-direction: column; }
+  .symbols p { color: var(--ink-2); font-size: 0.95rem; flex: 1; }
+  .sym-art { height: 200px; display: grid; place-items: center; margin-bottom: 1rem; border-radius: var(--r); background: var(--l); }
+  :global(.icon-bubble.big) { width: 110px; height: 110px; border-radius: 32px; background: var(--c); color: #fff; box-shadow: 0 6px 0 var(--cd); animation: bob 3s ease-in-out infinite; }
+  .symbols h3 { font-size: var(--step-2); }
+  .dl { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .fines { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.9rem; }
+  @media (min-width: 760px) { .fines { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .fines { grid-template-columns: repeat(3, 1fr); } }
+  .fines li { display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start; }
+  .fines li p { margin: 0; font-size: 0.95rem; color: var(--ink-2); }
+  .fn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--c); color: #fff; font-weight: 900; box-shadow: 0 3px 0 var(--cd); }
+  .js .fines:not(.open) .extra { display: none; }
+  .more-f { text-align: center; margin-top: 1.6rem; }
+  .hymn { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 960px) { .hymn { grid-template-columns: 0.9fr 1.1fr; gap: 4rem; } }
+  .hymn-sub { color: var(--muted); font-weight: 700; }
+  .credit { margin-top: 1.4rem; font-size: 0.85rem; color: var(--muted); }
+  .lyrics { max-height: 520px; overflow-y: auto; }
+  .lyrics p { font-size: 1.05rem; line-height: 1.7; color: var(--navy); font-weight: 600; padding-bottom: 1rem; border-bottom: 2px dashed var(--line); }
+  .lyrics p:last-child { border: 0; padding: 0; margin: 0; }
+  .hymn-band { margin-top: clamp(3rem, 6vw, 4.5rem); margin-bottom: calc(-1 * var(--section)); }
+  .achv { list-style: none; padding: 0; margin: 0; display: grid; gap: 1rem; }
+  @media (min-width: 900px) { .achv { grid-template-columns: repeat(2, 1fr); } }
+  .achv li { display: grid; grid-template-columns: auto 1fr; gap: 1.1rem; align-items: center; }
+  .yr { padding: 0.5rem 0.8rem; border-radius: 12px; background: var(--yellow); box-shadow: 0 3px 0 var(--yellow-d); font-weight: 900; color: var(--navy); }
+  .achv h3 { font-size: 1.05rem; margin: 0 0 0.15rem; }
+  .achv p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+</style>
+
+<script>
+  const b = document.querySelector<HTMLButtonElement>('[data-more-fines]');
+  b?.addEventListener('click', () => {
+    const list = document.querySelector('.fines')!;
+    const open = list.classList.toggle('open');
+    b.setAttribute('aria-expanded', String(open));
+    b.textContent = open ? 'Ver menos' : 'Ver los 15 fines';
+  });
+</script>

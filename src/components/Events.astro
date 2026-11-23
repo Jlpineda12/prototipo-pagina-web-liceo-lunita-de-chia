@@ -1,0 +1,92 @@
+---
+import { EVENTS, SITE } from '@/data/site';
+import { day, month } from '@/lib/format';
+import Icon from './Icon.astro';
+
+const schema = EVENTS.map((e) => ({
+  '@context': 'https://schema.org',
+  '@type': 'Event',
+  name: `${e.title} — ${SITE.name}`,
+  description: e.desc,
+  startDate: e.start,
+  endDate: e.end ?? e.start,
+  eventStatus: 'https://schema.org/EventScheduled',
+  eventAttendanceMode: 'https://schema.org/OfflineEventAttendanceMode',
+  location: { '@type': 'Place', name: SITE.name, address: { '@type': 'PostalAddress', addressLocality: SITE.address.locality, addressRegion: SITE.address.region, addressCountry: 'CO' } },
+  organizer: { '@type': 'EducationalOrganization', name: SITE.name, url: SITE.url },
+}));
+const themes = ['t-sky', 't-green', 't-yellow', 't-purple', 't-orange'];
+interface Props { id?: string }
+const { id = 'cronograma' } = Astro.props;
+---
+
+<section class="section events block block-cobalt" id={id} aria-labelledby="events-title">
+  <div class="wrap layout">
+    <div class="section-head">
+      <p class="kicker"><span class="dot"></span>Cronograma</p>
+      <h2 id="events-title">Próximos <span class="hl">eventos</span></h2>
+      <p>Fechas clave para estudiantes y familias. Agrégalas a tu calendario con un clic.</p>
+      <button type="button" class="btn green sm all" data-ics-all><Icon name="download" /> Descargar todo el calendario</button>
+    </div>
+    <ol class="timeline">
+      {
+        EVENTS.map((e, i) => (
+          <li class={`card ${themes[i % themes.length]}`} data-reveal style={`--d:${i}`}>
+            <time datetime={e.start} class="date"><span class="d">{day(e.start)}{e.end && <small>–{day(e.end)}</small>}</span><span class="m">{month(e.start)}</span></time>
+            <div class="info">
+              <h3>{e.title}</h3>
+              <p>{e.desc}</p>
+              <button type="button" class="add" data-ics={JSON.stringify(e)}><Icon name="calendar" size={16} /> Agregar a mi calendario</button>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+  <script type="application/json" data-events set:html={JSON.stringify(EVENTS).replace(/</g, '\\u003c')} />
+  {schema.map((s) => <script is:inline type="application/ld+json" set:html={JSON.stringify(s).replace(/</g, '\\u003c')} />)}
+</section>
+
+<style>
+  .layout { display: grid; gap: 2rem; }
+  @media (min-width: 960px) { .layout { grid-template-columns: 1fr 1.4fr; gap: 4rem; } .section-head { position: sticky; top: calc(var(--header-h) + 2rem); align-self: start; } }
+  .all { margin-top: 1.4rem; }
+  .timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; }
+  .timeline li { display: grid; grid-template-columns: auto 1fr; gap: 1.2rem; align-items: start; }
+  .date { width: 76px; height: 82px; border-radius: 18px; display: grid; place-content: center; text-align: center; background: var(--c); color: #fff; box-shadow: 0 4px 0 var(--cd); }
+  .events .card .info p { color: var(--muted-2, #5d6088); }
+  .d { font-size: 1.7rem; font-weight: 900; line-height: 1; }
+  .d small { font-size: 0.55em; }
+  .m { font-size: 0.75rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
+  h3 { font-size: var(--step-1); margin: 0.2rem 0 0.25rem; }
+  .info p { color: var(--muted); margin: 0 0 0.6rem; }
+  .add { display: inline-flex; align-items: center; gap: 0.35rem; padding: 0.35rem 0.7rem; border-radius: 10px; border: 2px solid var(--line); background: #fff; font-weight: 800; font-size: 0.8rem; color: var(--sky-d); }
+  .add:hover { border-color: var(--sky); background: var(--sky-l); }
+</style>
+
+<script>
+  type Ev = { start: string; end?: string; title: string; desc: string };
+  const d8 = (iso: string, plus = 0) => { const d = new Date(iso + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + plus); return d.toISOString().slice(0, 10).replace(/-/g, ''); };
+  const vevent = (e: Ev, i: number) => [
+    'BEGIN:VEVENT', `UID:lunita-${e.start}-${i}@liceolunita.edu.co`, `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').slice(0, 15)}Z`,
+    `DTSTART;VALUE=DATE:${d8(e.start)}`, `DTEND;VALUE=DATE:${d8(e.end ?? e.start, 1)}`,
+    `SUMMARY:${e.title} — Liceo Lunita de Chía`, `DESCRIPTION:${e.desc}`, 'LOCATION:Liceo Lunita de Chía\\, Chía\\, Cundinamarca', 'END:VEVENT',
+  ].join('\r\n');
+  const download = (evs: Ev[], name: string) => {
+    const ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'PRODID:-//Liceo Lunita de Chia//Cronograma//ES', 'CALSCALE:GREGORIAN', ...evs.map(vevent), 'END:VCALENDAR'].join('\r\n');
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([ics], { type: 'text/calendar;charset=utf-8' }));
+    a.download = name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+  };
+  document.addEventListener('click', (e) => {
+    const t = e.target as HTMLElement;
+    const one = t.closest<HTMLElement>('[data-ics]');
+    if (one) { const ev = JSON.parse(one.dataset.ics!); download([ev], `lunita-${ev.start}.ics`); }
+    if (t.closest('[data-ics-all]')) {
+      const all = JSON.parse(document.querySelector('[data-events]')!.textContent || '[]');
+      download(all, 'cronograma-liceo-lunita.ics');
+    }
+  });
+</script>

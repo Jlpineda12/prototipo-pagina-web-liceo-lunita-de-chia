@@ -1,0 +1,94 @@
+---
+import Sticker from '@/components/Sticker.astro';
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+import Events from '@/components/Events.astro';
+import NextSteps from '@/components/NextSteps.astro';
+import { DOC, SITE } from '@/data/site';
+import DocsCenter from '@/components/DocsCenter.astro';
+
+type Res = { t: string; d: string; href: string; icon: string; ext?: boolean };
+const groups: { id: string; name: string; theme: string; icon: string; intro: string; items: Res[] }[] = [
+  {
+    id: 'estudiantes', name: 'Estudiantes', theme: 't-sky', icon: 'users', intro: 'Tus clases, tareas y recursos para aprender cada día.',
+    items: [
+      { t: 'Aula Virtual', d: 'Clases, guías y entrega de tareas por asignatura.', href: SITE.platforms.aula, icon: 'laptop', ext: true },
+      { t: 'Plataforma SIGA', d: 'Consulta tus notas y boletines.', href: SITE.platforms.siga, icon: 'report', ext: true },
+      { t: 'Manual de convivencia', d: 'Derechos, deberes y acuerdos de la comunidad (PDF).', href: DOC('Manual de convivencia'), icon: 'book', ext: true },
+      { t: 'Sistema de evaluación (SIEE)', d: 'Cómo se evalúa y promueve (PDF).', href: DOC('Sistema Institucional'), icon: 'award', ext: true },
+    ],
+  },
+  {
+    id: 'padres', name: 'Padres de familia', theme: 't-green', icon: 'heart', intro: 'Acompaña el proceso de tus hijos con información al día.',
+    items: [
+      { t: 'Plataforma SIGA', d: 'Notas, boletines, pagos y comunicados del colegio.', href: SITE.platforms.siga, icon: 'report', ext: true },
+      { t: 'Matrícula en línea', d: 'Proceso de matrícula 2027 del 1 al 17 de diciembre.', href: '/admisiones/', icon: 'sparkle' },
+      { t: 'Centro de documentos', d: 'Manual, SIEE, formatos y políticas en PDF.', href: '#documentos', icon: 'file' },
+      { t: 'Rutas de atención', d: 'Rutas para la convivencia escolar (PDF).', href: DOC('Rutas de atención'), icon: 'heart', ext: true },
+    ],
+  },
+  {
+    id: 'docentes', name: 'Docentes', theme: 't-purple', icon: 'laptop', intro: 'Herramientas para la gestión académica y el aula.',
+    items: [
+      { t: 'Plataforma SIGA', d: 'Registro de notas, asistencia y observador.', href: SITE.platforms.siga, icon: 'report', ext: true },
+      { t: 'Aula Virtual', d: 'Gestión de cursos, recursos y actividades.', href: SITE.platforms.aula, icon: 'laptop', ext: true },
+      { t: 'Modelo pedagógico (PDF)', d: 'Documento institucional del modelo y su estructura.', href: DOC('Modelo pedagógico'), icon: 'file', ext: true },
+      { t: 'Modelo STHEAMI', d: 'Lineamientos del modelo pedagógico institucional.', href: '/modelo-stheami/', icon: 'globe' },
+    ],
+  },
+];
+---
+
+<Base title="Comunidad: estudiantes, padres y docentes" description="Recursos del Liceo Lunita de Chía para estudiantes, padres de familia y docentes: Aula Virtual, plataforma SIGA, manual de convivencia, cronograma y más." breadcrumbs={[{ name: 'Comunidad', href: '/comunidad/' }]}>
+  <PageHero kicker="Comunidad" title='Todo lo que necesitas, <span class="hl">por perfil</span>' lead="Elige tu perfil para ir directo a tus herramientas." crumbs={[{ name: 'Comunidad', href: '/comunidad/' }]} theme="t-sky" pose="comunidad">
+    <div class="jump">
+      {groups.map((g) => <a class={`pick card ${g.theme}`} href={`#${g.id}`}><Sticker name={g.icon} size={42} />{g.name}</a>)}
+      <a class="pick card t-orange" href="#documentos"><Sticker name="file" size={42} />Documentos</a>
+      <a class="pick card t-green" href="#cronograma"><Sticker name="calendar" size={42} />Cronograma</a>
+    </div>
+  </PageHero>
+
+  {groups.map((g, i) => (
+    <section class:list={['section group', g.theme, { 'bg-2': i % 2 }]} id={g.id} aria-labelledby={`h-${g.id}`}>
+      <div class="wrap">
+        <div class="ghead">
+          <Sticker name={g.icon} size={72} />
+          <div><h2 id={`h-${g.id}`}>{g.name}</h2><p>{g.intro}</p></div>
+        </div>
+        <ul class="grid cols-4">
+          {g.items.map((it, j) => (
+            <li data-reveal style={`--d:${j}`}>
+              <a class="card res" href={it.href} target={it.ext ? '_blank' : undefined} rel={it.ext ? 'noopener' : undefined}>
+                <Sticker name={it.icon} size={56} />
+                <strong>{it.t}</strong><small>{it.d}</small>
+                <span class="go">{it.ext ? 'Abrir plataforma' : 'Ver más'} <Icon name={it.ext ? 'arrow-up-right' : 'arrow'} size={16} /></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  ))}
+
+  <DocsCenter />
+  <Events />
+  <NextSteps items={['faq', 'noticias', 'contacto']} />
+</Base>
+
+<style>
+  .jump { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.5rem; }
+  .pick { display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.4rem 1rem 0.4rem 0.4rem; border-radius: 16px; font-weight: 800; color: var(--navy); }
+  .pick:hover { border-color: var(--c); }
+  .ghead { display: flex; align-items: center; gap: 1.2rem; margin-bottom: 2rem; }
+  .ghead h2 { font-size: var(--step-4); margin: 0; }
+  .ghead p { margin: 0; color: var(--muted); font-size: 1.08rem; }
+  .big-b { width: 72px; height: 72px; border-radius: 22px; background: var(--c); color: #fff; box-shadow: 0 5px 0 var(--cd); }
+  ul { list-style: none; margin: 0; padding: 0; }
+  .res { display: flex; flex-direction: column; gap: 0.4rem; height: 100%; }
+  .res:hover { border-color: var(--c); }
+  .res .icon-bubble { margin-bottom: 0.4rem; }
+  .res strong { color: var(--navy); font-size: 1.05rem; }
+  .res small { color: var(--muted); font-weight: 600; font-size: 0.88rem; flex: 1; }
+  .go { display: inline-flex; align-items: center; gap: 0.3rem; margin-top: 0.6rem; font-weight: 900; font-size: 0.8rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--cd); }
+</style>

@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 463" role="img" aria-labelledby="t"><title id="t">Escudo del Liceo Lunita de Chía</title><defs>
+  <linearGradient id="a-ring" x1="0" y1="0" x2="1" y2="1">
+    <stop offset="0" stop-color="#3B3DA8"/><stop offset=".55" stop-color="#313293"/><stop offset="1" stop-color="#222370"/>
+  </linearGradient>
+  <linearGradient id="a-gold" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#FFE055"/><stop offset=".45" stop-color="#FECA0D"/><stop offset="1" stop-color="#F0B400"/>
+  </linearGradient>
+</defs>
+<style>
+.e-rim,.e-ring,.e-inner-rim,.e-field{transform-origin:200px 231.5px;animation:pop 1.1s cubic-bezier(.2,.9,.2,1.2) both}
+.e-ring{animation-delay:.08s}.e-inner-rim{animation-delay:.14s}.e-field{animation-delay:.18s}
+.e-moon{transform-origin:115px 271px;animation:rise 1.4s .35s cubic-bezier(.16,1,.3,1) both,glow 5s 2s ease-in-out infinite}
+.e-star{transform-origin:235px 105.6px;animation:spark 1s .9s cubic-bezier(.2,1.6,.3,1) both,twinkle 3.2s 2s ease-in-out infinite}
+.halo{transform-origin:235px 105.6px;animation:halo 3.2s 2s ease-in-out infinite;opacity:0}
+@keyframes pop{from{transform:scale(.6);opacity:0}to{transform:none;opacity:1}}
+@keyframes rise{from{transform:translate(-32px,24px) rotate(-18deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes spark{from{transform:scale(0) rotate(-180deg);opacity:0}to{transform:none;opacity:1}}
+@keyframes twinkle{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.16) rotate(14deg)}}
+@keyframes halo{0%,100%{opacity:0;transform:scale(.6)}50%{opacity:.5;transform:scale(1.35)}}
+@keyframes glow{0%,100%{filter:none}50%{filter:drop-shadow(0 0 8px rgba(254,202,13,.55))}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+</style>
+<circle class="halo" cx="235" cy="105.6" r="28" fill="#FECA0D"/>
+<path class="e-rim" d="M0.5 231.5A199.5 231 0 1 0 399.5 231.5A199.5 231 0 1 0 0.5 231.5Z" fill="url(#a-gold)"/>
+<path class="e-ring" d="M7 231.5A193 224.5 0 1 0 393 231.5A193 224.5 0 1 0 7 231.5Z" fill="url(#a-ring)"/>
+<path class="e-inner-rim" d="M15.6 248.8A165 189.8 0 1 0 345.6 248.8A165 189.8 0 1 0 15.6 248.8Z" fill="url(#a-gold)"/>
+<path class="e-field" d="M21.4 248.8A159.2 183.8 0 1 0 339.8 248.8A159.2 183.8 0 1 0 21.4 248.8Z" fill="#FFFFFF"/>
+<path class="e-moon" d="M203 139.2A171.2 131.8 0 1 0 203 402.8A181.5 155.5 0 0 1 203 139.2Z" fill="url(#a-gold)" stroke="#313293" stroke-width="4.8" stroke-linejoin="miter" stroke-miterlimit="10"/>
+<path class="e-star" d="M235 84L239.82 98.97L255.54 98.93L242.8 108.13L247.7 123.07L235 113.8L222.3 123.07L227.2 108.13L214.46 98.93L230.18 98.97Z" fill="url(#a-gold)" stroke="#313293" stroke-width="3.4" stroke-linejoin="miter" stroke-miterlimit="10"/></svg>

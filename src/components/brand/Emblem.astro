@@ -1,0 +1,65 @@
+---
+/**
+ * Escudo del Liceo Lunita de Chía en SVG inline (fiel al escudo oficial).
+ * animate=true → el óvalo aparece, la luna asciende y la estrella titila.
+ */
+import { EMBLEM } from './emblem';
+
+interface Props {
+  size?: number | string;
+  animate?: boolean;
+  class?: string;
+  title?: string;
+  decorative?: boolean;
+}
+const { size = 48, animate = false, class: cls = '', title = 'Escudo del Liceo Lunita de Chía', decorative = false } = Astro.props;
+const uid = `em${Math.random().toString(36).slice(2, 7)}`;
+---
+
+<svg
+  class:list={['emblem', { 'emblem--animate': animate }, cls]}
+  viewBox={EMBLEM.viewBox}
+  width={typeof size === 'number' ? Math.round((size * EMBLEM.width) / EMBLEM.height) : undefined}
+  height={size}
+  role={decorative ? undefined : 'img'}
+  aria-hidden={decorative ? 'true' : undefined}
+  aria-label={decorative ? undefined : title}
+  style={`--ring-len:${EMBLEM.ringLength}`}
+>
+  <defs>
+    <linearGradient id={`${uid}r`} x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#3B3DA8" /><stop offset=".55" stop-color="#313293" /><stop offset="1" stop-color="#222370" />
+    </linearGradient>
+    <linearGradient id={`${uid}g`} x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFE055" /><stop offset=".45" stop-color="#FECA0D" /><stop offset="1" stop-color="#F0B400" />
+    </linearGradient>
+  </defs>
+  <path class="e-rim" d={EMBLEM.rim} fill={`url(#${uid}g)`} />
+  <path class="e-ring" d={EMBLEM.ring} fill={`url(#${uid}r)`} />
+  <path class="e-inner-rim" d={EMBLEM.innerRim} fill={`url(#${uid}g)`} />
+  <path class="e-field" d={EMBLEM.field} fill="#fff" />
+  <path class="e-moon" d={EMBLEM.moon} fill={`url(#${uid}g)`} stroke="#313293" stroke-width="4.8" stroke-linejoin="miter" stroke-miterlimit="10" />
+  <path class="e-star" d={EMBLEM.star} fill={`url(#${uid}g)`} stroke="#313293" stroke-width="3.4" stroke-linejoin="miter" stroke-miterlimit="10" />
+</svg>
+
+<style>
+  .emblem { flex: none; overflow: visible; }
+  .e-star { transform-box: fill-box; transform-origin: center; }
+  @media (prefers-reduced-motion: no-preference) {
+    .emblem:hover .e-star, a:hover .emblem .e-star { animation: star-spin 0.9s var(--ease-spring); }
+    .emblem--animate .e-rim,
+    .emblem--animate .e-ring,
+    .emblem--animate .e-inner-rim,
+    .emblem--animate .e-field { transform-box: view-box; transform-origin: 200px 231.5px; animation: em-pop 1.1s var(--ease-out) both; }
+    .emblem--animate .e-ring { animation-delay: 0.08s; }
+    .emblem--animate .e-inner-rim { animation-delay: 0.14s; }
+    .emblem--animate .e-field { animation-delay: 0.18s; }
+    .emblem--animate .e-moon { transform-box: fill-box; transform-origin: 35% 55%; animation: em-rise 1.3s 0.3s var(--ease-out) both; }
+    .emblem--animate .e-star { animation: em-spark 1s 0.85s var(--ease-spring) both, em-twinkle 3.4s 2.2s ease-in-out infinite; }
+  }
+  @keyframes em-pop { from { transform: scale(0.55); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes em-rise { from { transform: translate(-24px, 20px) rotate(-18deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes em-spark { from { transform: scale(0) rotate(-180deg); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes em-twinkle { 0%, 100% { transform: scale(1) rotate(0); } 50% { transform: scale(1.18) rotate(16deg); } }
+  @keyframes star-spin { from { transform: rotate(0) scale(1); } 50% { transform: rotate(180deg) scale(1.26); } to { transform: rotate(360deg) scale(1); } }
+</style>

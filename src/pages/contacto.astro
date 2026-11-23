@@ -1,0 +1,116 @@
+---
+import Sticker from '@/components/Sticker.astro';
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+import NextSteps from '@/components/NextSteps.astro';
+import { SITE } from '@/data/site';
+
+const channels = [
+  { t: 'WhatsApp', d: SITE.phoneDisplay, href: `https://wa.me/${SITE.whatsapp}`, icon: 'whatsapp', theme: 't-green', note: 'La forma más rápida' },
+  { t: 'Teléfono fijo', d: SITE.landlineDisplay, href: `tel:${SITE.landline.replace(/\s/g, '')}`, icon: 'phone', theme: 't-sky', note: 'Secretaría' },
+  { t: 'Celular', d: SITE.phoneDisplay, href: `tel:${SITE.phone.replace(/\s/g, '')}`, icon: 'phone', theme: 't-orange', note: 'Atención a familias' },
+  { t: 'Correo', d: SITE.email, href: `mailto:${SITE.email}`, icon: 'mail', theme: 't-purple', note: 'Respuesta por escrito' },
+];
+const topics = ['Admisiones y matrículas', 'Información académica', 'Plataformas (SIGA / Aula Virtual)', 'Banda marcial y festival', 'Otro tema'];
+---
+
+<Base
+  title="Contacto"
+  description={`Contacta al Liceo Lunita de Chía: WhatsApp ${SITE.phoneDisplay}, teléfono ${SITE.landlineDisplay}, correo ${SITE.email}. Chía, Cundinamarca.`}
+  breadcrumbs={[{ name: 'Contacto', href: '/contacto/' }]}
+>
+  <PageHero kicker="Contacto" title='¡Hablemos! <span class="hl">Estamos para ayudarte</span>' lead="Elige el canal que prefieras o déjanos tu mensaje y te respondemos." crumbs={[{ name: 'Contacto', href: '/contacto/' }]} theme="t-green" pose="contacto" />
+
+  <section class="section">
+    <div class="wrap">
+      <ul class="grid cols-4 ch">
+        {channels.map((c, i) => (
+          <li data-reveal style={`--d:${i}`}>
+            <a class={`card ${c.theme}`} href={c.href} target={c.href.startsWith('http') ? '_blank' : undefined} rel={c.href.startsWith('http') ? 'noopener' : undefined}>
+              <Sticker name={c.icon} size={56} />
+              <small>{c.note}</small>
+              <strong>{c.t}</strong>
+              <span class="val">{c.d}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+    <div class="wrap two">
+      <form class="card form" data-contact>
+        <h2>Envíanos un mensaje</h2>
+        <p class="muted">Al enviar se abrirá WhatsApp con tu mensaje listo. No guardamos tus datos en este sitio.</p>
+        <label>Nombre<input name="nombre" required autocomplete="name" /></label>
+        <label>Tema
+          <select name="tema">{topics.map((t) => <option>{t}</option>)}</select>
+        </label>
+        <label>Mensaje<textarea name="mensaje" rows="4" required></textarea></label>
+        <div class="acts">
+          <button class="btn green" type="submit"><Icon name="whatsapp" /> Enviar por WhatsApp</button>
+          <button class="btn outline" type="button" data-mail><Icon name="mail" /> Enviar por correo</button>
+        </div>
+      </form>
+      <div class="map card">
+        <div class="map-facade" data-map>
+          <span class="pin"><Icon name="pin" size={34} /></span>
+          <strong>{SITE.name}</strong>
+          <span>{SITE.address.street ? `${SITE.address.street}, ` : ''}{SITE.address.locality}, {SITE.address.region}</span>
+          <button class="btn sky sm" type="button" data-load-map>Ver mapa interactivo</button>
+          <a class="link" href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(SITE.mapQuery + ', Chía, Cundinamarca')}`} target="_blank" rel="noopener noreferrer">Abrir en Google Maps <Icon name="arrow-up-right" /></a>
+        </div>
+      </div>
+    </div>
+  </section>
+  <NextSteps items={['admisiones', 'faq', 'comunidad']} />
+</Base>
+
+<style>
+  .ch { list-style: none; padding: 0; margin: 0 auto 3rem; }
+  .ch a { display: flex; flex-direction: column; gap: 0.2rem; height: 100%; }
+  .ch a:hover { border-color: var(--c); }
+  .ch .icon-bubble { margin-bottom: 0.6rem; }
+  .ch small { font-weight: 800; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cd); }
+  .ch strong { color: var(--navy); font-size: 1.15rem; }
+  .val { color: var(--ink-2); font-weight: 700; word-break: break-word; }
+  .two { display: grid; gap: 1.5rem; }
+  @media (min-width: 960px) { .two { grid-template-columns: 1fr 1fr; } }
+  .form h2 { font-size: var(--step-2); margin-bottom: 0.3rem; }
+  .muted { color: var(--muted); font-size: 0.92rem; }
+  label { display: grid; gap: 0.35rem; margin-bottom: 1rem; font-weight: 800; color: var(--navy); font-size: 0.92rem; }
+  input, select, textarea { font: 600 1rem var(--font); padding: 0.8rem 0.9rem; border-radius: 14px; border: 2px solid var(--line); background: var(--bg-2); color: var(--ink); }
+  input:focus, select:focus, textarea:focus { outline: 0; border-color: var(--sky); background: #fff; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.7rem; }
+  .map { padding: 0; overflow: hidden; min-height: 380px; display: grid; }
+  .map-facade { display: grid; place-content: center; justify-items: center; gap: 0.6rem; text-align: center; padding: 2rem; background: radial-gradient(circle at 50% 40%, var(--sky-l), #fff 70%); }
+  .map-facade strong { color: var(--navy); font-size: 1.2rem; }
+  .map-facade > span:not(.pin) { color: var(--muted); font-weight: 700; }
+  .pin { width: 72px; height: 72px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: grid; place-items: center; background: var(--red); color: #fff; box-shadow: 0 5px 0 var(--red-d); animation: bob 2.4s ease-in-out infinite; }
+  .pin :global(svg) { transform: rotate(45deg); }
+  .map :global(iframe) { width: 100%; height: 100%; min-height: 380px; border: 0; }
+</style>
+
+<script>
+  import { SITE } from '@/data/site';
+  const form = document.querySelector<HTMLFormElement>('[data-contact]');
+  const text = () => {
+    const f = new FormData(form!);
+    return `Hola, soy ${f.get('nombre')}. Tema: ${f.get('tema')}.\n\n${f.get('mensaje')}`;
+  };
+  form?.addEventListener('submit', (e) => {
+    e.preventDefault();
+    window.open(`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent(text())}`, '_blank', 'noopener');
+  });
+  form?.querySelector('[data-mail]')?.addEventListener('click', () => {
+    if (!form.reportValidity()) return;
+    location.href = `mailto:${SITE.email}?subject=${encodeURIComponent('Contacto desde la web — ' + new FormData(form).get('tema'))}&body=${encodeURIComponent(text())}`;
+  });
+  document.querySelector('[data-load-map]')?.addEventListener('click', () => {
+    const box = document.querySelector('[data-map]')!;
+    const f = document.createElement('iframe');
+    f.src = `https://maps.google.com/maps?q=${encodeURIComponent(SITE.mapQuery + ', Chía, Cundinamarca')}&t=m&z=15&output=embed`;
+    f.title = 'Mapa de ubicación del Liceo Lunita de Chía';
+    f.loading = 'lazy';
+    box.replaceWith(f);
+  });
+</script>

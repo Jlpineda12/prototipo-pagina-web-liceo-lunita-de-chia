@@ -1,0 +1,60 @@
+---
+/** Centro de documentos: biblioteca de PDFs institucionales con filtro por categoría. */
+import { DOCS } from '@/data/site';
+import Icon from './Icon.astro';
+import Sticker from './Sticker.astro';
+const cats = [...new Set(DOCS.map((d) => d.cat))];
+const theme: Record<string, string> = { Convivencia: 't-red', Académico: 't-sky', Institucional: 't-blue', Legal: 't-purple', Formatos: 't-orange' };
+---
+
+<section class="section docs" id="documentos" aria-labelledby="docs-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker" style="color:var(--orange-d)"><span class="dot"></span>Centro de documentos</p>
+      <h2 id="docs-title">Documentos <span class="hl">institucionales</span></h2>
+      <p>Manual de convivencia, sistema de evaluación, formatos y políticas. Todos en PDF.</p>
+    </div>
+    <div class="filters" role="group" aria-label="Filtrar documentos" data-doc-f>
+      <button type="button" class="f t-sky" aria-pressed="true" data-f="all">Todos</button>
+      {cats.map((c) => <button type="button" class={`f ${theme[c]}`} aria-pressed="false" data-f={c}>{c}</button>)}
+    </div>
+    <ul class="list" data-doc-list>
+      {DOCS.map((d) => (
+        <li data-cat={d.cat}>
+          <a class={`card doc ${theme[d.cat]}`} href={d.href} target="_blank" rel="noopener noreferrer">
+            <Sticker name="pdf" size={52} tile={false} />
+            <span class="info"><strong>{d.t}</strong><small><span class="chip">{d.cat}</span> {d.year}</small></span>
+            <Sticker name="download" size={40} tile={false} class="dl" />
+            <span class="sr-only">(abre PDF en una pestaña nueva)</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  h2 { font-size: var(--step-4); }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.4rem; }
+  .f { padding: 0.45rem 0.9rem; border-radius: 14px; border: 2px solid var(--line); border-bottom-width: 4px; background: #fff; font-weight: 800; color: var(--ink-2); }
+  .f[aria-pressed='true'] { background: var(--l); border-color: var(--c); color: var(--navy); }
+  .list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.7rem; }
+  @media (min-width: 860px) { .list { grid-template-columns: 1fr 1fr; } }
+  .list li[hidden] { display: none; }
+  .doc { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; padding: 0.9rem 1rem; }
+  .doc:hover { border-color: var(--c); }
+  .file { width: 48px; height: 56px; border-radius: 10px 18px 10px 10px; display: grid; place-items: center; background: var(--c); color: #fff; font-weight: 900; font-size: 0.75rem; box-shadow: 0 3px 0 var(--cd); }
+  .info strong { display: block; color: var(--navy); line-height: 1.25; }
+  .info small { display: flex; align-items: center; gap: 0.4rem; margin-top: 0.3rem; color: var(--muted); font-weight: 700; }
+  .chip { --c: var(--cd); font-size: 0.68rem; padding: 0.15rem 0.5rem; }
+  .dl { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--l); color: var(--cd); }
+</style>
+
+<script>
+  const btns = [...document.querySelectorAll<HTMLButtonElement>('[data-doc-f] [data-f]')];
+  const items = [...document.querySelectorAll<HTMLElement>('[data-doc-list] [data-cat]')];
+  btns.forEach((b) => b.addEventListener('click', () => {
+    btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    items.forEach((it) => (it.hidden = b.dataset.f !== 'all' && it.dataset.cat !== b.dataset.f));
+  }));
+</script>

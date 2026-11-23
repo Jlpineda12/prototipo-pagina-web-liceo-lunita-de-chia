@@ -1,0 +1,92 @@
+---
+/**
+ * División curva entre dos secciones.
+ *  - El borde es una onda (variantes: hill, valley, swell, moon).
+ *  - Una línea (órbita punteada o cinta muisca) atraviesa la división en diagonal.
+ *  - Al entrar en pantalla, la línea se dibuja y una estrella la recorre.
+ */
+interface Props {
+  from: string; // color de la sección de arriba
+  to: string; // color de la sección de abajo
+  variant?: 'hill' | 'valley' | 'swell' | 'moon';
+  line?: 'orbit' | 'muisca' | 'none';
+  flip?: boolean;
+  lineColor?: string;
+}
+const { from, to, variant = 'swell', line = 'orbit', flip = false, lineColor = 'var(--yellow)' } = Astro.props;
+const shapes: Record<string, string> = {
+  hill: 'M0 120 C 360 20, 1080 20, 1440 120 L1440 160 L0 160Z',
+  valley: 'M0 40 C 420 150, 1020 150, 1440 40 L1440 160 L0 160Z',
+  swell: 'M0 110 C 260 30, 560 30, 760 80 S 1180 150, 1440 60 L1440 160 L0 160Z',
+  moon: 'M0 150 C 240 150, 380 30, 720 30 S 1200 150, 1440 150 L1440 160 L0 160Z',
+};
+const lines: Record<string, string> = {
+  hill: 'M-20 150 C 380 -10, 1060 30, 1460 90',
+  valley: 'M-20 20 C 440 170, 1000 150, 1460 10',
+  swell: 'M-20 140 C 300 0, 640 20, 820 90 S 1200 170, 1460 40',
+  moon: 'M-20 120 C 300 160, 420 0, 760 10 S 1220 140, 1460 110',
+};
+const uid = `wv${Math.random().toString(36).slice(2, 7)}`;
+---
+
+<div class:list={['wave', { flip }]} style={`--from:${from}; --to:${to}; --lc:${lineColor}`} aria-hidden="true" data-wave>
+  <svg viewBox="0 0 1440 160" preserveAspectRatio="none">
+    <path class="w-fill" d={shapes[variant]} />
+    {line !== 'none' && <path id={uid} class:list={['w-line', `w-${line}`]} d={lines[variant]} pathLength="1000" />}
+  </svg>
+  {line !== 'none' && (
+    <svg class="w-star-layer" viewBox="0 0 1440 160" preserveAspectRatio="none">
+      <g class="w-star"><path d="m0-11 3.2 7 7.8.9-5.8 5.3 1.6 7.7L0 6l-6.8 3.9 1.6-7.7L-11-3.1l7.8-.9z" /></g>
+    </svg>
+  )}
+</div>
+
+<style>
+  .wave { position: relative; height: clamp(56px, 8vw, 120px); background: var(--from); margin-block: -1px; overflow: hidden; }
+  .wave.flip svg:first-child { transform: scaleX(-1); }
+  svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .w-fill { fill: var(--to); }
+  .w-line { fill: none; vector-effect: non-scaling-stroke; }
+  .w-orbit { stroke: var(--lc); stroke-width: 3; stroke-dasharray: 2 12; stroke-linecap: round; opacity: 0.85; }
+  .w-muisca { stroke: var(--lc); stroke-width: 10; stroke-dasharray: 14 10; stroke-linecap: butt; }
+  .js .w-orbit { stroke-dasharray: 2 12; mask: none; clip-path: inset(0 100% 0 0); transition: clip-path 1.6s var(--ease); }
+  .js .w-muisca { clip-path: inset(0 100% 0 0); transition: clip-path 1.6s var(--ease); }
+  .js .wave.is-in .w-line { clip-path: inset(0 0 0 0); }
+  .w-star-layer { pointer-events: none; }
+  .w-star { fill: var(--yellow); opacity: 0; }
+  .wave.is-in .w-star { opacity: 1; }
+  @media (prefers-reduced-motion: reduce) { .js .w-line { clip-path: none !important; } }
+</style>
+
+<script>
+  // Estrella que recorre la línea una vez al entrar (y luego descansa en un extremo)
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const io = new IntersectionObserver((entries) => entries.forEach((e) => {
+    if (!e.isIntersecting) return;
+    const w = e.target as HTMLElement;
+    io.unobserve(w);
+    w.classList.add('is-in');
+    const path = w.querySelector<SVGPathElement>('.w-line');
+    const star = w.querySelector<SVGGElement>('.w-star');
+    if (!path || !star) return;
+    const L = path.getTotalLength();
+    const svg = w.querySelector('svg')!;
+    const flip = w.classList.contains('flip');
+    const sx = () => svg.clientWidth / 1440, sy = () => svg.clientHeight / 160;
+    const place = (t: number) => {
+      const p = path.getPointAtLength(L * t);
+      const x = flip ? 1440 - p.x : p.x;
+      // compensar el escalado no uniforme para que la estrella no se deforme
+      star.setAttribute('transform', `translate(${x} ${p.y}) scale(${(1 / sx()) * 1.2} ${(1 / sy()) * 1.2}) rotate(${t * 360})`);
+    };
+    if (reduce) return place(0.92);
+    const t0 = performance.now(), dur = 1800;
+    const step = (now: number) => {
+      const t = Math.min(1, (now - t0) / dur);
+      place(0.04 + (1 - Math.pow(1 - t, 3)) * 0.88);
+      if (t < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }), { threshold: 0.4 });
+  document.querySelectorAll('[data-wave]').forEach((w) => io.observe(w));
+</script>

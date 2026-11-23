@@ -1,0 +1,92 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+import LiteYouTube from '@/components/LiteYouTube.astro';
+import NewsCard from '@/components/NewsCard.astro';
+import NextSteps from '@/components/NextSteps.astro';
+import { VIDEOS } from '@/data/site';
+import festival from '@/assets/site/festival-bandas.webp';
+
+const timeline = [
+  { year: '2023', title: 'Primer Festival Nacional', text: 'El 13 de mayo de 2023 nace el festival en la Concha Acústica de Chía, con la participación anunciada de 24 agrupaciones nacionales.', theme: 't-yellow' },
+  { year: '2024', title: 'Segunda edición', text: 'Se consolida como encuentro anual del movimiento bandístico colombiano.', theme: 't-sky' },
+  { year: '2025', title: 'Salto internacional', text: 'Llegan delegaciones de México, Guatemala, El Salvador, Honduras y Venezuela. FUNDASUR (Venezuela) gana la edición.', theme: 't-green' },
+  { year: '2026', title: 'Cuarta edición', text: 'Decenas de delegaciones y miles de artistas: desfiles, conciertos y encuentros culturales en Chía y municipios vecinos.', theme: 't-purple' },
+];
+const values = ['Formación artística y musical', 'Intercambio cultural entre países', 'Participación de niños y jóvenes', 'Identidad colombiana', 'Inclusión educativa y social', 'Turismo cultural', 'Cooperación entre comunidades', 'Amistad y paz mediante el arte'];
+const posts = (await getCollection('noticias', ({ data }) => data.category === 'Bandas')).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<Base
+  title="Festival Internacional de Bandas Marciales Ciudad de la Luna"
+  description="Desde 2023 el Liceo Lunita de Chía organiza el Festival Internacional de Bandas Marciales Ciudad de la Luna, con delegaciones de Colombia y Latinoamérica. Conoce su historia, videos y noticias."
+  breadcrumbs={[{ name: 'Vida escolar', href: '/noticias/' }, { name: 'Festival de Bandas', href: '/festival-de-bandas/' }]}
+>
+  <PageHero kicker="Banda Marcial Liceo Lunita" title='Festival Internacional de Bandas <span class="hl">Ciudad de la Luna</span>' lead="De una banda escolar a un movimiento cultural que une territorios y países. La música fue el punto de partida." crumbs={[{ name: 'Vida escolar', href: '/noticias/' }, { name: 'Festival de Bandas', href: '/festival-de-bandas/' }]} theme="t-purple" pose="musica" />
+
+  <section class="section" aria-labelledby="hist-title">
+    <div class="wrap two">
+      <div>
+        <p class="kicker" style="color:var(--purple-d)"><span class="dot"></span>Nuestra historia</p>
+        <h2 id="hist-title">Nació después de la <span class="hl">pandemia</span></h2>
+        <div class="prose">
+          <p>Al retomar la presencialidad, el Liceo Lunita de Chía fortaleció su banda marcial como un proceso educativo basado en la disciplina, la coordinación, el trabajo en equipo y la identidad.</p>
+          <p>De ahí surgió una visión: crear en Chía un escenario propio donde las bandas pudieran reunirse y mostrar su talento. Un proyecto construido desde la <strong>autogestión</strong> de toda la comunidad educativa: maestros, estudiantes y familias.</p>
+        </div>
+      </div>
+      <figure class="card pic"><Image src={festival} alt="Desfile del Festival Internacional de Bandas Marciales en Chía" widths={[480, 800, 1100]} sizes="(min-width: 960px) 50vw, 100vw" format="webp" quality={72} /></figure>
+    </div>
+  </section>
+
+  <section class="section bg-2" aria-labelledby="tl-title">
+    <div class="wrap">
+      <div class="section-head"><h2 id="tl-title">Cuatro ediciones, <span class="hl">un sueño que crece</span></h2></div>
+      <ol class="grid cols-4 tl">
+        {timeline.map((t, i) => <li class={`card ${t.theme}`} data-reveal style={`--d:${i}`}><span class="yr">{t.year}</span><h3>{t.title}</h3><p>{t.text}</p></li>)}
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="val-title">
+    <div class="wrap">
+      <div class="section-head center"><h2 id="val-title">Más que un encuentro <span class="hl">de bandas</span></h2></div>
+      <ul class="vals">{values.map((v, i) => <li class={['t-purple', 't-sky', 't-yellow', 't-green'][i % 4]} data-reveal="pop" style={`--d:${i % 4}`}><Icon name="music" size={18} />{v}</li>)}</ul>
+    </div>
+  </section>
+
+  <section class="section bg-cloud" aria-labelledby="vid-title">
+    <div class="wrap">
+      <div class="section-head"><h2 id="vid-title">Videos del <span class="hl">festival</span></h2></div>
+      <div class="grid cols-2">{VIDEOS.filter((v) => /[Bb]andas/.test(v.title)).map((v) => <LiteYouTube id={v.id} title={v.title} />)}</div>
+    </div>
+  </section>
+
+  {posts.length > 0 && (
+    <section class="section" aria-labelledby="bn-title">
+      <div class="wrap">
+        <div class="section-head"><h2 id="bn-title">Noticias de la <span class="hl">banda</span></h2></div>
+        <div class="grid cols-3">{posts.map((p, i) => <NewsCard post={p} index={i} />)}</div>
+      </div>
+    </section>
+  )}
+
+  <NextSteps items={['noticias', 'cole', 'contacto']} />
+</Base>
+
+<style>
+  .two { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 960px) { .two { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+  h2 { font-size: var(--step-4); }
+  .pic { margin: 0; padding: 0; overflow: hidden; }
+  .pic :global(img) { width: 100%; }
+  .tl { list-style: none; padding: 0; margin: 0; }
+  .yr { display: inline-block; padding: 0.4rem 0.8rem; border-radius: 12px; background: var(--c); color: #fff; font-weight: 900; box-shadow: 0 3px 0 var(--cd); }
+  .tl h3 { font-size: 1.15rem; margin: 0.9rem 0 0.3rem; }
+  .tl p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+  .vals { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+  .vals li { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.1rem; border-radius: 16px; background: var(--l); border: 2px solid var(--c); border-bottom-width: 4px; font-weight: 800; color: var(--navy); }
+  .vals li :global(svg) { color: var(--cd); }
+</style>

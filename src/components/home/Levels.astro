@@ -1,0 +1,221 @@
+---
+/**
+ * Sección "Del primer trazo al grado once" con ilustraciones vectoriales editoriales
+ * y micro-animaciones limpias con principios de anticipación y overlapping al pasar el cursor.
+ */
+import { LEVELS } from '@/data/site';
+import Icon from '../Icon.astro';
+
+const STEP_META = [
+  { num: '01', tag: 'Explorar y jugar' },
+  { num: '02', tag: 'Crear y descubrir' },
+  { num: '03', tag: 'Proyectar el futuro' },
+];
+---
+
+<section class="section levels bg-2" aria-labelledby="levels-title">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="kicker"><span class="dot"></span>Niveles educativos</p>
+      <h2 id="levels-title">Del primer trazo <span class="hl">al grado once</span></h2>
+      <p>Formamos personas íntegras desde el preescolar hasta el grado once, en un ambiente lúdico, de convivencia e interacción.</p>
+    </div>
+
+    <div class="levels-grid">
+      {LEVELS.map((l, i) => (
+        <a class={`card level t-${l.theme}`} href={`/niveles/#${l.id}`} data-reveal style={`--d:${i}`}>
+          <div class="art">
+            <span class="step-pill">{STEP_META[i].num} · {STEP_META[i].tag}</span>
+
+            {l.id === 'preescolar' && (
+              <svg class="lvl-svg lvl-pre" viewBox="0 0 220 150" aria-hidden="true">
+                <!-- Pista suave y estrellitas -->
+                <ellipse class="ground" cx="110" cy="134" rx="74" ry="8" fill="#e08600" opacity=".16" />
+                <path class="spark s1" d="M36 42l3 7 7 3-7 3-3 7-3-7-7-3 7-3z" fill="#FECA0D" />
+                <circle class="spark s2" cx="182" cy="36" r="5" fill="#1cb0f6" />
+                <circle class="spark s3" cx="174" cy="96" r="3.5" fill="#ff9600" />
+                <!-- Bloque A (naranja con sombra inferior 3D) -->
+                <g class="blk blk-a">
+                  <rect x="44" y="76" width="58" height="54" rx="14" fill="#e08600" />
+                  <rect x="44" y="71" width="58" height="52" rx="14" fill="#ff9600" />
+                  <rect x="50" y="77" width="46" height="40" rx="9" fill="#fff" opacity=".18" />
+                  <text x="73" y="108" text-anchor="middle" font-family="Nunito, system-ui, sans-serif" font-weight="900" font-size="30" fill="#fff">A</text>
+                </g>
+                <!-- Bloque B (azul cielo con sombra 3D) -->
+                <g class="blk blk-b">
+                  <rect x="114" y="76" width="58" height="54" rx="14" fill="#1899d6" />
+                  <rect x="114" y="71" width="58" height="52" rx="14" fill="#1cb0f6" />
+                  <rect x="120" y="77" width="46" height="40" rx="9" fill="#fff" opacity=".18" />
+                  <text x="143" y="108" text-anchor="middle" font-family="Nunito, system-ui, sans-serif" font-weight="900" font-size="30" fill="#fff">B</text>
+                </g>
+                <!-- Bloque C superior (dorado con elevación suave) -->
+                <g class="blk blk-c">
+                  <rect x="79" y="24" width="60" height="54" rx="14" fill="#e5a400" />
+                  <rect x="79" y="19" width="60" height="52" rx="14" fill="#FECA0D" />
+                  <rect x="85" y="25" width="48" height="40" rx="9" fill="#fff" opacity=".24" />
+                  <text x="109" y="56" text-anchor="middle" font-family="Nunito, system-ui, sans-serif" font-weight="900" font-size="30" fill="#0f1747">C</text>
+                </g>
+              </svg>
+            )}
+
+            {l.id === 'primaria' && (
+              <svg class="lvl-svg lvl-pri" viewBox="0 0 220 150" aria-hidden="true">
+                <ellipse class="ground" cx="110" cy="134" rx="76" ry="8" fill="#46a302" opacity=".16" />
+                <!-- Ideas y ciencia que flotan sobre el libro abierto -->
+                <g class="idea idea-1">
+                  <circle cx="72" cy="36" r="14" fill="#FECA0D" />
+                  <path d="M72 28l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff" />
+                </g>
+                <g class="idea idea-2">
+                  <circle cx="110" cy="24" r="16" fill="#313293" />
+                  <circle cx="110" cy="24" r="5" fill="#FECA0D" />
+                  <ellipse cx="110" cy="24" rx="12" ry="4.5" fill="none" stroke="#7fd4ff" stroke-width="2" transform="rotate(30 110 24)" />
+                  <ellipse cx="110" cy="24" rx="12" ry="4.5" fill="none" stroke="#7fd4ff" stroke-width="2" transform="rotate(-30 110 24)" />
+                </g>
+                <g class="idea idea-3">
+                  <circle cx="150" cy="38" r="12" fill="#1cb0f6" />
+                  <path d="M146 38h8M150 34v8" stroke="#fff" stroke-width="2.8" stroke-linecap="round" />
+                </g>
+                <!-- Libro abierto con profundidad 3D -->
+                <g class="book">
+                  <path d="M36 68 Q73 56 110 70 Q147 56 184 68 L184 126 Q147 114 110 128 Q73 114 36 126 Z" fill="#46a302" />
+                  <path d="M40 62 Q75 50 110 64 Q145 50 180 62 L180 118 Q145 106 110 120 Q75 106 40 118 Z" fill="#fff" stroke="#58cc02" stroke-width="4" stroke-linejoin="round" />
+                  <line x1="110" y1="64" x2="110" y2="120" stroke="#58cc02" stroke-width="3.5" />
+                  <path d="M54 78 Q75 72 96 78 M54 91 Q75 85 96 91 M54 104 Q72 99 88 103" fill="none" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round" />
+                  <path d="M124 78 Q145 72 166 78 M124 91 Q145 85 166 91 M124 104 Q142 99 158 103" fill="none" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round" />
+                </g>
+              </svg>
+            )}
+
+            {l.id === 'bachillerato' && (
+              <svg class="lvl-svg lvl-bac" viewBox="0 0 220 150" aria-hidden="true">
+                <!-- Órbita espacial y estrella de logro A+ -->
+                <ellipse class="orb" cx="110" cy="84" rx="82" ry="32" fill="none" stroke="#1899d6" stroke-width="2.5" stroke-dasharray="6 8" opacity=".45" transform="rotate(-14 110 84)" />
+                <path class="spark s1" d="M44 44l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#FECA0D" />
+                <circle class="spark s2" cx="176" cy="108" r="5" fill="#313293" opacity=".55" />
+                <!-- Cohete aeroespacial estilizado -->
+                <g class="ship">
+                  <g transform="translate(110 76) rotate(26)">
+                    <path class="thruster" d="M-11 32 Q0 58 0 62 Q0 58 11 32 Z" fill="#ff9600" />
+                    <path class="thruster-in" d="M-6 32 Q0 47 0 50 Q0 47 6 32 Z" fill="#FECA0D" />
+                    <path d="M-17 18 L-30 34 L-12 31 Z" fill="#313293" />
+                    <path d="M17 18 L30 34 L12 31 Z" fill="#313293" />
+                    <path d="M0 -42 C18 -24 22 4 17 30 L-17 30 C-22 4 -18 -24 0 -42 Z" fill="#fff" stroke="#313293" stroke-width="4" stroke-linejoin="round" />
+                    <path d="M0 -42 C9 -32 14 -22 16 -12 L-16 -12 C-14 -22 -9 -32 0 -42 Z" fill="#1cb0f6" />
+                    <circle cx="0" cy="6" r="9.5" fill="#FECA0D" stroke="#313293" stroke-width="3.5" />
+                  </g>
+                </g>
+              </svg>
+            )}
+          </div>
+
+          <span class="chip">{l.grades}</span>
+          <h3>{l.name}</h3>
+          <p>{l.text}</p>
+          <span class="link">Explorar nivel <Icon name="arrow" /></span>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .levels-grid {
+    position: relative;
+    display: grid;
+    gap: 1.4rem;
+  }
+  @media (min-width: 900px) {
+    .levels-grid { grid-template-columns: repeat(3, 1fr); gap: 1.6rem; }
+  }
+
+  .level {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 0;
+    overflow: hidden;
+    transition: transform 0.28s var(--spring), border-color 0.2s, box-shadow 0.28s ease;
+  }
+  .level:hover {
+    transform: translateY(-5px);
+    border-color: var(--c);
+    box-shadow: 0 20px 36px -24px rgb(15 23 71 / 0.28);
+  }
+
+  .art {
+    position: relative;
+    display: grid;
+    place-items: center;
+    height: 184px;
+    background: radial-gradient(circle at 50% 42%, #fff 0%, var(--l) 78%);
+    border-bottom: 2px solid var(--line);
+    overflow: hidden;
+  }
+  .step-pill {
+    position: absolute;
+    top: 12px;
+    left: 14px;
+    padding: 0.24rem 0.65rem;
+    border-radius: 999px;
+    background: #fff;
+    border: 1.5px solid color-mix(in oklab, var(--c) 35%, transparent);
+    color: var(--cd);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .lvl-svg { width: 196px; height: 136px; overflow: visible; }
+  .level > :not(.art) { margin-inline: 1.4rem; }
+  .chip { align-self: flex-start; margin-top: 0.7rem; --c: var(--cd); }
+  .level h3 { font-size: var(--step-3); margin: 0; color: var(--navy); }
+  .level p { color: var(--muted); margin: 0; flex: 1; line-height: 1.5; }
+  .level .link { color: var(--cd); margin: 0.35rem 1.4rem 1.4rem; }
+
+  /* Animaciones limpias y sutiles (reposo suave + reacción viva en hover) */
+  .blk, .idea, .book, .ship, .spark, .thruster, .thruster-in {
+    transform-box: fill-box;
+    transform-origin: center;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+  .thruster, .thruster-in { transform-origin: top center; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .blk-c { animation: lvl-float 3.4s ease-in-out infinite; }
+    .idea-1 { animation: lvl-float 3.2s -0.4s ease-in-out infinite; }
+    .idea-2 { animation: lvl-float 3.8s -1.4s ease-in-out infinite; }
+    .idea-3 { animation: lvl-float 3.0s -2.1s ease-in-out infinite; }
+    .ship { animation: lvl-glide 3.4s ease-in-out infinite; }
+    .thruster { animation: lvl-flame 0.28s ease-in-out infinite alternate; }
+    .spark { animation: lvl-twinkle 2.8s ease-in-out infinite; }
+    .spark.s2 { animation-delay: -1.2s; }
+
+    /* Interacción en hover con anticipación y respuesta limpia */
+    .level:hover .blk-a { transform: translate(-4px, 2px) rotate(-3deg); }
+    .level:hover .blk-b { transform: translate(4px, 2px) rotate(3deg); }
+    .level:hover .blk-c { transform: translateY(-10px) scale(1.06); }
+    .level:hover .book { transform: translateY(3px) scale(1.03); }
+    .level:hover .idea-1 { transform: translate(-6px, -8px) scale(1.12); }
+    .level:hover .idea-2 { transform: translateY(-12px) scale(1.14); }
+    .level:hover .idea-3 { transform: translate(6px, -8px) scale(1.12); }
+    .level:hover .ship { transform: translate(8px, -10px) scale(1.07); }
+  }
+
+  @keyframes lvl-float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+  }
+  @keyframes lvl-glide {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(4px, -7px); }
+  }
+  @keyframes lvl-flame {
+    from { transform: scaleY(0.8); }
+    to { transform: scaleY(1.16); }
+  }
+  @keyframes lvl-twinkle {
+    0%, 100% { transform: scale(0.85); opacity: 0.65; }
+    50% { transform: scale(1.18); opacity: 1; }
+  }
+</style>

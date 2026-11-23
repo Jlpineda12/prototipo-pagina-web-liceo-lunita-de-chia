@@ -1,0 +1,48 @@
+---
+/**
+ * Fachada de YouTube: muestra la miniatura y solo carga el reproductor (≈1 MB) al hacer clic.
+ * Ahorra mucho peso y mejora Core Web Vitals. Usa youtube-nocookie.
+ */
+import Icon from './Icon.astro';
+interface Props { id: string; title: string; class?: string }
+const { id, title, class: cls } = Astro.props;
+---
+
+<div class:list={['yt', cls]} data-yt={id} data-title={title}>
+  <img src={`https://i.ytimg.com/vi_webp/${id}/hqdefault.webp`} alt="" loading="lazy" decoding="async" width="480" height="360" />
+  <button type="button" aria-label={`Reproducir video: ${title}`}>
+    <span class="play"><Icon name="play" size={26} /></span>
+  </button>
+  <span class="cap">{title}</span>
+</div>
+
+<style>
+  .yt { position: relative; aspect-ratio: 16 / 9; border-radius: var(--r-lg); overflow: hidden; background: #000; isolation: isolate; }
+  .yt img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s var(--ease), opacity 0.4s; opacity: 0.85; }
+  .yt:hover img { transform: scale(1.05); opacity: 1; }
+  .yt::after { content: ''; position: absolute; inset: 0; background: linear-gradient(0deg, rgb(15 23 71 / 0.75), transparent 55%); pointer-events: none; }
+  button { position: absolute; inset: 0; border: 0; background: none; display: grid; place-items: center; z-index: 1; }
+  .play {
+    width: 72px; height: 72px; border-radius: 50%; display: grid; place-items: center; background: var(--yellow); color: var(--navy);
+    box-shadow: 0 0 0 10px rgb(255 199 15 / 0.25); transition: transform 0.4s var(--spring), box-shadow 0.4s;
+  }
+  .play :global(svg) { margin-left: 4px; }
+  .yt:hover .play { transform: scale(1.1); box-shadow: 0 0 0 16px rgb(255 199 15 / 0.18); }
+  .cap { position: absolute; left: 1.2rem; right: 1.2rem; bottom: 1rem; z-index: 1; color: #fff; font-weight: 600; font-size: 0.95rem; line-height: 1.3; pointer-events: none; }
+  .yt :global(iframe) { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; z-index: 2; }
+</style>
+
+<script>
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('.yt button');
+    if (!btn) return;
+    const box = btn.closest<HTMLElement>('[data-yt]')!;
+    const f = document.createElement('iframe');
+    f.src = `https://www.youtube-nocookie.com/embed/${box.dataset.yt}?autoplay=1&rel=0`;
+    f.title = box.dataset.title || 'Video';
+    f.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; fullscreen';
+    f.allowFullscreen = true;
+    box.append(f);
+    f.focus();
+  });
+</script>

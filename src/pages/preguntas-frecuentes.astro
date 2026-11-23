@@ -1,0 +1,90 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+import NextSteps from '@/components/NextSteps.astro';
+import Lunita from '@/components/brand/Lunita.astro';
+import { FAQ, SITE } from '@/data/site';
+const cats = [...new Set(FAQ.map((f) => f.cat))];
+const themeByCat: Record<string, string> = { Admisiones: 't-yellow', Aprendizaje: 't-purple', Plataformas: 't-sky', 'Vida escolar': 't-green', Contacto: 't-orange' };
+---
+
+<Base
+  title="Preguntas frecuentes"
+  description="Resolvemos tus dudas sobre admisiones, matrículas 2027, el modelo STHEAMI, las plataformas SIGA y Aula Virtual, la banda marcial y cómo contactar al Liceo Lunita de Chía."
+  breadcrumbs={[{ name: 'Preguntas frecuentes', href: '/preguntas-frecuentes/' }]}
+  schema={{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: FAQ.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }}
+>
+  <PageHero kicker="Ayuda" title='¿Tienes dudas? <span class="hl">Te ayudamos</span>' lead="Encuentra respuestas rápidas o filtra por tema." crumbs={[{ name: 'Preguntas frecuentes', href: '/preguntas-frecuentes/' }]} theme="t-orange" pose="buscar">
+    <label class="find"><Icon name="search" size={22} /><input type="search" placeholder="Busca una pregunta… ej: SIGA" data-faq-q aria-label="Buscar en preguntas frecuentes" /></label>
+  </PageHero>
+
+  <section class="section">
+    <div class="wrap narrow">
+      <div class="filters" role="group" aria-label="Filtrar por tema" data-faq-f>
+        <button type="button" class="f t-sky" aria-pressed="true" data-f="all">Todas</button>
+        {cats.map((c) => <button type="button" class={`f ${themeByCat[c]}`} aria-pressed="false" data-f={c}>{c}</button>)}
+      </div>
+      <div class="faq" data-faq>
+        {FAQ.map((f) => (
+          <details class={`card ${themeByCat[f.cat]}`} data-cat={f.cat}>
+            <summary><span class="chip">{f.cat}</span><span class="q">{f.q}</span><Icon name="chevron" size={20} class="chev" /></summary>
+            <p>{f.a}</p>
+          </details>
+        ))}
+      </div>
+      <div class="none card" data-faq-none hidden>
+        <Lunita size={110} pose="buscar" />
+        <div><strong>No encontramos esa pregunta.</strong><p>Escríbenos y con gusto te respondemos.</p><a class="btn green sm" href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" /> Preguntar por WhatsApp</a></div>
+      </div>
+    </div>
+  </section>
+  <NextSteps items={['admisiones', 'comunidad', 'contacto']} />
+</Base>
+
+<style>
+  .find { display: flex; align-items: center; gap: 0.7rem; margin-top: 1.5rem; max-width: 520px; padding: 0.8rem 1rem; border-radius: 18px; background: #fff; border: 2px solid var(--line); border-bottom-width: 4px; color: var(--orange-d); }
+  .find:focus-within { border-color: var(--orange); }
+  .find input { flex: 1; min-width: 0; border: 0; outline: 0; font: 700 1.05rem var(--font); color: var(--navy); }
+  .narrow { max-width: 860px; }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.6rem; }
+  .f { padding: 0.5rem 0.9rem; border-radius: 14px; border: 2px solid var(--line); border-bottom-width: 4px; background: #fff; font-weight: 800; color: var(--ink-2); }
+  .f[aria-pressed='true'] { background: var(--l); border-color: var(--c); color: var(--navy); }
+  .faq { display: grid; gap: 0.7rem; }
+  .faq details { padding: 0; }
+  .faq details[hidden] { display: none; }
+  summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.8rem; padding: 1rem 1.2rem; }
+  summary::-webkit-details-marker { display: none; }
+  .chip { --c: var(--cd); }
+  .q { font-weight: 800; color: var(--navy); }
+  .faq :global(.chev) { color: var(--cd); transition: transform 0.25s; }
+  details[open] { border-color: var(--c); }
+  details[open] :global(.chev) { transform: rotate(180deg); }
+  .faq p { margin: 0; padding: 0 1.2rem 1.2rem; color: var(--ink-2); }
+  @media (max-width: 600px) { summary { grid-template-columns: 1fr auto; } summary .chip { display: none; } }
+  .none { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-top: 1rem; }
+  .none strong { color: var(--navy); font-size: 1.1rem; }
+  .none p { color: var(--muted); margin: 0.2rem 0 0.8rem; }
+</style>
+
+<script>
+  const q = document.querySelector<HTMLInputElement>('[data-faq-q]');
+  const items = [...document.querySelectorAll<HTMLDetailsElement>('[data-faq] details')];
+  const btns = [...document.querySelectorAll<HTMLButtonElement>('[data-faq-f] [data-f]')];
+  const none = document.querySelector<HTMLElement>('[data-faq-none]')!;
+  let cat = 'all';
+  const norm = (s: string) => s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase();
+  const apply = () => {
+    const term = norm(q?.value.trim() || '');
+    let shown = 0;
+    items.forEach((d) => {
+      const ok = (cat === 'all' || d.dataset.cat === cat) && (!term || norm(d.textContent || '').includes(term));
+      d.hidden = !ok;
+      if (ok) shown++;
+      if (term && ok) d.open = true;
+    });
+    none.hidden = shown > 0;
+  };
+  q?.addEventListener('input', apply);
+  btns.forEach((b) => b.addEventListener('click', () => { cat = b.dataset.f!; btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b))); apply(); }));
+</script>

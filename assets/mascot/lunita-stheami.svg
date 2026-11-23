@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 260 260" role="img" aria-labelledby="lunita-stheami-title">
+  <title id="lunita-stheami-title">Lunita exploradora con gafas y átomo brillante para la metodología STHEAMI</title>
+  <defs>
+    <radialGradient id="moonGlow2" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stop-color="#FFF2A6"/>
+      <stop offset="55%" stop-color="#FFD43B"/>
+      <stop offset="100%" stop-color="#F59F00"/>
+    </radialGradient>
+  </defs>
+
+  <ellipse cx="130" cy="236" rx="56" ry="10" fill="#0B1838" opacity="0.12"/>
+
+  <!-- Floating glowing atom/science orb -->
+  <g transform="translate(198, 86)">
+    <circle cx="0" cy="0" r="24" fill="#E0F2FE"/>
+    <ellipse cx="0" cy="0" rx="19" ry="7.5" fill="none" stroke="#0284C7" stroke-width="2.6" transform="rotate(30)"/>
+    <ellipse cx="0" cy="0" rx="19" ry="7.5" fill="none" stroke="#0284C7" stroke-width="2.6" transform="rotate(-30)"/>
+    <ellipse cx="0" cy="0" rx="19" ry="7.5" fill="none" stroke="#38BDF8" stroke-width="2.6" transform="rotate(90)"/>
+    <circle cx="0" cy="0" r="5" fill="#F59F00"/>
+  </g>
+
+  <!-- Boots -->
+  <g fill="#0B1838">
+    <rect x="90" y="206" width="28" height="22" rx="11"/>
+    <rect x="134" y="206" width="28" height="22" rx="11"/>
+    <rect x="88" y="218" width="32" height="12" rx="6" fill="#1E3A8A"/>
+    <rect x="132" y="218" width="32" height="12" rx="6" fill="#1E3A8A"/>
+  </g>
+
+  <!-- Right arm reaching toward the glowing atom -->
+  <path d="M168 140 C186 132, 198 122, 195 112 C192 104, 178 112, 162 126 Z" fill="#F59F00"/>
+  <path d="M167 139 C183 132, 194 123, 192 114 C190 108, 177 115, 163 127 Z" fill="#FFD43B"/>
+
+  <!-- Left arm holding tiny green book -->
+  <path d="M70 148 C52 152, 46 166, 56 174 C63 180, 74 170, 79 162 Z" fill="#F59F00"/>
+  <rect x="34" y="150" width="26" height="30" rx="5" fill="#58CC02" transform="rotate(-12 47 165)"/>
+  <rect x="39" y="154" width="16" height="6" rx="2" fill="#FFFFFF" opacity="0.85" transform="rotate(-12 47 165)"/>
+
+  <!-- Moon body -->
+  <path d="M158 34 C96 30, 52 78, 54 138 C56 196, 106 226, 164 214 C192 208, 212 192, 216 180 C219 171, 207 167, 198 172 C178 184, 146 182, 130 156 C114 130, 122 92, 150 74 C162 66, 174 62, 178 52 C182 42, 170 35, 158 34 Z" fill="#F59F00"/>
+  <path d="M155 38 C98 35, 57 80, 59 136 C61 190, 108 219, 162 208 C186 203, 205 190, 210 179 C190 190, 145 192, 125 159 C106 128, 117 87, 148 68 C160 60, 171 57, 173 49 C174 42, 164 38, 155 38 Z" fill="url(#moonGlow2)"/>
+
+  <!-- Navy bow-tie -->
+  <path d="M98 172 L114 180 L98 188 Z" fill="#0B1838"/>
+  <path d="M134 172 L118 180 L134 188 Z" fill="#0B1838"/>
+  <circle cx="116" cy="180" r="5" fill="#1CB0F6"/>
+
+  <!-- Eyes + Cute Round Science Glasses -->
+  <g>
+    <ellipse cx="94" cy="124" rx="11.5" ry="13.5" fill="#0B1838"/>
+    <circle cx="90" cy="119" r="4.5" fill="#FFFFFF"/>
+    <circle cx="97" cy="128" r="2" fill="#FFFFFF"/>
+
+    <ellipse cx="132" cy="122" rx="11.5" ry="13.5" fill="#0B1838"/>
+    <circle cx="128" cy="117" r="4.5" fill="#FFFFFF"/>
+    <circle cx="135" cy="126" r="2" fill="#FFFFFF"/>
+
+    <!-- Glasses frames -->
+    <circle cx="94" cy="124" r="18" fill="#FFFFFF" fill-opacity="0.18" stroke="#0B1838" stroke-width="4.2"/>
+    <circle cx="132" cy="122" r="18" fill="#FFFFFF" fill-opacity="0.18" stroke="#0B1838" stroke-width="4.2"/>
+    <path d="M112 122 C114 119, 116 119, 114 122" stroke="#0B1838" stroke-width="4" fill="none"/>
+    <line x1="72" y1="120" x2="76" y2="122" stroke="#0B1838" stroke-width="4" stroke-linecap="round"/>
+
+    <!-- Cheeks & curious smile -->
+    <ellipse cx="77" cy="142" rx="8" ry="4.5" fill="#FF8787" opacity="0.6"/>
+    <ellipse cx="146" cy="140" rx="8" ry="4.5" fill="#FF8787" opacity="0.6"/>
+    <path d="M106 142 Q114 150 123 141" fill="none" stroke="#0B1838" stroke-width="3.8" stroke-linecap="round"/>
+  </g>
+</svg>

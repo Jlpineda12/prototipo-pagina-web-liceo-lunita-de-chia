@@ -1,0 +1,23 @@
+# Dependencias y compilación
+node_modules/
+dist/
+.astro/
+
+# Entorno y secretos
+.env
+.env.*
+*.pem
+*.key
+*.p12
+*.log
+
+# Sistema y herramientas locales
+.DS_Store
+Thumbs.db
+.claude/
+.vscode/
+.idea/
+
+# Documentación interna y archivos fuente pesados
+docs/
+Mascota.PNG

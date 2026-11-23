@@ -1,0 +1,59 @@
+---
+import '@/styles/global.css';
+import SEO from '@/components/SEO.astro';
+import Header from '@/components/Header.astro';
+import Footer from '@/components/Footer.astro';
+import SearchDialog from '@/components/SearchDialog.astro';
+import PageLoader from '@/components/PageLoader.astro';
+import type { Props as SEOProps } from '@/components/SEO.astro';
+
+type Props = SEOProps & { hideCta?: boolean };
+const { hideCta, ...props } = Astro.props;
+---
+
+<!doctype html>
+<html lang="es-CO">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <script is:inline>
+      document.documentElement.classList.add('js');
+      try {
+        if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+          var q = new URLSearchParams(location.search);
+          if (q.has('intro') || !sessionStorage.getItem('lunita-intro-seen')) {
+            document.documentElement.dataset.splash = '1';
+          } else if (sessionStorage.getItem('lunita-nav')) {
+            try {
+              var nd = JSON.parse(sessionStorage.getItem('lunita-nav') || '{}');
+              if (nd.bg) document.documentElement.style.setProperty('--nav-bg', nd.bg);
+              if (nd.accent) document.documentElement.style.setProperty('--nav-accent', nd.accent);
+            } catch (ex) {}
+            document.documentElement.dataset.navIn = '1';
+          }
+        }
+      } catch (e) {}
+    </script>
+    <SEO {...props} />
+    <slot name="head" />
+  </head>
+  <body>
+    <PageLoader />
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <Header />
+    <main id="contenido">
+      <slot />
+    </main>
+    <Footer />
+    <SearchDialog />
+    <script>
+      import '@/scripts/motion';
+    </script>
+  </body>
+</html>

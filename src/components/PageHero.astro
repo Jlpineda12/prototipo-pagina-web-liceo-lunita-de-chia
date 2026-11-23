@@ -1,0 +1,60 @@
+---
+/** Encabezado de páginas interiores: fondo cielo claro, migas de pan, titular y Lunita. */
+import Lunita, { type LunitaPose } from './brand/Lunita.astro';
+import Wave from './Wave.astro';
+interface Props {
+  kicker?: string;
+  title: string;
+  lead?: string;
+  crumbs?: { name: string; href: string }[];
+  pose?: LunitaPose;
+  theme?: string;
+}
+const { kicker, title, lead, crumbs = [], pose = 'hola', theme = 't-sky' } = Astro.props;
+---
+
+<section class={`page-hero ${theme}`}>
+  <div class="wrap inner">
+    <div>
+      {
+        crumbs.length > 0 && (
+          <nav aria-label="Migas de pan" class="crumbs">
+            <ol>
+              <li><a href="/">Inicio</a></li>
+              {crumbs.map((c, i) => <li>{i === crumbs.length - 1 ? <span aria-current="page">{c.name}</span> : <a href={c.href}>{c.name}</a>}</li>)}
+            </ol>
+          </nav>
+        )
+      }
+      {kicker && <p class="kicker"><span class="dot"></span>{kicker}</p>}
+      <h1 set:html={title} />
+      {lead && <p class="lead">{lead}</p>}
+      <slot />
+    </div>
+    <div class="mascot" aria-hidden="true"><Lunita size={230} pose={pose} /></div>
+  </div>
+  <div class="ph-band"><Wave from="transparent" to="#fff" variant="swell" line="muisca" lineColor="var(--c)" /></div>
+</section>
+
+<style>
+  .page-hero { position: relative; background: var(--l); padding: clamp(2.2rem, 5vw, 3.5rem) 0 clamp(3.5rem, 7vw, 5rem); overflow: hidden; }
+  .ph-band { position: absolute; left: 0; right: 0; bottom: 0; }
+  .page-hero { padding-bottom: clamp(5rem, 10vw, 8rem) !important; }
+  .inner { position: relative; display: grid; gap: 1.2rem; align-items: center; }
+  .inner > * { min-width: 0; }
+  .mascot { justify-self: center; order: -1; }
+  .mascot :global(.lunita) { width: clamp(132px, 34vw, 170px); }
+  @media (min-width: 720px) {
+    .inner { grid-template-columns: 1fr auto; gap: 1.6rem; }
+    .mascot { order: 0; }
+    .mascot :global(.lunita) { width: clamp(175px, 24vw, 230px); }
+  }
+  .kicker { color: var(--cd); }
+  h1 { font-size: var(--step-5); max-width: 18ch; margin-bottom: 0.8rem; }
+  .lead { font-size: var(--step-1); max-width: 56ch; color: var(--ink-2); line-height: 1.5; margin: 0; }
+  .crumbs ol { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; margin: 0 0 1.3rem; padding: 0; font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+  .crumbs li + li::before { content: '›'; margin-right: 0.4rem; }
+  .crumbs a { color: var(--cd); text-decoration: none; }
+  .crumbs a:hover { text-decoration: underline; }
+  .crumbs [aria-current] { color: var(--navy); }
+</style>

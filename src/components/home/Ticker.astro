@@ -1,0 +1,117 @@
+---
+/**
+ * "Lo último" como cinta curva que atraviesa la división entre el hero y la siguiente sección.
+ * El texto corre SOBRE la curva (textPath) y debajo va una cinta de tejido muisca cuyos rombos siguen la onda.
+ * La curva se recalcula con el ancho real de la pantalla para que el texto nunca se deforme.
+ */
+import { getCollection } from 'astro:content';
+interface Props { from?: string; to?: string }
+const { from = 'var(--cobalt)', to = '#fff' } = Astro.props;
+const posts = (await getCollection('noticias', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 6);
+const items = posts.map((p) => ({ t: p.data.title, u: `/noticias/${p.id}/` }));
+---
+
+<div class="ribbon-wrap" style={`--from:${from}; --to:${to}`} data-ribbon>
+  <nav class="sr-only" aria-label="Lo último"><ul>{items.map((i) => <li><a href={i.u}>{i.t}</a></li>)}</ul></nav>
+  <svg class="ribbon-svg" aria-hidden="true" data-ribbon-svg>
+    <defs><path id="rb-path" d="" /><path id="rb-path2" d="" /></defs>
+    <path class="rb-ground" d="" />
+    <use href="#rb-path2" class="rb-band" />
+    <g class="rb-diamonds"></g>
+    <use href="#rb-path" class="rb-shadow" />
+    <use href="#rb-path" class="rb-main" />
+    <text class="rb-text" dy="0.36em"><textPath href="#rb-path" startOffset="0">
+      {[0, 1, 2].map(() => (
+        <>
+          <tspan class="rb-tag">✦ LO ÚLTIMO ✦</tspan>
+          {items.map((i) => (<><tspan>{'   '}</tspan><a href={i.u} tabindex="-1"><tspan class="rb-link">{i.t}</tspan></a><tspan class="rb-sep">{'   ★'}</tspan></>))}
+          <tspan>{'   '}</tspan>
+        </>
+      ))}
+    </textPath></text>
+  </svg>
+</div>
+
+<style>
+  .ribbon-wrap { position: relative; z-index: 6; height: clamp(150px, 16vw, 210px); margin-top: calc(-1 * clamp(110px, 11vw, 150px)); pointer-events: none; overflow-x: clip; }
+  .ribbon-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .rb-ground { fill: var(--to); }
+  .rb-band { fill: none; stroke: var(--yellow); stroke-width: 26; stroke-linecap: round; }
+  .rb-diamonds :global(rect) { fill: var(--blue); }
+  .rb-diamonds :global(rect.alt) { fill: var(--navy); }
+  .rb-shadow { fill: none; stroke: rgb(0 0 0 / 0.22); stroke-width: 58; transform: translateY(6px); }
+  .rb-main { fill: none; stroke: var(--navy); stroke-width: 58; }
+  .rb-text { font: 900 19px var(--font); letter-spacing: 0.02em; fill: #fff; pointer-events: auto; white-space: pre; }
+  .rb-tag { fill: var(--yellow); letter-spacing: 0.12em; font-size: 16px; }
+  .rb-sep { fill: var(--yellow); }
+  .rb-text a { cursor: pointer; }
+  .rb-text a:hover .rb-link { fill: var(--yellow); text-decoration: underline; }
+  .js .ribbon-wrap .rb-main, .js .ribbon-wrap .rb-shadow, .js .ribbon-wrap .rb-band { stroke-dasharray: var(--len, 3000); stroke-dashoffset: var(--len, 3000); transition: stroke-dashoffset 1.4s var(--ease); }
+  .js .ribbon-wrap.is-in .rb-main, .js .ribbon-wrap.is-in .rb-shadow, .js .ribbon-wrap.is-in .rb-band { stroke-dashoffset: 0; }
+  .js .ribbon-wrap .rb-text, .js .ribbon-wrap .rb-diamonds { opacity: 0; transition: opacity 0.6s 1s; }
+  .js .ribbon-wrap.is-in .rb-text, .js .ribbon-wrap.is-in .rb-diamonds { opacity: 1; }
+</style>
+
+<script>
+  const wrap = document.querySelector<HTMLElement>('[data-ribbon]');
+  if (wrap) {
+    const svg = wrap.querySelector<SVGSVGElement>('[data-ribbon-svg]')!;
+    const p1 = svg.querySelector<SVGPathElement>('#rb-path')!;
+    const p2 = svg.querySelector<SVGPathElement>('#rb-path2')!;
+    const ground = svg.querySelector<SVGPathElement>('.rb-ground')!;
+    const diamonds = svg.querySelector<SVGGElement>('.rb-diamonds')!;
+    const tp = svg.querySelector<SVGTextPathElement>('textPath')!;
+    const text = svg.querySelector<SVGTextElement>('.rb-text')!;
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const NS = 'http://www.w3.org/2000/svg';
+    let copy = 0, offset = 0, paused = false, raf = 0, visible = false;
+
+    const layout = () => {
+      const w = wrap.clientWidth, h = wrap.clientHeight;
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      // Onda: entra baja por la izquierda, sube al centro-izquierda y cae hacia la derecha
+      const y = (f: number) => h * f;
+      const main = `M-60 ${y(0.62)} C ${w * 0.22} ${y(0.08)}, ${w * 0.5} ${y(0.2)}, ${w * 0.68} ${y(0.5)} S ${w * 0.92} ${y(0.86)}, ${w + 60} ${y(0.5)}`;
+      const band = `M-60 ${y(0.86)} C ${w * 0.25} ${y(0.36)}, ${w * 0.52} ${y(0.46)}, ${w * 0.7} ${y(0.74)} S ${w * 0.93} ${y(1.06)}, ${w + 60} ${y(0.74)}`;
+      p1.setAttribute('d', main);
+      p2.setAttribute('d', band);
+      // El "suelo" (siguiente sección) sigue la cinta muisca: la división también es curva
+      ground.setAttribute('d', `${band} L ${w + 60} ${h + 40} L -60 ${h + 40} Z`);
+      const len = Math.ceil(p1.getTotalLength());
+      wrap.style.setProperty('--len', String(len + 200));
+      // Rombos del tejido muisca a lo largo de la cinta inferior
+      diamonds.replaceChildren();
+      const L2 = p2.getTotalLength();
+      for (let s = 10, i = 0; s < L2; s += 26, i++) {
+        const a = p2.getPointAtLength(s), b = p2.getPointAtLength(Math.min(L2, s + 1));
+        const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
+        const r = document.createElementNS(NS, 'rect');
+        r.setAttribute('x', String(-6)); r.setAttribute('y', String(-6)); r.setAttribute('width', '12'); r.setAttribute('height', '12'); r.setAttribute('rx', '1.5');
+        r.setAttribute('transform', `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)}) rotate(${(ang + 45).toFixed(1)})`);
+        if (i % 2) r.setAttribute('class', 'alt');
+        diamonds.append(r);
+      }
+      copy = text.getComputedTextLength() / 3;
+    };
+
+    const tick = () => {
+      raf = 0;
+      if (!paused && visible) {
+        offset -= 0.6;
+        if (offset < -copy) offset += copy;
+        tp.setAttribute('startOffset', offset.toFixed(1));
+      }
+      if (visible && !reduce) raf = requestAnimationFrame(tick);
+    };
+
+    layout();
+    new ResizeObserver(() => layout()).observe(wrap);
+    document.fonts?.ready.then(layout);
+    text.addEventListener('pointerenter', () => (paused = true));
+    text.addEventListener('pointerleave', () => (paused = false));
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible) { wrap.classList.add('is-in'); if (!raf && !reduce) raf = requestAnimationFrame(tick); }
+    }, { threshold: 0.2 }).observe(wrap);
+  }
+</script>

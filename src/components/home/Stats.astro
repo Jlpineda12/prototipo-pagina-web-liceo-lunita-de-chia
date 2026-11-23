@@ -1,0 +1,31 @@
+---
+import { STATS } from '@/data/site';
+const themes = ['t-yellow', 't-sky', 't-green', 't-orange', 't-purple'];
+---
+
+<section class="stats" aria-label="Cifras del Liceo Lunita de Chía">
+  <div class="wrap">
+    <ul>
+      {
+        STATS.map((s, i) => (
+          <li class={themes[i]} data-reveal="pop" style={`--d:${i}`}>
+            <strong><span data-count={s.value}>{s.value}</span>{s.suffix}</strong>
+            <span>{s.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .stats { background: var(--yellow); padding-block: clamp(1rem, 3vw, 2rem); }
+  .stats > .muisca { margin-bottom: clamp(2rem, 4vw, 3rem); }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+  @media (min-width: 900px) { ul { grid-template-columns: repeat(5, 1fr); } }
+  li { display: grid; gap: 0.15rem; justify-items: center; text-align: center; padding: 1.15rem 0.75rem; border-radius: 20px; background: #fff; border: 2px solid rgb(15 23 71 / 0.08); border-bottom: 5px solid var(--cd); box-shadow: 0 10px 24px -18px rgb(15 23 71 / 0.25); }
+  li:last-child:nth-child(odd) { grid-column: 1 / -1; }
+  @media (min-width: 900px) { li:last-child:nth-child(odd) { grid-column: auto; } }
+  strong { font-size: var(--step-4); font-weight: 900; line-height: 1; color: var(--cd); font-variant-numeric: tabular-nums; }
+  li > span { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: var(--navy); opacity: 0.78; }
+</style>

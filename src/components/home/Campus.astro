@@ -1,0 +1,56 @@
+---
+import Sticker from '@/components/Sticker.astro';
+import { Image } from 'astro:assets';
+import sede from '@/assets/site/sede-aerea.jpg';
+import { SITE } from '@/data/site';
+import Icon from '../Icon.astro';
+
+const links = [
+  { icon: 'laptop', title: 'Aula Virtual', desc: 'Clases, guías y tareas', href: SITE.platforms.aula, ext: true, theme: 't-sky' },
+  { icon: 'report', title: 'Plataforma SIGA', desc: 'Notas, boletines y pagos', href: SITE.platforms.siga, ext: true, theme: 't-green' },
+  { icon: 'book', title: 'Manual de convivencia', desc: 'Acuerdos de la comunidad', href: '/comunidad/#estudiantes', ext: false, theme: 't-orange' },
+  { icon: 'help', title: 'Preguntas frecuentes', desc: 'Resolvemos tus dudas', href: '/preguntas-frecuentes/', ext: false, theme: 't-purple' },
+];
+---
+
+<section class="section campus bg-2" aria-labelledby="campus-title">
+  <div class="wrap layout">
+    <figure class="photo card" data-reveal>
+      <Image src={sede} alt="Vista aérea de la sede del Liceo Lunita de Chía con su mural del espacio y un cohete" widths={[480, 760, 960]} sizes="(min-width: 960px) 50vw, 100vw" format="webp" quality={72} />
+      <figcaption><Sticker name="rocket" size={28} class="t-sky" /> Un colegio que mira a las estrellas</figcaption>
+    </figure>
+    <div>
+      <p class="kicker"><span class="dot"></span>Nuestra sede</p>
+      <h2 id="campus-title">Un aula <span class="hl">bajo las estrellas</span></h2>
+      <p class="lead">Murales del universo, un cohete a escala y espacios para explorar: aquí la ciencia se vive, la música se ensaya y cada proyecto empieza con una pregunta.</p>
+      <ul class="links">
+        {links.map((l, i) => (
+          <li data-reveal style={`--d:${i}`}>
+            <a class={`card ${l.theme}`} href={l.href} target={l.ext ? '_blank' : undefined} rel={l.ext ? 'noopener' : undefined}>
+              <Sticker name={l.icon} size={42} />
+              <span><strong>{l.title}</strong><small>{l.desc}</small></span>
+              <Icon name={l.ext ? 'arrow-up-right' : 'arrow'} size={18} class="go" />
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout { display: grid; gap: 3rem; align-items: center; }
+  @media (min-width: 960px) { .layout { grid-template-columns: 1fr 1fr; gap: 4rem; } }
+  h2 { font-size: var(--step-4); }
+  .lead { color: var(--muted); font-size: 1.08rem; }
+  .photo { margin: 0; padding: 0; overflow: hidden; }
+  .photo :global(img) { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; }
+  figcaption { display: flex; align-items: center; gap: 0.5rem; padding: 0.9rem 1.1rem; font-weight: 800; color: var(--navy); }
+  .links { list-style: none; padding: 0; margin: 1.8rem 0 0; display: grid; gap: 0.7rem; }
+  @media (min-width: 560px) { .links { grid-template-columns: 1fr 1fr; } }
+  .links a { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 0.8rem; padding: 0.9rem; }
+  .links a:hover { border-color: var(--c); }
+  .links strong { display: block; font-size: 0.98rem; color: var(--navy); }
+  .links small { color: var(--muted); font-size: 0.82rem; font-weight: 600; }
+  .links :global(.go) { color: var(--cd); }
+</style>

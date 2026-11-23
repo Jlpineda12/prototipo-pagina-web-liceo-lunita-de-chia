@@ -1,0 +1,136 @@
+---
+import { SITE } from '@/data/site';
+import interWoff2 from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
+import frauncesWoff2 from '@fontsource-variable/fraunces/files/fraunces-latin-wght-normal.woff2?url';
+
+export interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  imageAlt?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  published?: Date;
+  modified?: Date;
+  breadcrumbs?: { name: string; href: string }[];
+  schema?: Record<string, unknown> | Record<string, unknown>[];
+}
+
+const {
+  title,
+  description = SITE.description,
+  image = '/og-default.png',
+  imageAlt = `${SITE.name} — ${SITE.slogan}`,
+  type = 'website',
+  noindex = false,
+  published,
+  modified,
+  breadcrumbs,
+  schema,
+} = Astro.props;
+
+const base = import.meta.env.BASE_URL;
+const isPrototype = import.meta.env.PUBLIC_PROTOTYPE === 'true' || base !== '/';
+const relPath = Astro.url.pathname.startsWith(base) ? '/' + Astro.url.pathname.slice(base.length) : Astro.url.pathname;
+const withBase = (p: string) => (p.startsWith('/') && !p.startsWith(base) ? `${base}${p.slice(1)}` : p);
+const safeJson = (data: unknown) => JSON.stringify(data).replace(/</g, '\\u003c');
+
+const canonical = new URL(Astro.url.pathname, Astro.site).href;
+const isHome = relPath === '/';
+const fullTitle = isHome ? title : `${title} | ${SITE.name}`;
+const ogImage = new URL(withBase(image), Astro.site).href;
+
+const addr = SITE.address;
+const organization = {
+  '@context': 'https://schema.org',
+  '@type': ['School', 'EducationalOrganization', 'LocalBusiness'],
+  '@id': `${SITE.url}/#colegio`,
+  name: SITE.name,
+  alternateName: ['Liceo Lunita', 'Colegio Lunita de Chía', 'Liceo Infantil Lunita'],
+  slogan: SITE.slogan,
+  description: SITE.description,
+  url: SITE.url,
+  logo: `${SITE.url}/brand/escudo.svg`,
+  image: `${SITE.url}/og-default.png`,
+  email: SITE.email,
+  telephone: [SITE.phone, SITE.landline],
+  address: {
+    '@type': 'PostalAddress',
+    ...(addr.street ? { streetAddress: addr.street } : {}),
+    addressLocality: addr.locality,
+    addressRegion: addr.region,
+    postalCode: addr.postalCode,
+    addressCountry: addr.country,
+  },
+  areaServed: ['Chía', 'Cajicá', 'Cota', 'Sabana Centro', 'Cundinamarca'],
+  sameAs: Object.values(SITE.social),
+  hasOfferCatalog: {
+    '@type': 'OfferCatalog',
+    name: 'Niveles educativos',
+    itemListElement: ['Preescolar', 'Educación básica primaria', 'Educación básica secundaria y media'].map((n) => ({
+      '@type': 'Offer',
+      itemOffered: { '@type': 'EducationalOccupationalProgram', name: n, provider: { '@id': `${SITE.url}/#colegio` } },
+    })),
+  },
+};
+
+const website = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  '@id': `${SITE.url}/#web`,
+  url: SITE.url,
+  name: SITE.name,
+  inLanguage: SITE.lang,
+  publisher: { '@id': `${SITE.url}/#colegio` },
+};
+
+const crumbs = breadcrumbs?.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'BreadcrumbList',
+      itemListElement: [{ name: 'Inicio', href: '/' }, ...breadcrumbs].map((b, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        name: b.name,
+        item: new URL(withBase(b.href), Astro.site).href,
+      })),
+    }
+  : null;
+
+const graph = [isHome ? organization : null, isHome ? website : null, crumbs, ...(Array.isArray(schema) ? schema : schema ? [schema] : [])].filter(Boolean);
+if (!isHome) graph.unshift({ ...organization, hasOfferCatalog: undefined });
+---
+
+<title>{fullTitle}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta
+  name="robots"
+  content={isPrototype ? 'noindex, nofollow' : noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1'}
+/>
+{SITE.googleSiteVerification && <meta name="google-site-verification" content={SITE.googleSiteVerification} />}
+
+<link rel="preload" href={interWoff2} as="font" type="font/woff2" crossorigin />
+<link rel="preload" href={frauncesWoff2} as="font" type="font/woff2" crossorigin />
+
+<meta property="og:type" content={type} />
+<meta property="og:locale" content={SITE.locale} />
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:title" content={fullTitle} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={ogImage} />
+<meta property="og:image:alt" content={imageAlt} />
+{image === '/og-default.png' && <meta property="og:image:width" content="1200" />}
+{image === '/og-default.png' && <meta property="og:image:height" content="630" />}
+{published && <meta property="article:published_time" content={published.toISOString()} />}
+{modified && <meta property="article:modified_time" content={modified.toISOString()} />}
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={fullTitle} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={ogImage} />
+
+<meta name="geo.region" content="CO-CUN" />
+<meta name="geo.placename" content="Chía, Cundinamarca" />
+
+{graph.map((g) => <script is:inline type="application/ld+json" set:html={safeJson(g)} />)}

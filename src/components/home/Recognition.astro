@@ -1,0 +1,51 @@
+---
+import { Image } from 'astro:assets';
+import premio from '@/assets/site/premio-excelencia.webp';
+import { PRESS, VIDEOS } from '@/data/site';
+import LiteYouTube from '../LiteYouTube.astro';
+import Icon from '../Icon.astro';
+---
+
+<section class="section recog block block-yellow" aria-labelledby="recog-title">
+  <div class="wrap">
+    <div class="award">
+      <div class="badge" data-reveal="pop">
+        <Image src={premio} alt="Premio Excelencia Educativa 2026 otorgado al Liceo Lunita de Chía" width={420} height={420} format="webp" quality={75} />
+        <span class="ribbon">¡Entidad premiada 2026!</span>
+      </div>
+      <div>
+        <p class="kicker"><span class="dot"></span>Reconocimientos</p>
+        <h2 id="recog-title">Premio a la Mejor Trayectoria en <span class="hl">Educación Integral y Transformadora</span></h2>
+        <p>Los Premios Excelencia Educativa 2026 reconocieron al Liceo Lunita de Chía. Un logro de toda la comunidad: estudiantes, familias y docentes.</p>
+        <p class="press-t">En los medios</p>
+        <ul class="press">
+          {PRESS.map((p) => (
+            <li><a class="card" href={p.url} target="_blank" rel="noopener noreferrer"><span class="outlet">{p.outlet}</span><span class="t">{p.title}</span><Icon name="arrow-up-right" size={18} /></a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+    <div class="videos">
+      <h3>Míranos en acción</h3>
+      <div class="grid cols-3">{VIDEOS.slice(0, 3).map((v, i) => <div data-reveal style={`--d:${i}`}><LiteYouTube id={v.id} title={v.title} /></div>)}</div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .award { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 960px) { .award { grid-template-columns: 0.8fr 1.2fr; gap: 4rem; } }
+  h2 { font-size: var(--step-3); }
+  .award p { color: var(--muted); font-weight: 600; }
+  .badge { position: relative; width: min(100%, 400px); margin-inline: auto; }
+  .badge :global(img) { width: 100%; border-radius: 28px; border: 2px solid var(--line); border-bottom-width: 6px; transform: rotate(-3deg); }
+  .ribbon { position: absolute; right: 0.75rem; bottom: -0.85rem; padding: 0.55rem 1.15rem; border-radius: 999px; background: var(--navy); color: #FECA0D !important; border: 2px solid #FECA0D; box-shadow: 0 5px 0 #070c2e; font-weight: 900; transform: rotate(3deg); animation: wiggle 4s ease-in-out infinite; }
+  .press-t { margin: 1.5rem 0 0.6rem; font-weight: 900; color: var(--navy) !important; text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.8rem; }
+  .press { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.6rem; }
+  .press a { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; padding: 0.9rem 1.1rem; color: var(--sky-d); }
+  .press a:hover { border-color: var(--sky); }
+  .outlet { font-weight: 900; color: var(--navy); min-width: 4.5rem; }
+  .t { font-size: 0.95rem; color: var(--ink-2); font-weight: 600; line-height: 1.35; }
+  .videos { margin-top: clamp(3.5rem, 7vw, 5rem); }
+  .videos h3 { font-size: var(--step-2); margin-bottom: 1.2rem; }
+</style>

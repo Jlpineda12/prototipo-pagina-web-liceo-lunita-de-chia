@@ -1,0 +1,35 @@
+---
+import Sticker from '@/components/Sticker.astro';
+import Base from '@/layouts/Base.astro';
+import Lunita from '@/components/brand/Lunita.astro';
+import Icon from '@/components/Icon.astro';
+const links = [
+  { t: 'Inicio', u: '/', icon: 'home', th: 't-sky' },
+  { t: 'Admisiones', u: '/admisiones/', icon: 'sparkle', th: 't-yellow' },
+  { t: 'Noticias', u: '/noticias/', icon: 'file', th: 't-red' },
+  { t: 'Contacto', u: '/contacto/', icon: 'phone', th: 't-green' },
+];
+---
+
+<Base title="Página no encontrada" description="La página que buscas no existe o cambió de lugar." noindex>
+  <section class="section nf">
+    <div class="wrap inner">
+      <Lunita size={240} pose="buscar" />
+      <p class="code">404</p>
+      <h1>¡Ups! Esta página se fue a la luna</h1>
+      <p class="lead">Puede que el enlace haya cambiado con nuestro nuevo sitio. Busca lo que necesitas o elige un atajo.</p>
+      <button type="button" class="btn sky" data-open-search><Icon name="search" /> Buscar en el sitio</button>
+      <ul class="quick">{links.map((l) => <li><a class={`card ${l.th}`} href={l.u}><Sticker name={l.icon} size={42} />{l.t}</a></li>)}</ul>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { background: var(--cloud); }
+  .inner { display: grid; justify-items: center; text-align: center; gap: 0.6rem; }
+  .code { margin: 0; font-size: 1rem; font-weight: 900; letter-spacing: 0.3em; color: var(--sky-d); }
+  h1 { font-size: var(--step-4); margin: 0; }
+  .lead { color: var(--muted); max-width: 46ch; }
+  .quick { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+  .quick a { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.4rem 1rem 0.4rem 0.4rem; font-weight: 800; color: var(--navy); }
+</style>

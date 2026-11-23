@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-8 -8 416 479"><path class="e-rim" d="M0.5 231.5A199.5 231 0 1 0 399.5 231.5A199.5 231 0 1 0 0.5 231.5Z" fill="#FECA0D"/>
+<path class="e-ring" d="M7 231.5A193 224.5 0 1 0 393 231.5A193 224.5 0 1 0 7 231.5Z" fill="#313293"/>
+<path class="e-inner-rim" d="M15.6 248.8A165 189.8 0 1 0 345.6 248.8A165 189.8 0 1 0 15.6 248.8Z" fill="#FECA0D"/>
+<path class="e-field" d="M21.4 248.8A159.2 183.8 0 1 0 339.8 248.8A159.2 183.8 0 1 0 21.4 248.8Z" fill="#FFFFFF"/>
+<path class="e-moon" d="M203 139.2A171.2 131.8 0 1 0 203 402.8A181.5 155.5 0 0 1 203 139.2Z" fill="#FECA0D" stroke="#313293" stroke-width="4.8" stroke-linejoin="miter" stroke-miterlimit="10"/>
+<path class="e-star" d="M235 84L239.82 98.97L255.54 98.93L242.8 108.13L247.7 123.07L235 113.8L222.3 123.07L227.2 108.13L214.46 98.93L230.18 98.97Z" fill="#FECA0D" stroke="#313293" stroke-width="3.4" stroke-linejoin="miter" stroke-miterlimit="10"/></svg>

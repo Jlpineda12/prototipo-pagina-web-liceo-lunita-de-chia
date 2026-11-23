@@ -1,0 +1,105 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Sticker from '@/components/Sticker.astro';
+import Lunita from '@/components/brand/Lunita.astro';
+import NextSteps from '@/components/NextSteps.astro';
+import { RETOS, RETO_CATS } from '@/data/institucional';
+
+// Desplazamiento horizontal en zigzag suave para dibujar el "camino" (estilo ruta de aprendizaje)
+const offset = (i: number) => Math.round(Math.sin(i * 0.9) * 110);
+const counts = Object.fromEntries(Object.keys(RETO_CATS).map((k) => [k, RETOS.filter((r) => r.cat === k).length]));
+---
+
+<Base
+  title="Retos 2026: el camino del Liceo Lunita de Chía"
+  description="Los 28 retos institucionales 2026 del Liceo Lunita de Chía: STHEAMI, ciencia y astronomía, excelencia académica, idiomas e inclusión, arte e identidad muisca, valores y educación internacional."
+  breadcrumbs={[{ name: 'El Cole', href: '/el-cole/' }, { name: 'Retos 2026', href: '/retos-2026/' }]}
+>
+  <PageHero kicker="Sueño y estrategia" title='28 retos, <span class="hl">un mismo sueño</span>' lead="Así se proyecta el Liceo Lunita en 2026. Recorre el camino: toca cada estrella para conocer el reto y sus estrategias." crumbs={[{ name: 'El Cole', href: '/el-cole/' }, { name: 'Retos 2026', href: '/retos-2026/' }]} theme="t-purple" pose="espacio" />
+
+  <section class="section path-sec">
+    <div class="wrap">
+      <div class="filters" role="group" aria-label="Filtrar retos por tema" data-reto-f>
+        <button type="button" class="f t-blue" aria-pressed="true" data-f="all">Todos <b>{RETOS.length}</b></button>
+        {Object.entries(RETO_CATS).map(([k, c]) => (
+          <button type="button" class={`f t-${c.theme}`} aria-pressed="false" data-f={k}><Sticker name={c.icon} size={24} tile={false} /> {c.label} <b>{counts[k]}</b></button>
+        ))}
+      </div>
+
+      <ol class="path" data-path>
+        {RETOS.map((r, i) => {
+          const c = RETO_CATS[r.cat];
+          return (
+            <li class={`node t-${c.theme}`} style={`--x:${offset(i)}px`} data-cat={r.cat}>
+              <details>
+                <summary aria-label={`Reto ${r.n}: ${r.title}`}>
+                  <span class="bubble"><Sticker name={c.icon} size={46} tile={false} /><b>{r.n}</b></span>
+                  <span class="label">{r.title}</span>
+                </summary>
+                <div class="pop card">
+                  <span class="chip">{c.label}</span>
+                  <h2>Reto {r.n}. {r.title}</h2>
+                  {r.items.length > 0 && <ul>{r.items.map((it) => <li>{it}</li>)}</ul>}
+                </div>
+              </details>
+              {i % 7 === 3 && <div class="guide" aria-hidden="true" style={`--side:${offset(i) > 0 ? -1 : 1}`}><Lunita size={150} pose={i < 10 ? 'stheami' : i < 20 ? 'estudio' : 'celebra'} track={false} /></div>}
+            </li>
+          );
+        })}
+        <li class="node goal t-yellow" style="--x:0px">
+          <span class="bubble big"><Sticker name="award" size={64} tile={false} /></span>
+          <span class="label">¡Meta 2026!</span>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <NextSteps items={['cole', 'stheami', 'admisiones']} />
+</Base>
+
+<style>
+  .path-sec { background: var(--lilac); background-image: radial-gradient(1.6px 1.6px at 20% 30%, #fff 50%, transparent 51%), radial-gradient(1.6px 1.6px at 70% 60%, #fff 50%, transparent 51%), radial-gradient(2px 2px at 45% 85%, var(--yellow) 50%, transparent 51%); background-size: 420px 300px; }
+  .filters { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem; margin-bottom: 3rem; }
+  .f { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.95rem 0.4rem 0.6rem; border-radius: 999px; border: 2px solid var(--line); border-bottom-width: 4px; background: #fff; font-weight: 800; color: var(--ink-2); font-size: 0.9rem; }
+  .f b { font-size: 0.72rem; padding: 0.05rem 0.45rem; border-radius: 999px; background: var(--bg-2); }
+  .f[aria-pressed='true'] { background: var(--l); border-color: var(--c); color: var(--navy); }
+
+  .path { list-style: none; margin: 0 auto; padding: 0; display: grid; justify-items: center; gap: 1.6rem; max-width: 720px; position: relative; }
+  .node { position: relative; transform: translateX(var(--x)); transition: opacity 0.3s, filter 0.3s; }
+  .node.dim { opacity: 0.25; filter: grayscale(0.8); }
+  /* Línea punteada que une los nodos */
+  .node:not(:last-child)::after { content: ''; position: absolute; left: 50%; top: 84px; width: 6px; height: 1.6rem; translate: -50% 0; background: repeating-linear-gradient(var(--line-2) 0 6px, transparent 6px 11px); border-radius: 3px; }
+  details { display: grid; justify-items: center; }
+  summary { list-style: none; cursor: pointer; display: grid; justify-items: center; gap: 0.5rem; }
+  summary::-webkit-details-marker { display: none; }
+  .bubble { position: relative; width: 84px; height: 84px; border-radius: 50%; display: grid; place-items: center; background: var(--c); box-shadow: 0 7px 0 var(--cd), 0 0 0 6px rgb(255 255 255 / 0.7); transition: transform 0.2s var(--spring); --c2: #fff; }
+  .bubble :global(.sticker) { --c: #fff; --cd: rgb(0 0 0 / 0.18); }
+  .bubble b { position: absolute; bottom: -6px; right: -6px; min-width: 30px; height: 30px; padding: 0 6px; border-radius: 999px; display: grid; place-items: center; background: #fff; color: var(--navy); font-size: 0.85rem; border: 3px solid var(--c); }
+  summary:hover .bubble { transform: translateY(-3px) scale(1.06); }
+  summary:active .bubble { transform: translateY(5px); box-shadow: 0 2px 0 var(--cd), 0 0 0 6px rgb(255 255 255 / 0.7); }
+  details[open] .bubble { box-shadow: 0 7px 0 var(--cd), 0 0 0 8px var(--yellow); }
+  .label { max-width: 220px; text-align: center; font-weight: 800; font-size: 0.85rem; line-height: 1.25; color: var(--navy); background: #fff; padding: 0.3rem 0.7rem; border-radius: 14px; border: 2px solid var(--line); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  .pop { margin-top: 0.9rem; width: min(560px, calc(100vw - 2 * var(--gutter))); transform: translateX(calc(-1 * var(--x))); border-color: var(--c); animation: pop-in 0.3s var(--spring); position: relative; z-index: 2; text-align: left; }
+  .pop .chip { --c: var(--cd); }
+  .pop h2 { font-size: var(--step-1); margin: 0.6rem 0; letter-spacing: -0.01em; }
+  .pop ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.4rem; color: var(--ink-2); font-size: 0.95rem; }
+  .pop li::marker { color: var(--cd); }
+  .guide { position: absolute; top: -20px; left: 50%; translate: calc(var(--side) * 170px - 50%) 0; pointer-events: none; }
+  @media (max-width: 640px) { .guide { display: none; } .node { transform: translateX(calc(var(--x) * 0.45)); } .pop { transform: translateX(calc(var(--x) * -0.45)); } }
+  .goal .bubble.big { width: 110px; height: 110px; background: var(--yellow); box-shadow: 0 8px 0 var(--yellow-d), 0 0 0 10px rgb(255 255 255 / 0.8); animation: bob 3s ease-in-out infinite; }
+  .goal .bubble :global(.sticker) { --c: var(--navy); --cd: var(--blue); }
+  .goal { display: grid; justify-items: center; gap: 0.6rem; }
+</style>
+
+<script>
+  const btns = [...document.querySelectorAll<HTMLButtonElement>('[data-reto-f] [data-f]')];
+  const nodes = [...document.querySelectorAll<HTMLElement>('[data-path] [data-cat]')];
+  btns.forEach((b) => b.addEventListener('click', () => {
+    btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    nodes.forEach((n) => n.classList.toggle('dim', b.dataset.f !== 'all' && n.dataset.cat !== b.dataset.f));
+  }));
+  // Un solo reto abierto a la vez
+  const all = [...document.querySelectorAll<HTMLDetailsElement>('[data-path] details')];
+  all.forEach((d) => d.addEventListener('toggle', () => { if (d.open) all.forEach((o) => o !== d && (o.open = false)); }));
+</script>

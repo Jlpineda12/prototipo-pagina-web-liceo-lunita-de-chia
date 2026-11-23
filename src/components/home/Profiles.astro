@@ -1,0 +1,96 @@
+---
+import Sticker from '@/components/Sticker.astro';
+/** "¿Quién eres?" — cada perfil ve primero sus tareas más frecuentes. Recuerda la última elección. */
+import { PROFILES } from '@/data/site';
+import Icon from '../Icon.astro';
+---
+
+<section class="section profiles" aria-labelledby="prof-title">
+  <div class="wrap">
+    <div class="section-head center">
+      <p class="kicker"><span class="dot"></span>Accesos rápidos</p>
+      <h2 id="prof-title">¿Quién eres? <span class="hl">Te llevamos directo</span></h2>
+      <p>Elige tu perfil y encuentra en un clic lo que más necesitas.</p>
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Perfiles" data-tabs>
+      {
+        PROFILES.map((p, i) => (
+          <button type="button" role="tab" id={`tab-${p.id}`} aria-controls={`panel-${p.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1} class={`tab t-${p.theme}`} data-tab={p.id}>
+            <Sticker name={p.icon} size={42} />
+            {p.label}
+          </button>
+        ))
+      }
+    </div>
+
+    {
+      PROFILES.map((p, i) => (
+        <div role="tabpanel" id={`panel-${p.id}`} aria-labelledby={`tab-${p.id}`} class={`panel t-${p.theme}`} hidden={i !== 0} data-panel={p.id}>
+          <p class="intro">{p.intro}</p>
+          <ul class="tiles">
+            {p.tasks.map((t, j) => (
+              <li style={`--d:${j}`}>
+                <a class="card tile" href={t.href} target={t.ext ? '_blank' : undefined} rel={t.ext ? 'noopener' : undefined}>
+                  <Sticker name={t.icon ?? 'sparkle'} size={56} />
+                  <strong>{t.label}</strong>
+                  <small>{t.desc}</small>
+                  <Icon name={t.ext ? 'arrow-up-right' : 'arrow'} size={20} class="go" />
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; margin-bottom: 1.6rem; }
+  .tab {
+    display: inline-flex; align-items: center; gap: 0.55rem; padding: 0.4rem 1rem 0.4rem 0.4rem; border-radius: 18px;
+    background: #fff; border: 2px solid var(--line); border-bottom-width: 4px; font-weight: 800; font-size: 1rem; color: var(--ink-2);
+    transition: transform 0.1s, background 0.2s, border-color 0.2s;
+  }
+  .tab:hover { background: var(--l); }
+  .tab:active { transform: translateY(2px); border-bottom-width: 2px; }
+  .tab[aria-selected='true'] { background: var(--l); border-color: var(--c); color: var(--navy); }
+  .panel { animation: pop-in 0.35s var(--spring); }
+  .panel[hidden] { display: none; }
+  .intro { text-align: center; font-weight: 700; color: var(--muted); margin-bottom: 1.4rem; }
+  .tiles { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 900px) { .tiles { grid-template-columns: repeat(4, 1fr); } }
+  .tile { display: flex; flex-direction: column; gap: 0.35rem; height: 100%; padding: 1.2rem; }
+  .tile:hover { border-color: var(--c); background: color-mix(in oklab, var(--l) 50%, #fff); }
+  .tile .icon-bubble { margin-bottom: 0.5rem; }
+  .tile strong { font-size: 1.08rem; color: var(--navy); line-height: 1.2; }
+  .tile small { color: var(--muted); font-weight: 600; font-size: 0.88rem; }
+  .tile :global(.go) { margin-top: auto; padding-top: 0.6rem; color: var(--cd); box-sizing: content-box; }
+  .panel.t-yellow :global(.sticker--tile) { --c: #e09100; --cd: #b56d00; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((list) => {
+    const section = list.closest('section')!;
+    const tabs = [...list.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+    const select = (id: string, focus = false) => {
+      tabs.forEach((t) => {
+        const on = t.dataset.tab === id;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+        if (on && focus) t.focus();
+      });
+      section.querySelectorAll<HTMLElement>('[data-panel]').forEach((p) => (p.hidden = p.dataset.panel !== id));
+      try { localStorage.setItem('lunita-perfil', id); } catch {}
+    };
+    tabs.forEach((t, i) => {
+      t.addEventListener('click', () => select(t.dataset.tab!));
+      t.addEventListener('keydown', (e) => {
+        const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+        if (d) { e.preventDefault(); select(tabs[(i + d + tabs.length) % tabs.length].dataset.tab!, true); }
+      });
+    });
+    try { const saved = localStorage.getItem('lunita-perfil'); if (saved && tabs.some((t) => t.dataset.tab === saved)) select(saved); } catch {}
+  });
+</script>

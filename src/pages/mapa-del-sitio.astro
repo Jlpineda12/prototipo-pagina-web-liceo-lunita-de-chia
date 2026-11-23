@@ -1,0 +1,44 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+import { NAV } from '@/data/site';
+const posts = (await getCollection('noticias', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const themes = ['t-blue', 't-green', 't-red', 't-yellow', 't-sky', 't-orange'];
+const extra = [
+  { label: 'Inicio', href: '/' },
+  { label: 'Admisiones 2027', href: '/admisiones/' },
+  { label: 'Preguntas frecuentes', href: '/preguntas-frecuentes/' },
+  { label: 'Centro de documentos', href: '/comunidad/#documentos' },
+  { label: 'Contacto', href: '/contacto/' },
+];
+---
+
+<Base title="Mapa del sitio" description="Todas las secciones y páginas del sitio web del Liceo Lunita de Chía en un solo lugar." breadcrumbs={[{ name: 'Mapa del sitio', href: '/mapa-del-sitio/' }]}>
+  <PageHero kicker="Navegación" title='Mapa <span class="hl">del sitio</span>' lead="Todo el sitio en una sola vista. Si no encuentras algo, usa el buscador." crumbs={[{ name: 'Mapa del sitio', href: '/mapa-del-sitio/' }]} theme="t-blue" pose="buscar">
+    <button type="button" class="btn sky" data-open-search style="margin-top:1.4rem"><Icon name="search" /> Abrir buscador</button>
+  </PageHero>
+  <section class="section">
+    <div class="wrap grid cols-3">
+      <nav class="card t-yellow" aria-label="Páginas principales"><h2>Principal</h2><ul>{extra.map((e) => <li><a href={e.href}>{e.label}</a></li>)}</ul></nav>
+      {NAV.filter((n) => n.children).map((n, i) => (
+        <nav class={`card ${themes[i % themes.length]}`} aria-label={n.label}>
+          <h2><a href={n.href}>{n.label}</a></h2>
+          <ul>{n.children!.map((c) => <li><a href={c.href}>{c.label}</a></li>)}</ul>
+        </nav>
+      ))}
+      <nav class="card t-red" aria-label="Noticias"><h2><a href="/noticias/">Noticias</a></h2><ul>{posts.map((p) => <li><a href={`/noticias/${p.id}/`}>{p.data.title}</a></li>)}</ul></nav>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .card { border-top: 6px solid var(--c); }
+  h2 { font-size: var(--step-1); }
+  h2 a { color: var(--navy); text-decoration: none; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.45rem; }
+  li a { font-weight: 700; color: var(--ink-2); text-decoration: none; }
+  li a:hover { color: var(--sky-d); text-decoration: underline; }
+  li a::before { content: '›'; color: var(--cd); font-weight: 900; margin-right: 0.45rem; }
+</style>

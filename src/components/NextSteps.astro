@@ -1,0 +1,51 @@
+---
+import Sticker from '@/components/Sticker.astro';
+/** "Sigue explorando": tarjetas de siguiente paso al final de cada página para que nadie quede en un callejón sin salida. */
+import Icon from './Icon.astro';
+type Step = { label: string; href: string; desc: string; icon: string; theme: string };
+const ALL: Record<string, Step> = {
+  admisiones: { label: 'Admisiones 2027', href: '/admisiones/', desc: 'Proceso paso a paso', icon: 'sparkle', theme: 't-yellow' },
+  niveles: { label: 'Niveles', href: '/niveles/', desc: 'Preescolar a Once', icon: 'book', theme: 't-green' },
+  stheami: { label: 'Modelo STHEAMI', href: '/modelo-stheami/', desc: 'Cómo aprendemos', icon: 'globe', theme: 't-purple' },
+  cole: { label: 'El Cole', href: '/el-cole/', desc: 'Historia y valores', icon: 'moon', theme: 't-blue' },
+  bandas: { label: 'Festival de Bandas', href: '/festival-de-bandas/', desc: 'Ciudad de la Luna', icon: 'music', theme: 't-purple' },
+  noticias: { label: 'Noticias', href: '/noticias/', desc: 'Lo último del colegio', icon: 'file', theme: 't-red' },
+  comunidad: { label: 'Comunidad', href: '/comunidad/', desc: 'Estudiantes, padres y docentes', icon: 'users', theme: 't-sky' },
+  retos: { label: 'Retos 2026', href: '/retos-2026/', desc: '28 metas del colegio', icon: 'flag', theme: 't-purple' },
+  faq: { label: 'Preguntas frecuentes', href: '/preguntas-frecuentes/', desc: 'Respuestas rápidas', icon: 'help', theme: 't-orange' },
+  contacto: { label: 'Contacto', href: '/contacto/', desc: 'Llámanos o escríbenos', icon: 'phone', theme: 't-green' },
+};
+interface Props { items: (keyof typeof ALL)[]; title?: string }
+const { items, title = 'Sigue explorando' } = Astro.props;
+---
+
+<section class="next" aria-labelledby="next-title">
+  <div class="wrap">
+    <h2 id="next-title">{title}</h2>
+    <ul class="grid cols-3">
+      {items.map((k, i) => {
+        const s = ALL[k];
+        return (
+          <li data-reveal style={`--d:${i}`}>
+            <a class={`card ${s.theme}`} href={s.href}>
+              <Sticker name={s.icon} size={56} />
+              <span><strong>{s.label}</strong><small>{s.desc}</small></span>
+              <Icon name="arrow" size={20} class="go" />
+            </a>
+          </li>
+        );
+      })}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .next { padding-block: clamp(3rem, 6vw, 4.5rem); border-top: 2px solid var(--line); }
+  h2 { font-size: var(--step-2); }
+  ul { list-style: none; margin: 0; padding: 0; }
+  a { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem; height: 100%; }
+  a:hover { border-color: var(--c); }
+  strong { display: block; color: var(--navy); font-size: 1.05rem; }
+  small { color: var(--muted); font-weight: 600; }
+  a :global(.go) { color: var(--cd); }
+</style>

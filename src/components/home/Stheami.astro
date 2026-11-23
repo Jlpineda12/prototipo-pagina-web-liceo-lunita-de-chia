@@ -1,0 +1,112 @@
+---
+/** Modelo STHEAMI interactivo: 7 burbujas de color (una por componente) que orbitan el escudo. */
+import { STHEAMI } from '@/data/site';
+import Emblem from '../brand/Emblem.astro';
+import Icon from '../Icon.astro';
+interface Props { compact?: boolean }
+const { compact = false } = Astro.props;
+---
+
+<section class="section stheami block block-navy" id="descubre" aria-labelledby="stheami-title">
+  <div class="wrap layout">
+    <div>
+      <p class="kicker"><span class="dot"></span>Modelo pedagógico propio</p>
+      <h2 id="stheami-title">Siete mundos, <span class="hl">un universo</span> de aprendizaje</h2>
+      <p class="intro">
+        STHEAMI integra siete áreas en proyectos interdisciplinarios. Con la <strong>heutagogía</strong>, cada estudiante se convierte en gestor de su
+        propio aprendizaje y el docente en su guía. <em>Toca una letra para descubrirla.</em>
+      </p>
+      <div class="detail" aria-live="polite">
+        {
+          STHEAMI.map((s, i) => (
+            <div class="panel" data-panel={i} hidden={i !== 0} style={`--c:${s.color}`}>
+              <span class="big" aria-hidden="true">{s.k}</span>
+              <div>
+                <h3>{s.name} <small>{s.en}</small></h3>
+                <p>{s.text}</p>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+      {!compact && <a class="link" href="/modelo-stheami/">Conoce el modelo completo <Icon name="arrow" /></a>}
+    </div>
+
+    <div class="system" data-system>
+      <div class="ring r1" aria-hidden="true"></div>
+      <div class="ring r2" aria-hidden="true"></div>
+      <div class="core"><Emblem size={120} decorative /></div>
+      <ul class="planets" role="tablist" aria-label="Componentes del modelo STHEAMI">
+        {
+          STHEAMI.map((s, i) => (
+            <li style={`--a:${(360 / STHEAMI.length) * i}deg; --c:${s.color}`}>
+              <button type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-planet={i} aria-label={`${s.k}: ${s.name}`}><span>{s.k}</span></button>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .stheami { overflow-x: clip; }
+  .layout { display: grid; gap: 3rem; align-items: center; }
+  .layout > * { min-width: 0; }
+  @media (min-width: 960px) { .layout { grid-template-columns: 1fr 1fr; } }
+  h2 { font-size: var(--step-4); }
+  .intro { font-size: var(--step-1); color: var(--muted); line-height: 1.5; }
+  .intro strong { color: #fff; }
+  .intro em { color: var(--yellow); font-style: normal; font-weight: 800; }
+  .detail { min-height: 140px; margin: 1.6rem 0; }
+  .panel { display: flex; gap: 1.1rem; align-items: center; padding: 1.2rem 1.4rem; border-radius: var(--r-lg); border: 2px solid var(--c); border-bottom-width: 5px; background: #fff; animation: pop-in 0.35s var(--spring); }
+  .panel[hidden] { display: none; }
+  .big { flex: none; width: 64px; height: 64px; border-radius: 20px; display: grid; place-items: center; background: var(--c); color: #fff; font-size: 2.2rem; font-weight: 900; box-shadow: 0 4px 0 color-mix(in oklab, var(--c) 75%, #000); }
+  .panel h3 { font-size: var(--step-2); margin: 0 0 0.2rem; color: var(--navy); }
+  .panel small { font-size: 0.72rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-left: 0.3rem; font-weight: 800; }
+  .panel p { margin: 0; color: var(--ink-2); }
+
+  .system { position: relative; width: min(84vw, 480px); aspect-ratio: 1; margin-inline: auto; container-type: inline-size; }
+  .ring { position: absolute; border-radius: 50%; border: 3px dashed rgb(255 255 255 / 0.22); }
+  .r1 { inset: 5%; animation: spin 80s linear infinite; }
+  .r2 { inset: 27%; border-style: solid; border-color: rgb(255 255 255 / 0.15); background: rgb(255 255 255 / 0.06); }
+  .core { position: absolute; inset: 0; display: grid; place-items: center; }
+  .core :global(.emblem) { width: 24%; height: auto; animation: bob 4s ease-in-out infinite; }
+  .planets { position: absolute; inset: 0; list-style: none; margin: 0; padding: 0; animation: spin 70s linear infinite; }
+  .system:hover .planets, .system:focus-within .planets { animation-play-state: paused; }
+  .planets li { position: absolute; left: 50%; top: 50%; transform: rotate(var(--a)) translate(0, -45cqi); }
+  .planets button {
+    position: absolute; translate: -50% -50%; width: clamp(48px, 15cqi, 76px); aspect-ratio: 1; border: 0; padding: 0; border-radius: 22px;
+    display: grid; place-items: center; background: var(--c); box-shadow: 0 5px 0 color-mix(in oklab, var(--c) 75%, #000); transition: transform 0.25s var(--spring);
+  }
+  .planets button span { rotate: calc(-1 * var(--a)); animation: spin 70s linear infinite reverse; color: #fff; font-weight: 900; font-size: clamp(1.3rem, 6cqi, 2rem); text-shadow: 0 2px 0 rgb(0 0 0 / 0.15); }
+  .system:hover .planets button span, .system:focus-within .planets button span { animation-play-state: paused; }
+  .planets button:hover, .planets button[aria-selected='true'] { transform: scale(1.18); }
+  .planets button[aria-selected='true'] { outline: 4px solid #fff; box-shadow: 0 5px 0 color-mix(in oklab, var(--c) 75%, #000), 0 0 0 8px color-mix(in oklab, var(--c) 30%, transparent); }
+  @media (prefers-reduced-motion: reduce) { .planets, .planets button span, .r1 { animation: none; } }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-system]').forEach((sys) => {
+    const section = sys.closest('section')!;
+    const btns = [...sys.querySelectorAll<HTMLButtonElement>('[data-planet]')];
+    const panels = [...section.querySelectorAll<HTMLElement>('[data-panel]')];
+    let current = 0, timer = 0, touched = false;
+    const select = (i: number) => {
+      current = i;
+      btns.forEach((b, j) => b.setAttribute('aria-selected', String(i === j)));
+      panels.forEach((p, j) => (p.hidden = i !== j));
+    };
+    btns.forEach((b, i) => {
+      const go = () => { touched = true; select(i); };
+      b.addEventListener('click', go);
+      b.addEventListener('pointerenter', go);
+      b.addEventListener('focus', go);
+    });
+    new IntersectionObserver(([e]) => {
+      clearInterval(timer);
+      if (e.isIntersecting && !matchMedia('(prefers-reduced-motion: reduce)').matches)
+        timer = window.setInterval(() => !touched && select((current + 1) % btns.length), 3000);
+    }).observe(sys);
+  });
+</script>

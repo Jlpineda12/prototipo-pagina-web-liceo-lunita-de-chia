@@ -1,0 +1,91 @@
+---
+import Sticker from '@/components/Sticker.astro';
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Stheami from '@/components/home/Stheami.astro';
+import Icon from '@/components/Icon.astro';
+import NextSteps from '@/components/NextSteps.astro';
+import { STHEAMI } from '@/data/site';
+
+const pillars = [
+  ['Trabajo por proyectos', 'Los aprendizajes se organizan alrededor de retos reales que conectan varias áreas.', 'rocket', 't-sky'],
+  ['Interdisciplinariedad', 'Ciencia, arte y humanidades dialogan en un mismo proyecto.', 'globe', 't-purple'],
+  ['Trazabilidad curricular', 'Cada experiencia está conectada con el plan de estudios y su evaluación.', 'check', 't-green'],
+  ['Experiencias significativas', 'Del laboratorio al escenario: se aprende haciendo, creando y compartiendo.', 'sparkle', 't-orange'],
+];
+const roles = [
+  { who: 'El estudiante', icon: 'users', theme: 't-sky', items: ['Gestiona su propio aprendizaje', 'Investiga, pregunta y propone', 'Aprende por convicción, no por obligación'] },
+  { who: 'El docente', icon: 'heart', theme: 't-green', items: ['Guía y mediador del proceso', 'Acompaña y orienta', 'Diseña retos y experiencias'] },
+  { who: 'La familia', icon: 'shield', theme: 't-orange', items: ['Corresponsable del proceso educativo', 'Acompaña en casa', 'Participa en la vida escolar'] },
+];
+---
+
+<Base
+  title="Modelo pedagógico STHEAMI y heutagogía"
+  description="STHEAMI es el modelo pedagógico propio del Liceo Lunita de Chía: Ciencia, Tecnología, Humanidades, Ingeniería, Artes, Matemáticas e Inclusión, con trabajo por proyectos y heutagogía."
+  breadcrumbs={[{ name: 'Aprendizaje', href: '/niveles/' }, { name: 'Modelo STHEAMI', href: '/modelo-stheami/' }]}
+>
+  <PageHero kicker="Modelo pedagógico" title='Así aprendemos: <span class="hl">STHEAMI</span>' lead="Un modelo propio que une ciencia, tecnología, humanidades, ingeniería, artes, matemáticas e inclusión, con el estudiante como protagonista." crumbs={[{ name: 'Aprendizaje', href: '/niveles/' }, { name: 'Modelo STHEAMI', href: '/modelo-stheami/' }]} theme="t-purple" pose="stheami" />
+
+  <section class="section letters" aria-label="Las siete letras de STHEAMI">
+    <div class="wrap">
+      <ul class="word">
+        {STHEAMI.map((s, i) => (
+          <li style={`--c:${s.color}; --i:${i}`} data-reveal="pop">
+            <span class="L">{s.k}</span>
+            <Sticker name={s.icon} size={44} tile={false} class="ic" />
+            <strong>{s.name}</strong>
+            <small>{s.text}</small>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <Stheami compact />
+
+  <section class="section bg-2" aria-labelledby="pil-title">
+    <div class="wrap">
+      <div class="section-head"><p class="kicker"><span class="dot"></span>Pilares</p><h2 id="pil-title">Cómo se vive <span class="hl">en el aula</span></h2></div>
+      <div class="grid cols-4">
+        {pillars.map(([t, d, ic, th], i) => <article class={`card ${th}`} data-reveal style={`--d:${i}`}><Sticker name={ic} size={56} /><h3>{t}</h3><p>{d}</p></article>)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="heu-title">
+    <div class="wrap">
+      <div class="section-head"><p class="kicker" style="color:var(--green-d)"><span class="dot"></span>Heutagogía</p><h2 id="heu-title">Aprender a <span class="hl">aprender</span></h2><p>La heutagogía es el aprendizaje autodeterminado: autonomía y autodidactismo, con responsabilidad y alegría.</p></div>
+      <div class="grid cols-3">
+        {roles.map((r, i) => (
+          <article class={`card role ${r.theme}`} data-reveal style={`--d:${i}`}>
+            <Sticker name={r.icon} size={56} />
+            <h3>{r.who}</h3>
+            <ul>{r.items.map((it) => <li><Icon name="check" size={18} />{it}</li>)}</ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <NextSteps items={['niveles', 'admisiones', 'cole']} />
+</Base>
+
+<style>
+  .letters { padding-block: clamp(2.5rem, 5vw, 4rem); }
+  .word { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.8rem; grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 640px) { .word { grid-template-columns: repeat(4, 1fr); } }
+  @media (min-width: 1100px) { .word { grid-template-columns: repeat(7, 1fr); } }
+  .word li { display: grid; gap: 0.3rem; align-content: start; padding: 1rem; border-radius: 20px; border: 2px solid var(--line); border-bottom: 5px solid var(--c); background: #fff; }
+  .L { width: 60px; height: 60px; border-radius: 18px; display: grid; place-items: center; background: var(--c); color: #fff; font-weight: 900; font-size: 2rem; box-shadow: 0 4px 0 color-mix(in oklab, var(--c) 75%, #000); animation: bob 3s ease-in-out infinite; animation-delay: calc(var(--i) * -0.4s); }
+  .word :global(.ic) { position: absolute; top: 0.9rem; right: 0.9rem; --c: var(--c); --cd: color-mix(in oklab, var(--c) 70%, #000); }
+  .word li { position: relative; }
+  .word strong { color: var(--navy); font-size: 1.05rem; margin-top: 0.4rem; }
+  .word small { color: var(--muted); font-weight: 600; font-size: 0.85rem; line-height: 1.4; }
+  h2 { font-size: var(--step-4); }
+  .card h3 { font-size: 1.15rem; margin: 0.9rem 0 0.3rem; }
+  .card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
+  .role ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+  .role li { display: flex; gap: 0.5rem; align-items: start; font-weight: 700; color: var(--ink-2); }
+  .role li :global(svg) { flex: none; color: var(--cd); margin-top: 3px; }
+</style>

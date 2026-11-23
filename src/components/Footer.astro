@@ -1,0 +1,110 @@
+---
+import { DOC, NAV, SITE } from '@/data/site';
+import Emblem from './brand/Emblem.astro';
+import Lunita from './brand/Lunita.astro';
+import Wave from './Wave.astro';
+import Icon from './Icon.astro';
+const year = new Date().getFullYear();
+---
+
+<section class="cta-band" aria-labelledby="cta-title">
+  <div class="wrap inner">
+    <Lunita size={170} pose="hola" class="cta-luni" />
+    <div class="txt">
+      <h2 id="cta-title">¿Listo para brillar con luz propia?</h2>
+      <p>Matrículas 2027 abiertas del 1 al 17 de diciembre. Te acompañamos en cada paso.</p>
+    </div>
+    <div class="acts">
+      <a class="btn navy" href="/admisiones/">Empezar admisión <Icon name="arrow" /></a>
+      <a class="btn outline" href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" /> Escríbenos</a>
+    </div>
+  </div>
+</section>
+
+<Wave from="var(--yellow)" to="var(--navy)" variant="moon" line="muisca" lineColor="var(--blue)" />
+<footer class="footer">
+  <div class="wrap">
+    <div class="cols">
+      <div class="about">
+        <a href="/" class="f-brand" aria-label="Inicio">
+          <Emblem size={60} decorative />
+          <span><b>Liceo Lunita</b><span>de Chía</span></span>
+        </a>
+        <p>“{SITE.slogan}”</p>
+        <div class="social">
+          <a href={SITE.social.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook"><Icon name="facebook" /></a>
+          <a href={SITE.social.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram"><Icon name="instagram" /></a>
+          <a href={SITE.social.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube"><Icon name="youtube" /></a>
+          <a href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener noreferrer" aria-label="WhatsApp"><Icon name="whatsapp" /></a>
+        </div>
+      </div>
+      {
+        NAV.filter((n) => n.children).map((n) => (
+          <nav aria-label={n.label}>
+            <h3>{n.label}</h3>
+            <ul>{n.children!.map((c) => <li><a href={c.href}>{c.label}</a></li>)}</ul>
+          </nav>
+        ))
+      }
+      <address>
+        <h3>Contacto</h3>
+        <ul>
+          <li><a href={`tel:${SITE.phone.replace(/\s/g, '')}`}><Icon name="phone" size={16} /> {SITE.phoneDisplay}</a></li>
+          <li><a href={`tel:${SITE.landline.replace(/\s/g, '')}`}><Icon name="phone" size={16} /> {SITE.landlineDisplay}</a></li>
+          <li><a href={`mailto:${SITE.email}`}><Icon name="mail" size={16} /> Escríbenos un correo</a></li>
+          <li><a href="/contacto/"><Icon name="pin" size={16} /> {SITE.address.locality}, {SITE.address.region}</a></li>
+        </ul>
+      </address>
+    </div>
+    <div class="legal">
+      <p>© {year} {SITE.name}. Todos los derechos reservados.</p>
+      <p class="tonight" data-tonight><svg viewBox="0 0 56 56" aria-hidden="true"><circle cx="28" cy="28" r="28" fill="rgb(255 255 255 / .15)" /><path data-moon-path fill="#ffc800" d="" /></svg><span>Esta noche sobre Chía, Ciudad de la Luna: <b data-moon-name>mira al cielo</b></span></p>
+      <p><a href="/mapa-del-sitio/">Mapa del sitio</a> · <a href={DOC('Política de tratamiento')} target="_blank" rel="noopener noreferrer">Tratamiento de datos</a> · <a href="/comunidad/#documentos">Documentos</a></p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .cta-band { background: var(--yellow); padding-block: clamp(2.5rem, 5vw, 3.5rem); overflow: hidden; }
+  .inner { display: grid; gap: 1.2rem; align-items: center; justify-items: center; text-align: center; }
+  @media (min-width: 900px) { .inner { grid-template-columns: auto 1fr auto; text-align: left; justify-items: start; gap: 2rem; } }
+  .cta-band h2 { font-size: var(--step-3); margin: 0 0 0.3rem; color: var(--navy); }
+  .cta-band p { margin: 0; color: var(--navy); font-weight: 700; opacity: 0.8; }
+  .acts { display: flex; flex-wrap: wrap; gap: 0.7rem; justify-content: center; }
+  :global(.cta-luni) { margin-block: -1rem -2rem; }
+
+  .footer { background: var(--navy); color: rgb(255 255 255 / 0.8); padding: clamp(3rem, 6vw, 4.5rem) 0 2rem; }
+  .cols { display: grid; gap: 2.2rem; grid-template-columns: 1fr 1fr; }
+  .about { grid-column: 1 / -1; }
+  @media (min-width: 1024px) { .cols { grid-template-columns: 1.6fr repeat(4, 1fr) 1.3fr; } .about { grid-column: auto; } }
+  .f-brand { display: inline-flex; align-items: center; gap: 0.7rem; text-decoration: none; margin-bottom: 0.8rem; }
+  .f-brand > span { display: flex; flex-direction: column; line-height: 1.05; }
+  .f-brand b { font-size: 1.4rem; font-weight: 900; color: #fff; }
+  .f-brand span span { color: var(--yellow); font-weight: 800; }
+  .about p { font-size: 0.92rem; max-width: 30ch; font-style: italic; }
+  .social { display: flex; gap: 0.5rem; }
+  .social a { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; background: rgb(255 255 255 / 0.08); color: #fff; transition: background 0.2s, color 0.2s, transform 0.2s var(--spring); }
+  .social a:hover { background: var(--yellow); color: var(--navy); transform: translateY(-3px); }
+  h3 { font-size: 0.8rem; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; color: var(--yellow); margin-bottom: 0.9rem; }
+  ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
+  address { font-style: normal; grid-column: 1 / -1; }
+  @media (min-width: 1024px) { address { grid-column: auto; } }
+  .cols a { color: rgb(255 255 255 / 0.8); text-decoration: none; font-size: 0.93rem; font-weight: 600; display: inline-flex; align-items: center; gap: 0.45rem; }
+  .cols a:hover { color: var(--yellow); }
+  .legal { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.5rem 2rem; margin-top: 2.5rem; padding-top: 1.4rem; border-top: 2px solid rgb(255 255 255 / 0.1); font-size: 0.85rem; }
+  .legal p { margin: 0; }
+  .tonight { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .tonight svg { width: 22px; height: 22px; }
+  .tonight b { color: var(--yellow); }
+  .legal a { color: rgb(255 255 255 / 0.8); }
+</style>
+
+<script>
+  import { moonPhase, moonPath } from '@/lib/moon';
+  const t = document.querySelector('[data-tonight]');
+  if (t) {
+    const m = moonPhase();
+    t.querySelector('[data-moon-path]')!.setAttribute('d', moonPath(m.fraction, 28));
+    t.querySelector('[data-moon-name]')!.textContent = `${m.name} ${m.emoji}`;
+  }
+</script>

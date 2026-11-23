@@ -1,0 +1,294 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000">
+  <defs>
+    <!-- Eye & Mouth clipping paths (Rive converts these directly to Clipping masks) -->
+    <clipPath id="eye-L-clip">
+      <path d="M 303,441
+               C 350,432 392,473 395,522
+               C 398,568 361,599 316,597
+               C 271,595 247,557 250,509
+               C 253,465 268,448 303,441 Z"/>
+    </clipPath>
+    <clipPath id="eye-R-clip">
+      <path d="M 480,398
+               C 512,394 541,430 544,475
+               C 547,514 526,534 497,532
+               C 466,530 448,498 448,458
+               C 448,421 459,401 480,398 Z"/>
+    </clipPath>
+    <clipPath id="mouth-clip">
+      <path d="M 389,583
+               C 387,573 399,572 415,570
+               C 440,566 464,557 481,547
+               C 492,541 499,549 500,566
+               C 502,609 481,648 448,648
+               C 414,648 391,615 389,583 Z"/>
+    </clipPath>
+
+    <!-- 1. Main warm lemon-gold base -->
+    <radialGradient id="moon-base-grad" cx="470" cy="365" r="535" fx="495" fy="320" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFE95C"/>
+      <stop offset="42%" stop-color="#FFD432"/>
+      <stop offset="70%" stop-color="#F2AA12"/>
+      <stop offset="90%" stop-color="#C97910"/>
+      <stop offset="100%" stop-color="#B0640E"/>
+    </radialGradient>
+
+    <!-- 2. Deep left-belly & bottom 3D volume shadow with soft rim bounce -->
+    <radialGradient id="moon-outer-volume" cx="555" cy="405" r="465" gradientUnits="userSpaceOnUse">
+      <stop offset="56%" stop-color="#B86B10" stop-opacity="0"/>
+      <stop offset="76%" stop-color="#C97A12" stop-opacity="0.34"/>
+      <stop offset="88%" stop-color="#B5660E" stop-opacity="0.72"/>
+      <stop offset="96%" stop-color="#A65A0D" stop-opacity="0.82"/>
+      <stop offset="100%" stop-color="#CE841C" stop-opacity="0.58"/>
+    </radialGradient>
+
+    <!-- 3. Bottom belly core shadow -->
+    <radialGradient id="moon-belly-shadow" cx="520" cy="895" r="340" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#A95D0D" stop-opacity="0.86"/>
+      <stop offset="45%" stop-color="#C67610" stop-opacity="0.52"/>
+      <stop offset="82%" stop-color="#E69B14" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#FFD432" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 4. Upper-inner crescent concavity shadow (right under top horn) -->
+    <radialGradient id="moon-top-concavity" cx="628" cy="215" r="225" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#C97208" stop-opacity="0.86"/>
+      <stop offset="44%" stop-color="#DF8D0E" stop-opacity="0.54"/>
+      <stop offset="78%" stop-color="#F5B21A" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#FFD432" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 5. Upper horn luminous crest highlight -->
+    <radialGradient id="moon-top-crest" cx="625" cy="105" r="220" fx="655" fy="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF58A" stop-opacity="0.98"/>
+      <stop offset="48%" stop-color="#FFE95E" stop-opacity="0.58"/>
+      <stop offset="82%" stop-color="#FFD73A" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#FFD432" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 6. Lower-right crescent luminous crest highlight -->
+    <radialGradient id="moon-lower-crest" cx="775" cy="600" r="215" fx="835" fy="565" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFF588" stop-opacity="0.95"/>
+      <stop offset="48%" stop-color="#FFEA60" stop-opacity="0.52"/>
+      <stop offset="82%" stop-color="#FFD93E" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#FFD432" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 7. Lower-right under-curve shadow -->
+    <radialGradient id="moon-lower-undershadow" cx="855" cy="760" r="245" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#B0620E" stop-opacity="0.86"/>
+      <stop offset="48%" stop-color="#CF7E12" stop-opacity="0.48"/>
+      <stop offset="82%" stop-color="#EB9F16" stop-opacity="0.10"/>
+      <stop offset="100%" stop-color="#FFD432" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- 8. Soft luminous highlight around face center -->
+    <radialGradient id="moon-face-light" cx="430" cy="455" r="215" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFEC6B" stop-opacity="0.55"/>
+      <stop offset="65%" stop-color="#FFDF48" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#FFD432" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Sclera 3D soft cream shading -->
+    <radialGradient id="sclera-L-grad" cx="326" cy="492" r="98" fx="332" fy="478" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="58%" stop-color="#FEF6E6"/>
+      <stop offset="100%" stop-color="#E9CEAC"/>
+    </radialGradient>
+    <radialGradient id="sclera-R-grad" cx="496" cy="448" r="82" fx="502" fy="436" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="58%" stop-color="#FEF6E6"/>
+      <stop offset="100%" stop-color="#EAD1B2"/>
+    </radialGradient>
+
+    <!-- Iris subtle espresso warmth -->
+    <radialGradient id="iris-L-grad" cx="370" cy="534" r="76" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#45271A"/>
+      <stop offset="45%" stop-color="#291712"/>
+      <stop offset="100%" stop-color="#1E110D"/>
+    </radialGradient>
+    <radialGradient id="iris-R-grad" cx="524" cy="488" r="66" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#45271A"/>
+      <stop offset="45%" stop-color="#291712"/>
+      <stop offset="100%" stop-color="#1E110D"/>
+    </radialGradient>
+
+    <!-- Mouth cavity & coral tongue -->
+    <linearGradient id="mouth-cavity-grad" x1="440" y1="546" x2="448" y2="625" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#260A08"/>
+      <stop offset="100%" stop-color="#4B1712"/>
+    </linearGradient>
+    <radialGradient id="tongue-grad" cx="452" cy="609" r="52" fx="450" fy="602" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#FD8B78"/>
+      <stop offset="52%" stop-color="#E75C4B"/>
+      <stop offset="100%" stop-color="#C63E31"/>
+    </radialGradient>
+  </defs>
+
+  <!-- ROOT NODE FOR RIVE -->
+  <g id="Lunita_Root">
+
+    <!-- 1. BODY GROUP (All fills share exact 12-anchor silhouette — zero seams, ready for Rive Mesh/Bones) -->
+    <g id="Body_Group">
+      <path id="Moon_Base"
+            d="M 565,83
+               C 638,81 726,100 730,129
+               C 733,149 690,159 648,181
+               C 574,218 521,284 520,356
+               C 519,446 575,542 666,580
+               C 738,610 806,594 861,549
+               C 883,531 899,534 900,556
+               C 902,606 862,695 802,761
+               C 722,848 614,884 505,882
+               C 305,879 144,715 144,495
+               C 144,268 330,87 565,83 Z"
+            fill="url(#moon-base-grad)"/>
+
+      <path id="Moon_Shade_FaceLight"
+            d="M 565,83 C 638,81 726,100 730,129 C 733,149 690,159 648,181 C 574,218 521,284 520,356 C 519,446 575,542 666,580 C 738,610 806,594 861,549 C 883,531 899,534 900,556 C 902,606 862,695 802,761 C 722,848 614,884 505,882 C 305,879 144,715 144,495 C 144,268 330,87 565,83 Z"
+            fill="url(#moon-face-light)"/>
+
+      <path id="Moon_Shade_TopConcavity"
+            d="M 565,83 C 638,81 726,100 730,129 C 733,149 690,159 648,181 C 574,218 521,284 520,356 C 519,446 575,542 666,580 C 738,610 806,594 861,549 C 883,531 899,534 900,556 C 902,606 862,695 802,761 C 722,848 614,884 505,882 C 305,879 144,715 144,495 C 144,268 330,87 565,83 Z"
+            fill="url(#moon-top-concavity)"/>
+
+      <path id="Moon_Shade_TopCrest"
+            d="M 565,83 C 638,81 726,100 730,129 C 733,149 690,159 648,181 C 574,218 521,284 520,356 C 519,446 575,542 666,580 C 738,610 806,594 861,549 C 883,531 899,534 900,556 C 902,606 862,695 802,761 C 722,848 614,884 505,882 C 305,879 144,715 144,495 C 144,268 330,87 565,83 Z"
+            fill="url(#moon-top-crest)"/>
+
+      <path id="Moon_Shade_LowerCrest"
+            d="M 565,83 C 638,81 726,100 730,129 C 733,149 690,159 648,181 C 574,218 521,284 520,356 C 519,446 575,542 666,580 C 738,610 806,594 861,549 C 883,531 899,534 900,556 C 902,606 862,695 802,761 C 722,848 614,884 505,882 C 305,879 144,715 144,495 C 144,268 330,87 565,83 Z"
+            fill="url(#moon-lower-crest)"/>
+
+      <path id="Moon_Shade_LowerShadow"
+            d="M 565,83 C 638,81 726,100 730,129 C 733,149 690,159 648,181 C 574,218 521,284 520,356 C 519,446 575,542 666,580 C 738,610 806,594 861,549 C 883,531 899,534 900,556 C 902,606 862,695 802,761 C 722,848 614,884 505,882 C 305,879 144,715 144,495 C 144,268 330,87 565,83 Z"
+            fill="url(#moon-lower-undershadow)"/>
+
+      <path id="Moon_Shade_BellyShadow"
+            d="M 565,83 C 638,81 726,100 730,129 C 733,149 690,159 648,181 C 574,218 521,284 520,356 C 519,446 575,542 666,580 C 738,610 806,594 861,549 C 883,531 899,534 900,556 C 902,606 862,695 802,761 C 722,848 614,884 505,882 C 305,879 144,715 144,495 C 144,268 330,87 565,83 Z"
+            fill="url(#moon-belly-shadow)"/>
+
+      <path id="Moon_Shade_OuterVolume"
+            d="M 565,83 C 638,81 726,100 730,129 C 733,149 690,159 648,181 C 574,218 521,284 520,356 C 519,446 575,542 666,580 C 738,610 806,594 861,549 C 883,531 899,534 900,556 C 902,606 862,695 802,761 C 722,848 614,884 505,882 C 305,879 144,715 144,495 C 144,268 330,87 565,83 Z"
+            fill="url(#moon-outer-volume)"/>
+    </g>
+
+    <!-- 2. FACE GROUP (Bind to Face_Control target in Rive for 2.5D head tracking!) -->
+    <g id="Face_Group">
+
+      <!-- Left Eyebrow -->
+      <g id="Eyebrow_L_Group">
+        <path id="Eyebrow_L"
+              d="M 248,421
+                 C 243,418 244,405 252,390
+                 C 264,370 288,356 309,356
+                 C 319,356 324,363 321,371
+                 C 318,378 308,380 295,387
+                 C 278,396 266,408 257,418
+                 C 254,422 250,423 248,421 Z"
+              fill="#311C15"/>
+      </g>
+
+      <!-- Right Eyebrow -->
+      <g id="Eyebrow_R_Group">
+        <path id="Eyebrow_R"
+              d="M 441,343
+                 C 438,337 443,326 456,325
+                 C 472,324 487,333 494,347
+                 C 498,355 495,361 489,359
+                 C 481,355 471,350 458,349
+                 C 448,349 443,347 441,343 Z"
+              fill="#361E16"/>
+      </g>
+
+      <!-- LEFT EYE -->
+      <g id="Eye_L_Group">
+        <path id="Eye_L_Sclera"
+              d="M 303,441
+                 C 350,432 392,473 395,522
+                 C 398,568 361,599 316,597
+                 C 271,595 247,557 250,509
+                 C 253,465 268,448 303,441 Z"
+              fill="url(#sclera-L-grad)"/>
+
+        <!-- Clipped Eye L contents: Pupil (for gaze tracking) + Blink Eyelid (parked above eye) -->
+        <g id="Eye_L_Clip_Contents" clip-path="url(#eye-L-clip)">
+          <g id="Eye_L_Pupil_Group">
+            <ellipse id="Eye_L_Iris" cx="356" cy="508" rx="41" ry="60" transform="rotate(-17 356 508)" fill="url(#iris-L-grad)"/>
+            <ellipse id="Eye_L_Catchlight" cx="340" cy="480" rx="13.2" ry="16.8" transform="rotate(-14 340 480)" fill="#FFFFFF"/>
+          </g>
+          <!-- Ready-to-animate Blink Lid: in Rive, slide Y +175px to close eye cleanly! -->
+          <g id="Eye_L_Blink_Lid" transform="translate(0, -180)">
+            <rect x="235" y="425" width="180" height="175" fill="#FFD639"/>
+            <path d="M 240,596 Q 324,612 408,588" fill="none" stroke="#311C15" stroke-width="10" stroke-linecap="round"/>
+          </g>
+        </g>
+
+        <!-- Upper-left dark eyelid rim -->
+        <path id="Eye_L_Eyelid_Rim"
+              d="M 251,532
+                 C 243,493 255,451 287,438
+                 C 316,426 350,437 372,459
+                 C 350,444 320,439 294,448
+                 C 265,459 253,495 255,532 Z"
+              fill="#311C15"/>
+      </g>
+
+      <!-- RIGHT EYE -->
+      <g id="Eye_R_Group">
+        <path id="Eye_R_Sclera"
+              d="M 480,398
+                 C 512,394 541,430 544,475
+                 C 547,514 526,534 497,532
+                 C 466,530 448,498 448,458
+                 C 448,421 459,401 480,398 Z"
+              fill="url(#sclera-R-grad)"/>
+
+        <!-- Clipped Eye R contents: Pupil (for gaze tracking) + Blink Eyelid (parked above eye) -->
+        <g id="Eye_R_Clip_Contents" clip-path="url(#eye-R-clip)">
+          <g id="Eye_R_Pupil_Group">
+            <ellipse id="Eye_R_Iris" cx="514" cy="464" rx="35.5" ry="58" transform="rotate(-17 514 464)" fill="url(#iris-R-grad)"/>
+            <ellipse id="Eye_R_Catchlight" cx="498" cy="436" rx="11.2" ry="15.8" transform="rotate(-14 498 436)" fill="#FFFFFF"/>
+          </g>
+          <!-- Ready-to-animate Blink Lid: in Rive, slide Y +155px to close eye cleanly! -->
+          <g id="Eye_R_Blink_Lid" transform="translate(0, -160)">
+            <rect x="435" y="385" width="130" height="155" fill="#FFD639"/>
+            <path d="M 440,536 Q 496,550 554,528" fill="none" stroke="#311C15" stroke-width="9" stroke-linecap="round"/>
+          </g>
+        </g>
+
+        <!-- Upper-left dark eyelid rim -->
+        <path id="Eye_R_Eyelid_Rim"
+              d="M 449,474
+                 C 444,436 454,400 476,393
+                 C 496,387 519,401 531,422
+                 C 516,407 497,399 480,404
+                 C 460,409 451,440 452,474 Z"
+              fill="#311C15"/>
+      </g>
+
+      <!-- MOUTH GROUP -->
+      <g id="Mouth_Group">
+        <path id="Mouth_Cavity"
+              d="M 389,583
+                 C 387,573 399,572 415,570
+                 C 440,566 464,557 481,547
+                 C 492,541 499,549 500,566
+                 C 502,609 481,648 448,648
+                 C 414,648 391,615 389,583 Z"
+              fill="url(#mouth-cavity-grad)"/>
+
+        <g id="Mouth_Tongue_Clip" clip-path="url(#mouth-clip)">
+          <path id="Mouth_Tongue"
+                d="M 405,634
+                   C 409,605 433,592 459,593
+                   C 482,594 496,605 496,626
+                   C 496,645 473,654 447,653
+                   C 424,652 403,646 405,634 Z"
+                fill="url(#tongue-grad)"/>
+        </g>
+      </g>
+
+    </g>
+  </g>
+</svg>

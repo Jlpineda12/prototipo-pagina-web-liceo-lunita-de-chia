@@ -1,0 +1,87 @@
+---
+import Sticker from '@/components/Sticker.astro';
+import { Image } from 'astro:assets';
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+import NextSteps from '@/components/NextSteps.astro';
+import convenio from '@/assets/site/convenio-florida.jpeg';
+
+const levels = [
+  {
+    id: 'preescolar', name: 'Preescolar', theme: 't-orange', grades: ['Jardín', 'Transición'], icon: 'sparkle',
+    text: 'Los primeros pasos se dan jugando. Exploración, lenguaje, arte, música y movimiento en un ambiente lúdico, seguro y lleno de afecto.',
+    focus: ['Desarrollo socioemocional', 'Lenguaje y pre-lectura', 'Arte, música y movimiento', 'Exploración del entorno'],
+  },
+  {
+    id: 'primaria', name: 'Primaria', theme: 't-green', grades: ['Primero', 'Segundo', 'Tercero', 'Cuarto', 'Quinto'], icon: 'book',
+    text: 'Proyectos STHEAMI que despiertan la curiosidad: lectura, ciencia, matemáticas, tecnología y banda marcial para crecer con autonomía.',
+    focus: ['Lectura y escritura', 'Pensamiento matemático', 'Ciencia y robótica', 'Valores y convivencia'],
+  },
+  {
+    id: 'bachillerato', name: 'Bachillerato', theme: 't-sky', grades: ['Sexto', 'Séptimo', 'Octavo', 'Noveno', 'Décimo', 'Once'], icon: 'rocket',
+    text: 'Rigor académico y proyecto de vida: PREICFES, tecnología, educación aeroespacial, convenio de bachillerato internacional y viajes pedagógicos en grado once.',
+    focus: ['Preparación Pruebas Saber 11', 'Bachillerato internacional', 'Proyectos de investigación', 'Viajes pedagógicos'],
+  },
+];
+---
+
+<Base
+  title="Niveles: preescolar, primaria y bachillerato en Chía"
+  description="Preescolar (Jardín y Transición), primaria (1.° a 5.°) y bachillerato (6.° a 11.°) en el Liceo Lunita de Chía, con modelo STHEAMI y convenio de bachillerato internacional."
+  breadcrumbs={[{ name: 'Aprendizaje', href: '/niveles/' }]}
+>
+  <PageHero kicker="Aprendizaje" title='Un camino del <span class="hl">preescolar al grado once</span>' lead="Cada etapa tiene su color, su ritmo y sus retos. Elige un nivel para conocerlo." crumbs={[{ name: 'Aprendizaje', href: '/niveles/' }]} theme="t-green" pose="estudio">
+    <div class="jump">{levels.map((l) => <a class={`btn sm ${l.theme === 't-sky' ? 'sky' : l.theme === 't-green' ? 'green' : ''}`} href={`#${l.id}`}>{l.name}</a>)}</div>
+  </PageHero>
+
+  {levels.map((l, i) => (
+    <section class:list={['section level', l.theme, { 'bg-2': i % 2 }]} id={l.id} aria-labelledby={`h-${l.id}`}>
+      <div class="wrap two">
+        <div>
+          <Sticker name={l.icon} size={72} />
+          <h2 id={`h-${l.id}`}>{l.name}</h2>
+          <p class="lead">{l.text}</p>
+          <ul class="grades" aria-label={`Grados de ${l.name}`}>{l.grades.map((g) => <li>{g}</li>)}</ul>
+        </div>
+        <div class="card focus">
+          <h3>Enfoque del nivel</h3>
+          <ul>{l.focus.map((f) => <li><span class="tick"><Icon name="check" size={16} /></span>{f}</li>)}</ul>
+          <a class="btn sm" href="/admisiones/">Quiero inscribirme <Icon name="arrow" /></a>
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <section class="section" id="convenio" aria-labelledby="h-conv">
+    <div class="wrap two">
+      <figure class="card pic"><Image src={convenio} alt="Convenio de bachillerato internacional con Florida Global University" widths={[480, 800]} sizes="(min-width: 960px) 45vw, 100vw" format="webp" quality={72} /></figure>
+      <div>
+        <p class="kicker"><span class="dot"></span>Convenio internacional</p>
+        <h2 id="h-conv">Bachillerato internacional con <span class="hl">Florida Global University</span></h2>
+        <p class="lead">Un convenio que abre a nuestros estudiantes la posibilidad de una formación con proyección internacional, complementada con intercambios culturales y viajes pedagógicos.</p>
+        <a class="btn outline" href="/contacto/">Solicitar información <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  <NextSteps items={['admisiones', 'stheami', 'faq']} />
+</Base>
+
+<style>
+  .jump { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.4rem; }
+  .two { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 960px) { .two { grid-template-columns: 1.1fr 0.9fr; gap: 4rem; } }
+  h2 { font-size: var(--step-4); margin-top: 1rem; }
+  .lead { color: var(--ink-2); font-size: 1.1rem; }
+  .big-b { width: 72px; height: 72px; border-radius: 22px; background: var(--c); color: #fff; box-shadow: 0 5px 0 var(--cd); }
+  .grades { list-style: none; padding: 0; margin: 1.2rem 0 0; display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .grades li { padding: 0.45rem 0.9rem; border-radius: 12px; background: var(--l); color: var(--cd); font-weight: 900; border: 2px solid var(--c); }
+  .focus { border-color: var(--c); }
+  .focus h3 { font-size: var(--step-1); }
+  .focus ul { list-style: none; margin: 0 0 1.4rem; padding: 0; display: grid; gap: 0.6rem; }
+  .focus li { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; }
+  .tick { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: var(--c); color: #fff; flex: none; }
+  .pic { margin: 0; padding: 0; overflow: hidden; }
+  .pic :global(img) { width: 100%; }
+</style>

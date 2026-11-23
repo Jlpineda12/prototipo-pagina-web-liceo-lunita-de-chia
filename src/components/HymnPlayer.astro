@@ -1,0 +1,60 @@
+---
+/** Reproductor de audio con identidad Lunita: botón luna con anillo de progreso. No descarga nada hasta presionar Play. */
+interface Props { src: string; title: string }
+const { src, title } = Astro.props;
+---
+
+<div class="player" data-player>
+  <audio src={src} preload="none" data-audio></audio>
+  <button type="button" class="play" data-play aria-label={`Reproducir ${title}`}>
+    <svg class="ring" viewBox="0 0 100 100" aria-hidden="true">
+      <circle cx="50" cy="50" r="45" fill="none" stroke="rgb(255 255 255 / .2)" stroke-width="7" />
+      <circle cx="50" cy="50" r="45" fill="none" stroke="#ffc800" stroke-width="7" stroke-linecap="round" pathLength="100" stroke-dasharray="100" stroke-dashoffset="100" data-ring />
+    </svg>
+    <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path class="i-play" d="M8 5.5v13l11-6.5z" fill="currentColor" /><g class="i-pause" fill="currentColor"><rect x="6.5" y="5" width="4" height="14" rx="1.5" /><rect x="13.5" y="5" width="4" height="14" rx="1.5" /></g></svg>
+  </button>
+  <div class="meta">
+    <strong>Escuchar el himno</strong>
+    <input type="range" min="0" max="100" value="0" step="0.1" aria-label="Posición de la canción" data-seek />
+    <span class="time"><span data-cur>0:00</span> / <span data-dur>4:46</span></span>
+  </div>
+</div>
+
+<style>
+  .player { display: flex; align-items: center; gap: 1.1rem; margin-top: 1.6rem; padding: 0.9rem 1.2rem 0.9rem 0.9rem; border-radius: 999px; background: rgb(255 255 255 / 0.08); border: 2px solid rgb(255 255 255 / 0.15); max-width: 460px; }
+  .play { position: relative; flex: none; width: 76px; height: 76px; border-radius: 50%; border: 0; background: var(--yellow); color: var(--navy); box-shadow: 0 5px 0 var(--yellow-d); display: grid; place-items: center; transition: transform 0.1s; }
+  .play:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--yellow-d); }
+  .ring { position: absolute; inset: -9px; width: calc(100% + 18px); height: calc(100% + 18px); transform: rotate(-90deg); }
+  .ico { width: 30px; height: 30px; }
+  .i-pause { display: none; }
+  .is-playing .i-play { display: none; }
+  .is-playing .i-pause { display: block; }
+  .is-playing .play { animation: hymn-pulse 1.6s ease-in-out infinite; }
+  @keyframes hymn-pulse { 50% { box-shadow: 0 5px 0 var(--yellow-d), 0 0 0 10px rgb(255 200 0 / 0.18); } }
+  .meta { flex: 1; display: grid; gap: 0.35rem; min-width: 0; }
+  .meta strong { color: #fff; font-size: 0.95rem; }
+  .time { font-size: 0.8rem; color: rgb(255 255 255 / 0.7); font-variant-numeric: tabular-nums; }
+  input[type='range'] { width: 100%; accent-color: var(--yellow); height: 6px; cursor: pointer; }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-player]').forEach((p) => {
+    const a = p.querySelector<HTMLAudioElement>('[data-audio]')!;
+    const btn = p.querySelector<HTMLButtonElement>('[data-play]')!;
+    const ring = p.querySelector<SVGCircleElement>('[data-ring]')!;
+    const seek = p.querySelector<HTMLInputElement>('[data-seek]')!;
+    const cur = p.querySelector('[data-cur]')!, dur = p.querySelector('[data-dur]')!;
+    const fmt = (t: number) => `${Math.floor(t / 60)}:${String(Math.floor(t % 60)).padStart(2, '0')}`;
+    btn.addEventListener('click', () => (a.paused ? a.play() : a.pause()));
+    a.addEventListener('play', () => { p.classList.add('is-playing'); btn.setAttribute('aria-label', 'Pausar el himno'); });
+    a.addEventListener('pause', () => { p.classList.remove('is-playing'); btn.setAttribute('aria-label', 'Reproducir el himno'); });
+    a.addEventListener('loadedmetadata', () => (dur.textContent = fmt(a.duration)));
+    a.addEventListener('timeupdate', () => {
+      const pct = a.duration ? (a.currentTime / a.duration) * 100 : 0;
+      ring.style.strokeDashoffset = String(100 - pct);
+      seek.value = String(pct);
+      cur.textContent = fmt(a.currentTime);
+    });
+    seek.addEventListener('input', () => { if (a.duration) a.currentTime = (Number(seek.value) / 100) * a.duration; });
+  });
+</script>

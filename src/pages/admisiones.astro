@@ -1,0 +1,393 @@
+---
+import Base from '@/layouts/Base.astro';
+import Emblem from '@/components/brand/Emblem.astro';
+import Lunita from '@/components/brand/Lunita.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+import NextSteps from '@/components/NextSteps.astro';
+import { ADMISSION_DOCS, ADMISSION_STEPS, FAQ, LEVELS, SITE } from '@/data/site';
+
+const themes = ['t-yellow', 't-sky', 't-green', 't-purple'];
+const faqs = FAQ.filter((f) => f.cat === 'Admisiones');
+
+// Agrupación visual de los documentos oficiales para facilitar la organización de la carpeta familiar
+const DOC_GROUPS = [
+  { id: 'identidad', title: 'Identidad y familia', tag: 'Básicos', indices: [0, 1] },
+  { id: 'academico', title: 'Historial académico', tag: 'Desde primaria', indices: [2, 3] },
+  { id: 'salud', title: 'Salud y presentación', tag: 'Bienestar', indices: [4, 5, 6, 7] },
+];
+---
+
+<Base
+  title="Admisiones y matrículas 2027"
+  description="Matrículas 2027 en el Liceo Lunita de Chía: proceso de admisión en 4 pasos, lista de documentos y matrícula en línea por SIGA del 1 al 17 de diciembre de 2026."
+  breadcrumbs={[{ name: 'Admisiones', href: '/admisiones/' }]}
+  schema={{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }}
+>
+  <PageHero kicker="Matrículas 2027" title='¡Únete a la <span class="hl">familia Lunita</span>!' lead="Matrículas del 1 al 17 de diciembre de 2026. Te guiamos en 4 pasos sencillos." crumbs={[{ name: 'Admisiones', href: '/admisiones/' }]} theme="t-yellow" pose="admisiones">
+    <div class="hero-ctas">
+      <a class="btn" href={SITE.platforms.matricula} target="_blank" rel="noopener noreferrer">Ir a matrícula en línea <Icon name="arrow-up-right" /></a>
+      <a class="btn outline" href={`https://wa.me/${SITE.whatsapp}?text=${encodeURIComponent('Hola, quiero información sobre matrículas 2027 en el Liceo Lunita de Chía.')}`} target="_blank" rel="noopener noreferrer"><Icon name="whatsapp" /> Pedir información</a>
+    </div>
+  </PageHero>
+
+  <section class="section" aria-labelledby="steps-title">
+    <div class="wrap">
+      <div class="section-head"><p class="kicker"><span class="dot"></span>Tu ruta de admisión</p><h2 id="steps-title">4 pasos y <span class="hl">listo</span></h2></div>
+      <ol class="path">
+        {ADMISSION_STEPS.map((s, i) => (
+          <li class={themes[i]} data-reveal style={`--d:${i}`}>
+            <span class="node"><Icon name={s.icon} size={30} /><b>{i + 1}</b></span>
+            <div class="card"><h3>{s.title}</h3><p>{s.text}</p></div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- Carpeta de Matrícula 2027 — Diseño propio Liceo Lunita de Chía -->
+  <section class="section bg-2" aria-labelledby="docs-title">
+    <div class="wrap two">
+      <div class="docs-intro">
+        <p class="kicker" style="color:var(--blue)"><span class="dot"></span>Bitácora de admisión</p>
+        <h2 id="docs-title">Tu carpeta <span class="hl">de matrícula</span></h2>
+        <p class="muted">Prepara cada documento y enciende todas las estrellas de tu constelación. Guardamos tu avance automáticamente en este dispositivo para que no pierdas el hilo.</p>
+        <div class="docs-tip">
+          <Emblem size={38} decorative />
+          <p><strong>Consejo de secretaría:</strong> Ten los documentos en PDF o foto nítida antes de iniciar el registro en línea en SIGA.</p>
+        </div>
+        <a class="btn" href={SITE.platforms.matricula} target="_blank" rel="noopener noreferrer">Ver requisitos y costos en SIGA <Icon name="arrow-up-right" /></a>
+      </div>
+
+      <div class="folder" data-checklist data-wa={SITE.whatsapp}>
+        <!-- Pestaña superior de carpeta institucional -->
+        <div class="folder-tab" aria-hidden="true">
+          <span>EXPEDIENTE · 2027</span>
+          <span class="folder-dots"><i></i><i></i><i></i></span>
+        </div>
+
+        <div class="folder-body">
+          <!-- Cabecera con Constelación de 8 estrellas -->
+          <div class="folder-head">
+            <div class="folder-title">
+              <Emblem size={34} decorative />
+              <div>
+                <h3>Documentos requeridos</h3>
+                <p data-status>Faltan {ADMISSION_DOCS.length} por reunir</p>
+              </div>
+            </div>
+            <span class="badge-count" data-doc-count aria-live="polite">0 / {ADMISSION_DOCS.length}</span>
+          </div>
+
+          <div class="constellation" role="progressbar" aria-label="Progreso de documentos reunidos" aria-valuemin="0" aria-valuemax={ADMISSION_DOCS.length} aria-valuenow="0" data-progressbar>
+            <div class="const-track" aria-hidden="true"><i data-bar></i></div>
+            <div class="const-stars" aria-hidden="true">
+              {ADMISSION_DOCS.map((_, idx) => (
+                <span class="c-star" data-star={idx}>
+                  <svg viewBox="0 0 24 24" width="18" height="18"><path d="M12 2l2.9 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l7.1-1.01L12 2z" /></svg>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          <!-- Lista agrupada por categorías -->
+          <div class="doc-groups">
+            {DOC_GROUPS.map((g) => (
+              <fieldset class="doc-group">
+                <legend>
+                  <span class="g-name">{g.title}</span>
+                  <span class="g-tag">{g.tag}</span>
+                </legend>
+                <ul>
+                  {g.indices.map((i) => (
+                    <li>
+                      <label class="doc-row">
+                        <input type="checkbox" data-doc={i} data-label={ADMISSION_DOCS[i]} />
+                        <span class="seal" aria-hidden="true">
+                          <svg viewBox="0 0 24 24" width="15" height="15"><path d="M20 6L9 17l-5-5" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                        </span>
+                        <span class="doc-text">{ADMISSION_DOCS[i]}</span>
+                      </label>
+                    </li>
+                  ))}
+                </ul>
+              </fieldset>
+            ))}
+          </div>
+
+          <!-- Acciones útiles para familias -->
+          <div class="folder-actions">
+            <a class="wa-pending" href={`https://wa.me/${SITE.whatsapp}`} target="_blank" rel="noopener noreferrer" data-wa-link>
+              <Icon name="whatsapp" size={18} /> <span data-wa-text>Consultar dudas por WhatsApp</span>
+            </a>
+            <button type="button" class="reset-btn" data-reset>Reiniciar</button>
+          </div>
+
+          <!-- Estado completado -->
+          <div class="done" data-done hidden>
+            <Lunita size={94} pose="celebra" track={false} />
+            <div>
+              <strong>¡Constelación completa!</strong>
+              <p>Tienes tu carpeta lista para finalizar la matrícula 2027 en SIGA.</p>
+              <a class="done-cta" href={SITE.platforms.matricula} target="_blank" rel="noopener noreferrer">Ir ahora a SIGA <Icon name="arrow-up-right" size={16} /></a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" aria-labelledby="lv-title">
+    <div class="wrap">
+      <div class="section-head"><p class="kicker"><span class="dot"></span>¿A qué grado ingresa?</p><h2 id="lv-title">Elige el <span class="hl">nivel</span></h2></div>
+      <div class="grid cols-3">
+        {LEVELS.map((l) => (
+          <a class={`card lv t-${l.theme}`} href={`/niveles/#${l.id}`}><span class="chip">{l.grades}</span><h3>{l.name}</h3><p>{l.text}</p><span class="link">Ver detalles <Icon name="arrow" /></span></a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section bg-cloud" aria-labelledby="faq-title">
+    <div class="wrap narrow">
+      <div class="section-head center"><h2 id="faq-title">Preguntas sobre <span class="hl">admisiones</span></h2></div>
+      <div class="faq">
+        {faqs.map((f) => <details class="card"><summary>{f.q}<Icon name="chevron" size={20} class="chev" /></summary><p>{f.a}</p></details>)}
+      </div>
+      <p class="center more"><a class="link" href="/preguntas-frecuentes/">Ver todas las preguntas <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <NextSteps items={['niveles', 'stheami', 'contacto']} />
+</Base>
+
+<style>
+  .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.6rem; }
+  h2 { font-size: var(--step-4); }
+  .muted { color: var(--muted); }
+  .path { list-style: none; margin: 0; padding: 0; display: grid; gap: 1.2rem; counter-reset: s; }
+  @media (min-width: 900px) { .path { grid-template-columns: repeat(4, 1fr); } }
+  .path li { position: relative; display: grid; gap: 1rem; justify-items: center; text-align: center; }
+  @media (min-width: 900px) { .path li:not(:last-child)::after { content: ''; position: absolute; top: 44px; left: calc(50% + 52px); right: calc(-50% + 52px); height: 6px; border-radius: 6px; background: repeating-linear-gradient(90deg, var(--line-2) 0 12px, transparent 12px 20px); } }
+  .node { position: relative; width: 88px; height: 88px; border-radius: 50%; display: grid; place-items: center; background: var(--c); color: #fff; box-shadow: 0 6px 0 var(--cd); animation: bob 3.5s ease-in-out infinite; }
+  .path li:nth-child(2) .node { animation-delay: -0.8s; } .path li:nth-child(3) .node { animation-delay: -1.6s; } .path li:nth-child(4) .node { animation-delay: -2.4s; }
+  .node b { position: absolute; top: -6px; right: -6px; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: #fff; color: var(--navy); border: 3px solid var(--c); font-size: 0.95rem; }
+  .path .card { width: 100%; height: 100%; }
+  .path h3 { font-size: 1.15rem; margin-bottom: 0.3rem; }
+  .path p { margin: 0; color: var(--muted); font-size: 0.93rem; }
+
+  .two { display: grid; gap: 2.5rem; align-items: start; }
+  @media (min-width: 960px) { .two { grid-template-columns: 0.9fr 1.25fr; gap: 3.5rem; } }
+  .docs-intro { display: grid; gap: 0.9rem; justify-items: start; }
+  .docs-intro h2, .docs-intro p { margin: 0; }
+  .docs-tip {
+    display: flex; align-items: center; gap: 0.85rem; padding: 0.95rem 1.1rem;
+    border-radius: 18px; background: #fff; border: 2px solid #e2e5f8; border-left: 5px solid var(--blue);
+    font-size: 0.92rem; color: var(--ink-2);
+  }
+  .docs-tip p { margin: 0; }
+
+  /* Carpeta de Matrícula 2027 (identidad propia azul noche + dorado + crema papel) */
+  .folder { position: relative; }
+  .folder-tab {
+    display: inline-flex; align-items: center; gap: 0.7rem;
+    padding: 0.45rem 1.15rem 0.55rem; margin-left: 1.2rem;
+    border-radius: 16px 16px 0 0; background: var(--navy); color: #FECA0D;
+    font-size: 0.74rem; font-weight: 900; letter-spacing: 0.1em;
+  }
+  .folder-dots { display: inline-flex; gap: 4px; }
+  .folder-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgb(254 202 13 / 0.45); display: block; }
+  .folder-dots i:first-child { background: #FECA0D; }
+
+  .folder-body {
+    background: #FFFDF7;
+    border: 2.5px solid var(--navy);
+    border-bottom-width: 6px;
+    border-radius: 24px;
+    padding: clamp(1.1rem, 2.5vw, 1.6rem);
+    box-shadow: 0 22px 44px -28px rgb(15 23 71 / 0.35);
+    display: grid; gap: 1.15rem;
+  }
+  .folder-head {
+    display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+    padding-bottom: 0.9rem; border-bottom: 2px dashed #e5dec9;
+  }
+  .folder-title { display: flex; align-items: center; gap: 0.75rem; }
+  .folder-title h3 { margin: 0; font-size: 1.15rem; color: var(--navy); }
+  .folder-title p { margin: 0.1rem 0 0; font-size: 0.85rem; font-weight: 700; color: var(--muted); }
+  .badge-count {
+    flex: none; padding: 0.35rem 0.85rem; border-radius: 999px;
+    background: var(--navy); color: #FECA0D; font-weight: 900; font-size: 0.88rem; font-variant-numeric: tabular-nums;
+  }
+
+  /* Constelación lunar de progreso */
+  .constellation { position: relative; padding: 0.35rem 0.25rem; }
+  .const-track {
+    position: absolute; left: 14px; right: 14px; top: 50%; height: 4px; transform: translateY(-50%);
+    background: #e6e3f5; border-radius: 99px; overflow: hidden;
+  }
+  .const-track i {
+    display: block; height: 100%; width: 0%;
+    background: linear-gradient(90deg, #313293, #FECA0D);
+    transition: width 0.45s cubic-bezier(.34, 1.56, .64, 1);
+  }
+  .const-stars { position: relative; display: flex; justify-content: space-between; align-items: center; }
+  .c-star {
+    width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center;
+    background: #fff; border: 2px solid #d7daf0; color: #c7cbe6;
+    transition: transform 0.3s cubic-bezier(.34, 1.56, .64, 1), background 0.25s, border-color 0.25s, color 0.25s;
+  }
+  .c-star svg { fill: currentColor; }
+  .c-star.is-lit {
+    background: var(--navy); border-color: #FECA0D; color: #FECA0D;
+    transform: scale(1.14); box-shadow: 0 0 0 4px rgb(254 202 13 / 0.22);
+  }
+
+  /* Grupos de documentos */
+  .doc-groups { display: grid; gap: 1rem; }
+  .doc-group { border: 0; margin: 0; padding: 0; }
+  .doc-group legend {
+    width: 100%; display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 0.45rem; padding: 0;
+  }
+  .g-name { font-size: 0.78rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.08em; color: var(--blue); }
+  .g-tag { font-size: 0.72rem; font-weight: 800; color: var(--muted); background: #f2f0ff; padding: 0.12rem 0.55rem; border-radius: 999px; }
+  .doc-group ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.42rem; }
+
+  .doc-row {
+    position: relative; display: flex; align-items: center; gap: 0.78rem;
+    padding: 0.68rem 0.85rem; border-radius: 14px;
+    background: #fff; border: 2px solid #e8e5d8; cursor: pointer;
+    font-weight: 700; font-size: 0.94rem; color: var(--navy);
+    transition: border-color 0.18s, background 0.18s, transform 0.15s;
+  }
+  .doc-row:hover { border-color: #b9bee8; background: #fafbff; }
+  .doc-row input { position: absolute; opacity: 0; pointer-events: none; }
+  .seal {
+    width: 26px; height: 26px; flex: none; border-radius: 50%;
+    border: 2.5px solid #c9cde8; background: #fff; color: transparent;
+    display: grid; place-items: center;
+    transition: all 0.22s cubic-bezier(.34, 1.56, .64, 1);
+  }
+  .doc-row input:checked + .seal {
+    background: var(--navy); border-color: #FECA0D; color: #FECA0D; transform: scale(1.1);
+  }
+  .doc-row:has(input:checked) {
+    background: #f5f6ff; border-color: #313293;
+  }
+  .doc-row:has(input:checked) .doc-text {
+    color: var(--muted); text-decoration: line-through; text-decoration-color: rgb(49 50 147 / 0.45);
+  }
+  .doc-row input:focus-visible + .seal { outline: 3px solid var(--sky); outline-offset: 2px; }
+
+  .folder-actions {
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.7rem;
+    padding-top: 0.6rem; border-top: 2px dashed #e5dec9;
+  }
+  .wa-pending {
+    display: inline-flex; align-items: center; gap: 0.45rem;
+    font-size: 0.86rem; font-weight: 800; color: var(--blue); text-decoration: none;
+    padding: 0.4rem 0.75rem; border-radius: 12px; background: #eef0ff;
+    transition: background 0.15s;
+  }
+  .wa-pending:hover { background: #dfe3ff; }
+  .reset-btn {
+    border: 0; background: transparent; color: var(--muted); font-weight: 800; font-size: 0.82rem;
+    cursor: pointer; padding: 0.4rem 0.6rem; border-radius: 10px;
+  }
+  .reset-btn:hover { background: #f2efe4; color: var(--navy); }
+  .reset-btn:focus-visible, .wa-pending:focus-visible, .done-cta:focus-visible { outline: 3px solid var(--sky); outline-offset: 2px; }
+
+  .done[hidden] { display: none; }
+  .done {
+    display: flex; align-items: center; gap: 0.9rem; padding: 0.9rem 1.1rem;
+    border-radius: 18px; background: linear-gradient(135deg, #0f1747, #313293); color: #fff;
+    border: 2.5px solid #FECA0D;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .done { animation: pop-in 0.4s var(--spring); }
+  }
+  .done strong { display: block; color: #FECA0D; font-size: 1.05rem; }
+  .done p { margin: 0.15rem 0 0.5rem; font-size: 0.88rem; color: rgb(255 255 255 / 0.88); }
+  .done-cta {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    padding: 0.4rem 0.85rem; border-radius: 999px; background: #FECA0D; color: var(--navy);
+    font-weight: 900; font-size: 0.82rem; text-decoration: none;
+  }
+
+  .lv { display: flex; flex-direction: column; gap: 0.5rem; }
+  .lv:hover { border-color: var(--c); }
+  .lv .chip { align-self: flex-start; --c: var(--cd); }
+  .lv h3 { font-size: var(--step-2); margin: 0; }
+  .lv p { color: var(--muted); margin: 0; flex: 1; }
+  .lv .link { color: var(--cd); }
+  .narrow { max-width: 820px; }
+  .faq { display: grid; gap: 0.7rem; }
+  .faq details { padding: 0; }
+  .faq summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.2rem; font-weight: 800; color: var(--navy); }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq :global(.chev) { flex: none; color: var(--sky-d); transition: transform 0.25s; }
+  .faq details[open] { border-color: var(--sky); }
+  .faq details[open] :global(.chev) { transform: rotate(180deg); }
+  .faq p { margin: 0; padding: 0 1.2rem 1.2rem; color: var(--ink-2); }
+  .center { text-align: center; }
+  .more { margin-top: 1.5rem; }
+</style>
+
+<script>
+  const box = document.querySelector<HTMLElement>('[data-checklist]');
+  if (box) {
+    const inputs = [...box.querySelectorAll<HTMLInputElement>('[data-doc]')];
+    const stars = [...box.querySelectorAll<HTMLElement>('[data-star]')];
+    const bar = box.querySelector<HTMLElement>('[data-bar]')!;
+    const progressEl = box.querySelector<HTMLElement>('[data-progressbar]')!;
+    const countEl = box.querySelector<HTMLElement>('[data-doc-count]')!;
+    const statusEl = box.querySelector<HTMLElement>('[data-status]')!;
+    const doneEl = box.querySelector<HTMLElement>('[data-done]')!;
+    const waLink = box.querySelector<HTMLAnchorElement>('[data-wa-link]')!;
+    const waText = box.querySelector<HTMLElement>('[data-wa-text]')!;
+    const resetBtn = box.querySelector<HTMLButtonElement>('[data-reset]')!;
+    const waPhone = box.dataset.wa || '';
+    const KEY = 'lunita-docs-2027';
+
+    const update = () => {
+      const checked = inputs.filter((i) => i.checked);
+      const missing = inputs.filter((i) => !i.checked);
+      const n = checked.length;
+      const total = inputs.length;
+
+      bar.style.width = `${(n / total) * 100}%`;
+      progressEl.setAttribute('aria-valuenow', String(n));
+      countEl.textContent = `${n} / ${total}`;
+      statusEl.textContent = n === total
+        ? '¡Carpeta completa y lista para SIGA!'
+        : n === 0
+          ? `Faltan ${total} por reunir`
+          : `Llevas ${n} · faltan ${total - n}`;
+      stars.forEach((s, idx) => s.classList.toggle('is-lit', idx < n));
+      doneEl.hidden = n !== total;
+      resetBtn.hidden = n === 0;
+
+      const msg = missing.length > 0 && n > 0
+        ? `Hola, estoy reuniendo los documentos para Matrículas 2027 en el Liceo Lunita de Chía. Aún tengo dudas sobre: ${missing.map((m) => m.dataset.label).join('; ')}.`
+        : 'Hola, tengo una consulta sobre los documentos para Matrículas 2027 en el Liceo Lunita de Chía.';
+      waLink.href = `https://wa.me/${waPhone}?text=${encodeURIComponent(msg)}`;
+      waText.textContent = n > 0 && missing.length > 0
+        ? `Consultar los ${missing.length} pendientes por WhatsApp`
+        : 'Consultar dudas por WhatsApp';
+
+      try { localStorage.setItem(KEY, JSON.stringify(inputs.map((i) => i.checked))); } catch {}
+    };
+
+    try {
+      const saved = JSON.parse(localStorage.getItem(KEY) || '[]');
+      inputs.forEach((i, k) => (i.checked = !!saved[k]));
+    } catch {}
+    inputs.forEach((i) => i.addEventListener('change', update));
+    resetBtn.addEventListener('click', () => {
+      inputs.forEach((i) => (i.checked = false));
+      update();
+    });
+    update();
+  }
+</script>

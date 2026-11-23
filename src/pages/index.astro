@@ -1,0 +1,43 @@
+---
+import Base from '@/layouts/Base.astro';
+import Hero from '@/components/home/Hero.astro';
+import Ticker from '@/components/home/Ticker.astro';
+import Profiles from '@/components/home/Profiles.astro';
+import Levels from '@/components/home/Levels.astro';
+import Stheami from '@/components/home/Stheami.astro';
+import Stats from '@/components/home/Stats.astro';
+import GlobalAlliances from '@/components/home/GlobalAlliances.astro';
+import Bands from '@/components/home/Bands.astro';
+import LatestNews from '@/components/home/LatestNews.astro';
+import Recognition from '@/components/home/Recognition.astro';
+import Events from '@/components/Events.astro';
+import Campus from '@/components/home/Campus.astro';
+import Wave from '@/components/Wave.astro';
+---
+
+<Base
+  title="Liceo Lunita de Chía | Colegio en Chía, Cundinamarca — Preescolar, Primaria y Bachillerato"
+  description="Colegio en Chía con más de 25 años de trayectoria. Preescolar, primaria y bachillerato con modelo STHEAMI, banda marcial y resultados destacados en Pruebas Saber. Matrículas 2027 abiertas."
+>
+  <Hero />
+  <Ticker from="var(--cobalt)" to="#fff" />
+  <Profiles />
+  <Wave from="#fff" to="var(--bg-2)" variant="hill" line="none" />
+  <Levels />
+  <Wave from="var(--bg-2)" to="var(--navy)" variant="moon" line="orbit" />
+  <Stheami />
+  <Wave from="var(--navy)" to="var(--yellow)" variant="swell" line="muisca" lineColor="var(--blue)" />
+  <Stats />
+  <Wave from="var(--yellow)" to="var(--sky-l)" variant="valley" line="orbit" lineColor="var(--blue)" flip />
+  <GlobalAlliances />
+  <Wave from="var(--sky-l)" to="var(--lilac)" variant="swell" line="orbit" lineColor="var(--purple)" />
+  <Bands />
+  <Wave from="var(--lilac)" to="#fff" variant="hill" line="muisca" lineColor="var(--purple)" flip />
+  <LatestNews />
+  <Wave from="#fff" to="var(--yellow)" variant="moon" line="orbit" lineColor="var(--blue)" />
+  <Recognition />
+  <Wave from="var(--yellow)" to="var(--cobalt)" variant="swell" line="muisca" lineColor="var(--navy)" flip />
+  <Events />
+  <Wave from="var(--cobalt)" to="var(--bg-2)" variant="valley" line="orbit" />
+  <Campus />
+</Base>

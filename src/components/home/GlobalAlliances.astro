@@ -1,0 +1,173 @@
+---
+/**
+ * Proyección Internacional, Convenios y NASA Space Apps Challenge.
+ * Contenido real del sitio oficial del Liceo Lunita de Chía (reemplaza la sección de fases lunares).
+ */
+import { Image } from 'astro:assets';
+import convenioFlorida from '@/assets/site/convenio-florida.jpeg';
+import Icon from '../Icon.astro';
+
+const ALLIES = [
+  { name: 'Florida Global University', tag: 'Bachillerato Internacional' },
+  { name: 'NASA Space Apps Challenge', tag: 'Ciencia y espacio' },
+  { name: 'Instituto de Astrobiología', tag: 'Investigación escolar' },
+  { name: 'Universidad de la Sabana', tag: 'Convenio académico' },
+  { name: 'Universidad Nacional', tag: 'Formación y retos' },
+  { name: 'Instruimos', tag: 'Preparación Saber 11' },
+  { name: 'Giroscopio · Grupo Enseña', tag: 'Innovación pedagógica' },
+  { name: 'Sport Tennis', tag: 'Bienestar deportivo' },
+];
+
+const NASA_STOPS = [
+  { year: '2024', place: 'Chía', desc: 'Sede y participación destacada' },
+  { year: '2025', place: 'Neiva', desc: 'Colaboradores oficiales' },
+  { year: '2026', place: 'Colombia', desc: 'Nueva misión aeroespacial' },
+];
+---
+
+<section class="section global block block-sky" aria-labelledby="global-title">
+  <div class="wrap layout">
+    <!-- Foto real del convenio internacional + tarjeta NASA Space Apps -->
+    <div class="media-col" data-reveal>
+      <figure class="photo-card">
+        <Image
+          src={convenioFlorida}
+          alt="Firma del convenio de Bachillerato Internacional entre el Liceo Lunita de Chía y Florida Global University"
+          widths={[480, 760]}
+          sizes="(min-width: 960px) 44vw, 100vw"
+          format="webp"
+          quality={78}
+        />
+        <figcaption class="photo-badge">
+          <span class="dot-gold" aria-hidden="true"></span>
+          Convenio · Florida Global University (EE. UU.)
+        </figcaption>
+      </figure>
+
+      <div class="nasa-card">
+        <div class="nasa-head">
+          <span class="nasa-pill">NASA Space Apps Challenge</span>
+          <span class="nasa-made">Made in Colombia</span>
+        </div>
+        <ol class="nasa-stops">
+          {NASA_STOPS.map((s, idx) => (
+            <li class:list={{ active: idx === 2 }}>
+              <strong>{s.year}</strong>
+              <span>{s.place}</span>
+              <small>{s.desc}</small>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+
+    <!-- Relato de proyección internacional y red de aliados reales -->
+    <div class="copy-col">
+      <p class="kicker"><span class="dot"></span>Convenios y proyección global</p>
+      <h2 id="global-title">De Chía <span class="hl">para el mundo</span></h2>
+      <p>
+        Nuestros estudiantes conectan el aula con universidades, ciencia aeroespacial y certificación internacional. Gracias al convenio con
+        <strong>Florida Global University</strong> pueden optar por doble titulación de <strong>Bachillerato Internacional</strong> mientras viven retos reales como el <strong>NASA Space Apps Challenge</strong>.
+      </p>
+
+      <p class="allies-label">Aliados y convenios activos</p>
+      <ul class="allies">
+        {ALLIES.map((a) => (
+          <li>
+            <strong>{a.name}</strong>
+            <span>{a.tag}</span>
+          </li>
+        ))}
+      </ul>
+
+      <div class="actions">
+        <a class="btn navy" href="/admisiones/">Conocer admisiones 2027 <Icon name="arrow" /></a>
+        <a class="link" href="/modelo-stheami/">Ver proyecto STHEAMI <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout { display: grid; gap: 2.5rem; align-items: center; }
+  @media (min-width: 960px) { .layout { grid-template-columns: 1.02fr 1fr; gap: 4rem; } }
+  h2 { font-size: var(--step-4); margin-bottom: 0.7rem; }
+  .copy-col > p { color: var(--ink-2); font-size: 1.04rem; line-height: 1.55; }
+
+  .media-col { display: grid; gap: 1rem; }
+  .photo-card {
+    position: relative;
+    margin: 0;
+    border-radius: 26px;
+    overflow: hidden;
+    background: #fff;
+    border: 2.5px solid var(--navy);
+    border-bottom-width: 6px;
+    box-shadow: 0 22px 44px -26px rgb(15 23 71 / 0.35);
+  }
+  .photo-card :global(img) { width: 100%; height: auto; aspect-ratio: 16 / 11; object-fit: cover; object-position: center 20%; display: block; }
+  .photo-badge {
+    display: flex; align-items: center; gap: 0.55rem;
+    padding: 0.7rem 1rem;
+    background: var(--navy); color: #fff;
+    font-size: 0.84rem; font-weight: 800;
+  }
+  .dot-gold { width: 10px; height: 10px; border-radius: 50%; background: #FECA0D; flex: none; }
+
+  .nasa-card {
+    padding: 1.1rem 1.2rem;
+    border-radius: 22px;
+    background: linear-gradient(135deg, #0f1747, #242680);
+    color: #fff;
+    border: 2px solid #313293;
+    border-bottom-width: 5px;
+    display: grid; gap: 0.85rem;
+  }
+  .nasa-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 0.5rem; }
+  .nasa-pill { font-size: 0.78rem; font-weight: 900; letter-spacing: 0.06em; text-transform: uppercase; color: #FECA0D; }
+  .nasa-made { font-size: 0.74rem; font-weight: 800; padding: 0.2rem 0.6rem; border-radius: 999px; background: rgb(255 255 255 / 0.14); color: #fff; }
+  .nasa-stops {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem;
+  }
+  .nasa-stops li {
+    padding: 0.65rem 0.7rem; border-radius: 14px;
+    background: rgb(255 255 255 / 0.09); border: 1.5px solid rgb(255 255 255 / 0.14);
+    display: grid; gap: 0.1rem;
+  }
+  .nasa-stops li.active {
+    background: rgb(254 202 13 / 0.16); border-color: #FECA0D;
+  }
+  .nasa-stops strong { font-size: 1.05rem; font-weight: 900; color: #FECA0D; line-height: 1.1; }
+  .nasa-stops span { font-size: 0.86rem; font-weight: 800; color: #fff; }
+  .nasa-stops small { font-size: 0.72rem; color: rgb(255 255 255 / 0.76); line-height: 1.25; }
+
+  .allies-label {
+    margin: 1.25rem 0 0.6rem;
+    font-size: 0.78rem; font-weight: 900; text-transform: uppercase; letter-spacing: 0.09em;
+    color: var(--blue);
+  }
+  .allies {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.55rem;
+  }
+  .allies li {
+    padding: 0.65rem 0.85rem;
+    border-radius: 14px;
+    background: #fff;
+    border: 2px solid rgb(49 50 147 / 0.14);
+    border-bottom-width: 4px;
+    display: grid; gap: 0.08rem;
+    transition: transform 0.2s var(--spring), border-color 0.2s;
+  }
+  .allies li:hover { transform: translateY(-2px); border-color: var(--blue); }
+  .allies strong { font-size: 0.88rem; color: var(--navy); line-height: 1.2; }
+  .allies span { font-size: 0.75rem; font-weight: 700; color: var(--muted); }
+
+  .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.4rem; margin-top: 1.4rem; }
+
+  @media (max-width: 520px) {
+    .nasa-stops { grid-template-columns: 1fr; }
+    .allies { grid-template-columns: 1fr; }
+  }
+</style>

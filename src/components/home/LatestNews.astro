@@ -1,0 +1,27 @@
+---
+import { getCollection } from 'astro:content';
+import NewsCard from '../NewsCard.astro';
+import Icon from '../Icon.astro';
+const posts = (await getCollection('noticias', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 5);
+---
+
+<section class="section news" aria-labelledby="news-title">
+  <div class="wrap">
+    <div class="top">
+      <div class="section-head">
+        <p class="kicker" style="color:var(--red-d)"><span class="dot"></span>Noticias</p>
+        <h2 id="news-title">Lo que está pasando <span class="hl">en Lunita</span></h2>
+      </div>
+      <a class="btn outline" href="/noticias/">Ver todas <Icon name="arrow" /></a>
+    </div>
+    <div class="list">{posts.map((p, i) => <NewsCard post={p} featured={i === 0} index={i} />)}</div>
+  </div>
+</section>
+
+<style>
+  .top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 1rem 2rem; margin-bottom: 2.2rem; }
+  .top .section-head { margin: 0; }
+  .list { display: grid; gap: 1.2rem; }
+  @media (min-width: 720px) { .list { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .list { grid-template-columns: 2fr 1fr 1fr; } .list > :global(:first-child) { grid-row: span 2; } }
+</style>
