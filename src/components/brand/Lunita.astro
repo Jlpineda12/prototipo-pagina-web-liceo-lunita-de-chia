@@ -27,11 +27,16 @@ interface Props {
   size?: number;
   pose?: LunitaPose;
   rive?: boolean;
+  /** La entrada la hace Rive (animación Intro); el SVG solo aparece si Rive no está disponible */
+  intro?: boolean;
   track?: boolean;
   class?: string;
   label?: string;
+  /** Modo escena: renderiza los accesorios de varias poses y se cambian en vivo con data-pose (sin recargar). */
+  poses?: LunitaPose[];
 }
-const { size = 240, pose = 'hola', rive = false, track = true, class: cls = '', label } = Astro.props;
+const { size = 240, pose = 'hola', rive = false, intro = false, track = true, class: cls = '', label, poses } = Astro.props;
+const has = (x: LunitaPose) => (poses ? poses.includes(x) : pose === x);
 const p = `l${Math.random().toString(36).slice(2, 7)}`;
 const id = (s: string) => `${p}-${s}`;
 const url = (s: string) => `url(#${p}-${s})`;
@@ -49,7 +54,7 @@ const star = (cx: number, cy: number, R: number, r: number) =>
   }).join('') + 'Z';
 ---
 
-<div class:list={['lunita', `lunita--${pose}`, cls]} style={`--s:${size}px`} data-lunita data-track={track ? '' : undefined} data-rive={rive ? '' : undefined} role="img" aria-label={label ?? 'Lunita, la mascota del Liceo Lunita de Chía'}>
+<div class:list={['lunita', `lunita--${pose}`, cls]} style={`--s:${size}px`} data-lunita data-scene={poses ? '' : undefined} data-pose={poses ? pose : undefined} data-track={track ? '' : undefined} data-rive={rive ? '' : undefined} data-intro={rive && intro ? '' : undefined} role="img" aria-label={label ?? 'Lunita, la mascota del Liceo Lunita de Chía'}>
   <svg class="lun-svg" viewBox="-60 -60 1120 1120" aria-hidden="true">
     <defs>
       <path id={id('body')} d={BODY} />
@@ -74,7 +79,7 @@ const star = (cx: number, cy: number, R: number, r: number) =>
     <ellipse class="lun-shadow" cx="520" cy="1000" rx="260" ry="34" fill="#0f1747" opacity=".12" />
 
     <!-- Accesorios traseros / orbitales por sección -->
-    {pose === 'stheami' && (
+    {has('stheami') && (<g data-acc="stheami">
       <g class="acc acc-atom" transform="translate(860 220)">
         <circle r="32" fill="#1cb0f6" />
         <g fill="none" stroke="#1899d6" stroke-width="15">
@@ -83,9 +88,9 @@ const star = (cx: number, cy: number, R: number, r: number) =>
           <ellipse rx="126" ry="44" transform="rotate(-60)" />
         </g>
         <circle cx="122" cy="0" r="16" fill="#FECA0D" />
-      </g>
+      </g></g>
     )}
-    {pose === 'espacio' && (
+    {has('espacio') && (<g data-acc="espacio">
       <g class="acc acc-orbit">
         <g transform="translate(890 170) rotate(35)">
           <path d="M0-120C40-80 55-20 40 50L0 90-40 50C-55-20-40-80 0-120Z" fill="#fff" stroke="#1899d6" stroke-width="12" />
@@ -93,7 +98,7 @@ const star = (cx: number, cy: number, R: number, r: number) =>
           <path d="M-40 40-80 90-30 95M40 40 80 90 30 95" fill="#ff4b4b" stroke="#ea2b2b" stroke-width="8" stroke-linejoin="round" />
           <path class="flame" d="M-22 92Q0 170 0 180Q0 170 22 92Z" fill="#ff9600" />
         </g>
-      </g>
+      </g></g>
     )}
 
     <g class="lun-float">
@@ -141,26 +146,26 @@ const star = (cx: number, cy: number, R: number, r: number) =>
         </g>
 
         <!-- Gafas científicas STHEAMI -->
-        {pose === 'stheami' && (
+        {has('stheami') && (<g data-acc="stheami">
           <g class="acc acc-glasses" fill="#ddf4ff" fill-opacity=".28" stroke="#313293" stroke-width="18">
             <ellipse cx="322" cy="516" rx="88" ry="92" transform="rotate(-12 322 516)" />
             <ellipse cx="494" cy="466" rx="64" ry="80" transform="rotate(-12 494 466)" />
             <path d="M408 492Q424 476 436 484" fill="none" stroke-linecap="round" />
             <path d="M266 476Q284 456 308 456" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" opacity=".8" />
-          </g>
+          </g></g>
         )}
 
         <!-- Visor espacial NASA Space Apps -->
-        {pose === 'espacio' && (
+        {has('espacio') && (<g data-acc="espacio">
           <g class="acc acc-visor">
             <path d="M214 438C226 304 452 252 542 356C558 374 536 402 504 396C416 376 296 398 234 450C220 462 212 454 214 438Z" fill="#38bdf8" fill-opacity=".34" stroke="#0284c7" stroke-width="14" stroke-linejoin="round" />
             <path d="M274 358Q352 318 424 328" fill="none" stroke="#fff" stroke-width="14" stroke-linecap="round" opacity=".78" />
-          </g>
+          </g></g>
         )}
       </g>
 
       <!-- Accesorios delanteros personalizados por sección -->
-      {pose === 'estudio' && (
+      {has('estudio') && (<g data-acc="estudio">
         <g class="acc acc-cap" transform="rotate(-14 420 155)">
           <path d="M286 155 420 100 564 155 420 212Z" fill="#0f1747" stroke="#313293" stroke-width="8" stroke-linejoin="round" />
           <path d="M336 176V232C378 256 462 256 504 232V176L420 212Z" fill="#313293" />
@@ -168,10 +173,10 @@ const star = (cx: number, cy: number, R: number, r: number) =>
             <path d="M560 155V246" stroke="#FECA0D" stroke-width="11" stroke-linecap="round" />
             <circle cx="560" cy="258" r="17" fill="#FECA0D" />
           </g>
-        </g>
+        </g></g>
       )}
 
-      {pose === 'musica' && (
+      {has('musica') && (<g data-acc="musica">
         <g class="acc acc-shako" transform="translate(360 118) rotate(-14)">
           <!-- Gorro de Banda Marcial Ciudad de la Luna -->
           <path d="M-84 62 L-72 -42 C-30 -64 34 -64 76 -42 L88 62 Z" fill="#313293" stroke="#0f1747" stroke-width="10" stroke-linejoin="round" />
@@ -183,76 +188,76 @@ const star = (cx: number, cy: number, R: number, r: number) =>
             <path d="M2 -48 C-26 -110 -12 -154 2 -164 C18 -154 32 -110 2 -48 Z" fill="#fff" stroke="#FECA0D" stroke-width="9" />
             <path d="M2 -54 C-10 -96 -4 -128 2 -138 C10 -128 16 -96 2 -54 Z" fill="#FECA0D" opacity=".75" />
           </g>
-        </g>
+        </g></g>
       )}
 
-      {pose === 'admisiones' && (
-        <g class="acc acc-folder" transform="translate(745 690) rotate(8)">
+      {has('admisiones') && (<g data-acc="admisiones">
+        <g transform="translate(745 690) rotate(8)"><g class="acc acc-folder">
           <rect x="-92" y="-70" width="184" height="148" rx="22" fill="#313293" stroke="#0f1747" stroke-width="11" />
           <path d="M-92 -42 L-92 -76 C-92 -88 -82 -96 -70 -96 L-8 -96 L12 -70 Z" fill="#FECA0D" stroke="#0f1747" stroke-width="10" stroke-linejoin="round" />
           <rect x="-66" y="-36" width="132" height="90" rx="12" fill="#fff" />
           <path d="M-36 10 L-8 36 L44 -14" fill="none" stroke="#58cc02" stroke-width="18" stroke-linecap="round" stroke-linejoin="round" />
-        </g>
+        </g></g></g>
       )}
 
-      {pose === 'comunidad' && (
-        <g class="acc acc-tablet" transform="translate(760 695) rotate(-8)">
+      {has('comunidad') && (<g data-acc="comunidad">
+        <g transform="translate(760 695) rotate(-8)"><g class="acc acc-tablet">
           <rect x="-96" y="-76" width="192" height="144" rx="24" fill="#0f1747" stroke="#313293" stroke-width="10" />
           <rect x="-76" y="-56" width="152" height="104" rx="12" fill="#ddf4ff" />
           <rect x="-56" y="-36" width="76" height="16" rx="8" fill="#1cb0f6" />
           <rect x="-56" y="-8" width="112" height="12" rx="6" fill="#313293" opacity=".35" />
           <rect x="-56" y="16" width="84" height="12" rx="6" fill="#313293" opacity=".35" />
           <circle cx="48" cy="-28" r="14" fill="#FECA0D" />
-        </g>
+        </g></g></g>
       )}
 
-      {pose === 'contacto' && (
-        <g class="acc acc-mail" transform="translate(770 675) rotate(-10)">
+      {has('contacto') && (<g data-acc="contacto">
+        <g transform="translate(770 675) rotate(-10)"><g class="acc acc-mail">
           <rect x="-96" y="-66" width="192" height="132" rx="22" fill="#fff" stroke="#313293" stroke-width="12" />
           <path d="M-88 -54 L0 16 L88 -54" fill="none" stroke="#313293" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
           <circle cx="0" cy="14" r="24" fill="#FECA0D" stroke="#313293" stroke-width="8" />
           <path d={star(0, 14, 13, 5)} fill="#313293" />
-        </g>
+        </g></g></g>
       )}
 
-      {pose === 'buscar' && (
+      {has('buscar') && (<g data-acc="buscar">
         <g class="acc acc-lens">
           <circle cx="710" cy="750" r="78" fill="#ddf4ff" fill-opacity=".86" stroke="#1899d6" stroke-width="22" />
           <path d="M766 806 850 890" stroke="#1899d6" stroke-width="30" stroke-linecap="round" />
           <path d="M670 720Q690 702 714 702" stroke="#fff" stroke-width="12" stroke-linecap="round" fill="none" />
-        </g>
+        </g></g>
       )}
 
-      {pose === 'celebra' && (
-        <g class="acc acc-medal" transform="translate(755 710) rotate(12)">
+      {has('celebra') && (<g data-acc="celebra">
+        <g transform="translate(755 710) rotate(12)"><g class="acc acc-medal">
           <circle r="66" fill="#FECA0D" stroke="#313293" stroke-width="12" />
           <text x="0" y="20" text-anchor="middle" font-family="Nunito, system-ui, sans-serif" font-weight="900" font-size="60" fill="#313293">A+</text>
-        </g>
+        </g></g></g>
       )}
     </g>
 
     <!-- Chispas y partículas ambientales por pose -->
-    {(pose === 'hola' || pose === 'celebra' || pose === 'admisiones') && (
-      <g class="acc acc-sparks">
+    {(has('hola') || has('celebra') || has('admisiones')) && (
+      <g data-acc="hola celebra admisiones"><g class="acc acc-sparks">
         <path d={star(910, 120, 44, 18)} fill="#FECA0D" stroke="#e5a400" stroke-width="9" stroke-linejoin="round" />
         <path d="M80 200l14 34 34 14-34 14-14 34-14-34-34-14 34-14z" fill="#1cb0f6" />
         <path d="M950 760l10 24 24 10-24 10-10 24-10-24-24-10 24-10z" fill="#ce82ff" />
-      </g>
+      </g></g>
     )}
-    {pose === 'celebra' && (
+    {has('celebra') && (<g data-acc="celebra">
       <g class="acc acc-confetti">
         <rect x="120" y="60" width="26" height="14" rx="4" fill="#ff4b4b" transform="rotate(30 133 67)" />
         <rect x="800" y="40" width="26" height="14" rx="4" fill="#58cc02" transform="rotate(-20 813 47)" />
         <circle cx="970" cy="420" r="12" fill="#ff9600" />
         <circle cx="60" cy="620" r="12" fill="#58cc02" />
         <rect x="700" y="0" width="22" height="12" rx="4" fill="#1cb0f6" />
-      </g>
+      </g></g>
     )}
-    {pose === 'musica' && (
+    {has('musica') && (<g data-acc="musica">
       <g class="acc acc-notes" fill="#ce82ff">
         <path d="M900 180v150a40 34 0 1 1-24-30V210l-90 20v130a40 34 0 1 1-24-30V190z" />
         <path d="M100 320v90a30 26 0 1 1-18-24V320z" fill="#1cb0f6" />
-      </g>
+      </g></g>
     )}
   </svg>
   {rive && <canvas class="lun-rive" aria-hidden="true" hidden></canvas>}
@@ -266,8 +271,18 @@ const star = (cx: number, cy: number, R: number, r: number) =>
   .lunita .lun-rive { opacity: 0; pointer-events: none; transition: opacity 0.28s ease-out; }
   .lunita[data-rive-ready] .lun-svg { opacity: 0; pointer-events: none; }
   .lunita[data-rive-ready] .lun-rive { opacity: 1; pointer-events: auto; }
+  /* Con intro: nada visible hasta que Rive arranca su entrada; si Rive falla, el SVG entra con un pop */
+  .js .lunita[data-intro]:not([data-rive-ready]):not([data-rive-fail]) .lun-svg { opacity: 0; transition: none; }
+  .lunita[data-intro][data-rive-ready] .lun-rive { transition-duration: 0.12s; }
+  .lunita[data-intro][data-rive-fail]:not([data-rive-ready]) .lun-svg { animation: lun-intro 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  @keyframes lun-intro { 0% { opacity: 0; transform: translateY(30px) scale(0.3) rotate(-30deg); } 50% { opacity: 1; } 100% { transform: none; } }
 
   .lunita .lun-float { transform-origin: 520px 880px; }
+  /* Modo escena: solo se ven los accesorios de la pose activa; entran y salen con escala */
+  .lunita[data-scene] [data-acc] { opacity: 0; transform: scale(0.4); transform-box: fill-box; transform-origin: center; transition: opacity 0.3s ease, transform 0.45s cubic-bezier(.34, 1.56, .64, 1); }
+  .lunita[data-scene][data-pose='hola'] [data-acc~='hola'], .lunita[data-scene][data-pose='stheami'] [data-acc~='stheami'], .lunita[data-scene][data-pose='espacio'] [data-acc~='espacio'],
+  .lunita[data-scene][data-pose='musica'] [data-acc~='musica'], .lunita[data-scene][data-pose='estudio'] [data-acc~='estudio'], .lunita[data-scene][data-pose='celebra'] [data-acc~='celebra'],
+  .lunita[data-scene][data-pose='admisiones'] [data-acc~='admisiones'] { opacity: 1; transform: none; }
   .lunita .lun-body { transform-origin: 500px 500px; transform: rotate(var(--tilt, 0deg)); }
   .lunita .lun-face { transform: translate(var(--fx, 0px), var(--fy, 0px)); }
   .lunita .lun-shadow { transform-origin: 520px 1000px; }

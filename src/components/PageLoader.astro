@@ -1,456 +1,91 @@
 ---
 /**
- * 1. Pantalla de inicio "toon" (solo primera visita de la sesión, o ?intro=1):
- *    Identidad propia del Liceo Lunita de Chía ("Ciudad de la Luna") aplicando principios
- *    clásicos de animación (anticipación, arcos, squash & stretch, overlapping action y secondary action)
- *    sobre un lienzo lunar limpio y luminoso, usando SOLO el Escudo oficial y el nombre del colegio.
- * 2. Animación de carga entre pestañas / páginas:
- *    Portal circular cómic que nace desde el punto de clic con el color de la sección destino,
- *    ondas expansivas, rayos toon, Lunita saltando y sello-sticker tipo postal.
+ * Pantallas de carga "Fases de color" — sencillas, ingeniosas y livianas (solo CSS transform).
+ *  - Cinco columnas con los colores de apoyo del sitio cubren la pantalla en cascada y luego se levantan,
+ *    dejando ver un destello de color entre capa y capa.
+ *  - En el centro, la media luna del escudo se forma como una fase lunar: un disco amarillo
+ *    al que "muerde" un círculo del color de fondo.
+ *  - Primera visita de la sesión (o ?intro=1): breve intro con el nombre del colegio.
+ *  - Entre páginas: las columnas toman el color de la sección destino.
+ * El estado lo define <html data-splash | data-nav-out | data-nav-in> (ver script en línea de Base.astro).
  */
-import Emblem from './brand/Emblem.astro';
-import Lunita from './brand/Lunita.astro';
-import { EMBLEM } from './brand/emblem';
-
-const BRAND_CHARS = [...'Liceo Lunita de Chía'];
-const HERO_WORDS = [
-  { text: 'LICEO', cls: 'w-top' },
-  { text: 'LUNITA', cls: 'w-mid' },
-  { text: 'DE CHÍA', cls: 'w-bot' },
-];
+const ACCENTS = ['#ffc800', '#1cb0f6', '#58cc02', '#ff9600', '#ce82ff'];
 ---
 
-<!-- 1. PANTALLA DE INICIO (PRIMERA VISITA): ESCUDO OFICIAL + NOMBRE CON PRINCIPIOS DE ANIMACIÓN -->
-<div id="lunita-splash" class="l-intro" role="status" aria-live="polite" aria-label="Bienvenida al Liceo Lunita de Chía">
-  <div class="l-intro-paper">
-    <!-- Cometa de la estrella que nace con anticipación y sube en arco (Acto 1) -->
-    <div class="l-comet" data-comet aria-hidden="true">
-      <svg viewBox="0 0 60 60" width="44" height="44">
-        <path d="M30 4L36.7 21.4L55.4 21.4L40.3 32.4L46.1 50.2L30 39.2L13.9 50.2L19.7 32.4L4.6 21.4L23.3 21.4Z" fill="#FECA0D" stroke="#2a2a2e" stroke-width="4" stroke-linejoin="round" />
-      </svg>
-      <span class="l-trail t1"></span>
-      <span class="l-trail t2"></span>
-      <span class="l-trail t3"></span>
-    </div>
-
-    <!-- Escena central: Escudo oficial armado por piezas + nombre + lema (Acto 2) -->
-    <div class="l-intro-stage" data-intro-stage>
-      <div class="l-crest-stage">
-        <span class="l-impact-ring" data-impact-ring aria-hidden="true"></span>
-        <span class="l-crest-spark s-a" data-cspark aria-hidden="true">✦</span>
-        <span class="l-crest-spark s-b" data-cspark aria-hidden="true">★</span>
-        <span class="l-crest-spark s-c" data-cspark aria-hidden="true">✦</span>
-
-        <!-- Escudo oficial en capas independientes para animación con Overlapping Action -->
-        <svg class="l-crest-svg" viewBox={EMBLEM.viewBox} width="136" height="158" aria-hidden="true" data-crest-svg>
-          <defs>
-            <linearGradient id="sp-ring" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#3B3DA8" /><stop offset=".55" stop-color="#313293" /><stop offset="1" stop-color="#222370" />
-            </linearGradient>
-            <linearGradient id="sp-gold" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#FFE055" /><stop offset=".45" stop-color="#FECA0D" /><stop offset="1" stop-color="#F0B400" />
-            </linearGradient>
-          </defs>
-          <g class="c-part c-oval" data-cpart="oval">
-            <path d={EMBLEM.rim} fill="url(#sp-gold)" />
-            <path d={EMBLEM.ring} fill="url(#sp-ring)" />
-            <path d={EMBLEM.innerRim} fill="url(#sp-gold)" />
-            <path d={EMBLEM.field} fill="#ffffff" />
-          </g>
-          <path class="c-part c-moon" data-cpart="moon" d={EMBLEM.moon} fill="url(#sp-gold)" stroke="#313293" stroke-width="4.8" stroke-linejoin="miter" stroke-miterlimit="10" />
-          <path class="c-part c-star" data-cpart="star" d={EMBLEM.star} fill="url(#sp-gold)" stroke="#313293" stroke-width="3.4" stroke-linejoin="miter" stroke-miterlimit="10" />
-        </svg>
-      </div>
-
-      <div class="l-launch-words">
-        {HERO_WORDS.map((w, idx) => (
-          <span class={`l-launch-word ${w.cls}`} data-launch-word={idx}>{w.text}</span>
-        ))}
-      </div>
-
-      <p class="l-launch-sub" data-intro-sub>“El Arte, la Educación y la Cultura · Chía”</p>
-    </div>
-
-    <!-- Firma inferior con onda toon mientras arranca (Acto 1) -->
-    <div class="l-intro-mark" data-intro-mark>
-      <span class="l-intro-crest">
-        <Emblem size={36} decorative />
-      </span>
-      <span class="l-intro-word" aria-hidden="true">
-        {BRAND_CHARS.map((ch, i) => (
-          <span style={`--i:${i}`}>{ch === ' ' ? '\u00A0' : ch}</span>
-        ))}
-      </span>
-    </div>
+<div class="ld" aria-hidden="true">
+  <div class="ld-cols">{ACCENTS.map((a, i) => <span class="c" style={`--a:${a}; --i:${i}`}><i></i></span>)}</div>
+  <div class="ld-center">
+    <span class="moon"><span class="disc"></span><span class="bite"></span><span class="spark"></span></span>
+    <p class="ld-brand">Liceo Lunita <span>de Chía</span></p>
+    <p class="ld-label"><span data-nav-kicker></span> <b data-nav-label></b></p>
   </div>
-
-  <div class="l-cut-flash" aria-hidden="true"></div>
-  <button type="button" class="l-intro-skip" data-skip-splash>Saltar intro</button>
-</div>
-
-<!-- 2. PORTAL CÓMIC LIMPIO ENTRE PÁGINAS: MASCOTA LUNITA + ONDA + STICKER -->
-<div id="lunita-nav-loader" class="l-portal" aria-hidden="true">
-  <div class="lp-backdrop">
-    <span class="lp-ring r1"></span>
-  </div>
-
-  <div class="lp-stage">
-    <div class="lp-mascot-wrap">
-      <div class="lp-mascot">
-        <Lunita size={146} pose="hola" track={false} />
-      </div>
-    </div>
-
-    <div class="lp-stamp" data-nav-stamp>
-      <span class="lp-kicker" data-nav-kicker>PRÓXIMA ESTACIÓN</span>
-      <span class="lp-label" data-nav-label>Viajando por Lunita…</span>
-    </div>
-  </div>
-
-  <div class="lp-flash" aria-hidden="true"></div>
+  <button type="button" class="ld-skip" data-skip-splash>Saltar intro</button>
 </div>
 
 <style is:global>
-  /* ================= 1. INTRO TOON LIENZO LUNAR (LOGO + NOMBRE) ================= */
-  .l-intro {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    display: none;
-    cursor: pointer;
-    overflow: hidden;
-    --paper: #fbfaf6;
-    --ink: #2a2a2e;
-    --muted-ink: #55555c;
-  }
-  html[data-splash='1'] .l-intro,
-  html[data-splash='flash'] .l-intro {
-    display: block;
-  }
-  html[data-splash='flash'] .l-intro {
-    pointer-events: none;
-  }
+  .ld { --bg: var(--nav-bg, #303296); --acc: var(--nav-accent, #ffc800); position: fixed; inset: 0; z-index: 9999; pointer-events: none; visibility: hidden; }
+  html[data-splash] .ld, html[data-nav-out] .ld, html[data-nav-in] .ld { visibility: visible; }
+  html[data-splash='1'] .ld { pointer-events: auto; }
+  html[data-splash] { --nav-bg: #303296; }
 
-  .l-intro-paper {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    background-color: var(--paper);
-    background-image:
-      radial-gradient(circle at 50% 42%, rgb(254 202 13 / 0.16) 0%, rgb(254 202 13 / 0.04) 30%, transparent 58%),
-      radial-gradient(ellipse 85% 48% at 50% 106%, rgb(49 50 147 / 0.10) 0%, transparent 68%),
-      linear-gradient(180deg, #ffffff 0%, #fbfaf6 55%, #eef2fb 100%);
-    color: var(--ink);
-    clip-path: circle(150% at 50% 50%);
-    transition: clip-path 0.44s cubic-bezier(0.7, 0, 0.25, 1), opacity 0.26s ease;
-  }
-  /* Halo lunar minimalista detrás del escudo */
-  .l-intro-paper::before {
-    content: '';
-    position: absolute;
-    left: 50%;
-    top: 44%;
-    width: min(72vmin, 520px);
-    height: min(72vmin, 520px);
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    border: 1px solid rgb(49 50 147 / 0.08);
-    background: radial-gradient(circle, rgb(255 255 255 / 0.82) 0%, rgb(255 255 255 / 0) 72%);
-    pointer-events: none;
-  }
-  html[data-splash='flash'] .l-intro-paper {
-    clip-path: circle(0% at 50% 50%);
-    opacity: 0;
-  }
+  /* ---------- Columnas: capa de acento + capa principal ---------- */
+  .ld-cols { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(5, 1fr); }
+  .ld .c { position: relative; }
+  .ld .c::before, .ld .c i { content: ''; position: absolute; inset: 0 -1px; transform: translateY(101%); }
+  .ld .c::before { background: var(--a); }
+  .ld .c i { background: var(--bg); }
 
-  /* Cometa estrella (Acto 1) */
-  .l-comet {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    z-index: 4;
-    margin: -22px 0 0 -22px;
-    opacity: 0;
-    pointer-events: none;
-    will-change: transform, opacity;
-  }
-  .l-trail {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    border-radius: 50%;
-    background: #FECA0D;
-    border: 2px solid #2a2a2e;
-    opacity: 0.85;
-  }
-  .l-trail.t1 { width: 12px; height: 12px; transform: translate(-22px, 24px); }
-  .l-trail.t2 { width: 8px; height: 8px; transform: translate(-38px, 42px); background: #313293; }
-  .l-trail.t3 { width: 6px; height: 6px; transform: translate(-50px, 56px); }
+  /* Cubriendo al cargar (sin transición) */
+  html[data-splash='1'] .ld .c::before, html[data-splash='1'] .ld .c i,
+  html[data-nav-in='1'] .ld .c::before, html[data-nav-in='1'] .ld .c i { transform: none; transition: none; }
 
-  /* Marca inferior con onda toon */
-  .l-intro-mark {
-    position: absolute;
-    left: 50%;
-    bottom: 12svh;
-    translate: -50% 0;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45em;
-    white-space: nowrap;
-    font-size: clamp(18px, 2vw, 24px);
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    color: var(--ink);
-    will-change: transform, opacity;
-  }
-  .l-intro-crest { display: inline-flex; flex: none; }
-  .l-intro-word { display: inline-flex; }
-  .l-intro-word span { display: inline-block; }
-  @media (prefers-reduced-motion: no-preference) {
-    .l-intro-word span {
-      animation: toon-wob 1.15s ease-in-out infinite;
-      animation-delay: calc(var(--i) * -0.08s);
-    }
-    .l-intro-crest { animation: toon-crest-bob 1.15s ease-in-out infinite; }
-  }
-  @keyframes toon-wob {
-    50% { transform: translateY(-0.15em) rotate(-5deg); }
-  }
-  @keyframes toon-crest-bob {
-    50% { transform: translateY(-4px) rotate(4deg); }
-  }
+  /* Entrada desde abajo: primero el color de acento, luego el color de la sección */
+  html[data-nav-out] .ld .c::before, html[data-nav-out] .ld .c i { transform: none; transition: transform 0.42s cubic-bezier(0.7, 0, 0.2, 1); }
+  html[data-nav-out] .ld .c::before { transition-delay: calc(var(--i) * 40ms); }
+  html[data-nav-out] .ld .c i { transition-delay: calc(var(--i) * 40ms + 80ms); }
 
-  /* Escenario central del escudo y nombre */
-  .l-intro-stage {
-    position: relative;
-    z-index: 3;
-    display: grid;
-    justify-items: center;
-    align-items: center;
-    gap: 0.5rem;
-    text-align: center;
-    padding: 1.5rem;
-    will-change: transform, opacity;
-  }
-  .l-crest-stage {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 170px;
-    height: 170px;
-  }
-  .l-impact-ring {
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    border: 4px dashed #313293;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .l-crest-spark {
-    position: absolute;
-    font-size: 1.45rem;
-    color: #FECA0D;
-    text-shadow: 0 2.5px 0 #2a2a2e;
-    -webkit-text-stroke: 1px #2a2a2e;
-    opacity: 0;
-    pointer-events: none;
-  }
-  .l-crest-spark.s-a { top: 4px; right: -10px; }
-  .l-crest-spark.s-b { bottom: 10px; left: -16px; color: #1cb0f6; }
-  .l-crest-spark.s-c { top: 24px; left: -12px; font-size: 1.15rem; color: #313293; -webkit-text-stroke: 0; text-shadow: none; }
+  /* Salida hacia arriba: se va la capa principal y el acento la sigue (destello de color) */
+  html[data-splash='out'] .ld .c::before, html[data-splash='out'] .ld .c i,
+  html[data-nav-in='reveal'] .ld .c::before, html[data-nav-in='reveal'] .ld .c i { transform: translateY(-101%); transition: transform 0.55s cubic-bezier(0.7, 0, 0.2, 1); }
+  html[data-splash='out'] .ld .c i, html[data-nav-in='reveal'] .ld .c i { transition-delay: calc(var(--i) * 45ms); }
+  html[data-splash='out'] .ld .c::before, html[data-nav-in='reveal'] .ld .c::before { transition-delay: calc(var(--i) * 45ms + 110ms); }
 
-  .l-crest-svg { overflow: visible; }
-  .l-crest-svg .c-part {
-    opacity: 0;
-    transform-box: fill-box;
-    transform-origin: center;
-  }
-  /* Modo tinta negra (silueta cómic) antes del golpe de color */
-  .l-intro-stage.is-ink .l-crest-svg {
-    filter: brightness(0);
-    transition: filter 0.22s ease-out;
-  }
-  .l-intro-stage.is-vivid .l-crest-svg {
-    filter: drop-shadow(0 8px 0 rgb(42 42 46 / 0.14));
-    transition: filter 0.22s ease-out;
-  }
+  /* ---------- Media luna que se forma como fase lunar ---------- */
+  .ld-center { position: absolute; inset: 0; display: grid; place-content: center; justify-items: center; gap: 1.1rem; color: #fff; text-align: center; }
+  .ld .moon { position: relative; width: 64px; height: 64px; border-radius: 50%; overflow: hidden; opacity: 0; transform: scale(0.6); }
+  .ld .disc { position: absolute; inset: 0; border-radius: 50%; background: var(--acc); }
+  .ld .bite { position: absolute; inset: -2px; border-radius: 50%; background: var(--bg); transform: translateX(110%); }
+  .ld .spark { position: absolute; right: 6px; top: 8px; width: 9px; height: 9px; background: var(--acc); clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); transform: scale(0); }
+  html[data-splash='1'] .ld .moon, html[data-nav-out] .ld .moon, html[data-nav-in='1'] .ld .moon { opacity: 1; transform: none; transition: opacity 0.25s, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  html[data-nav-out] .ld .moon { transition-delay: 0.3s; }
+  html[data-splash='1'] .ld .bite { animation: ld-phase 0.8s 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  html[data-nav-out] .ld .bite { animation: ld-phase 0.5s 0.35s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  html[data-nav-in='1'] .ld .bite { transform: translateX(34%); }
+  html[data-splash='1'] .ld .spark { animation: ld-spark 0.4s 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; }
+  html[data-nav-in='1'] .ld .spark { transform: none; }
+  @keyframes ld-phase { to { transform: translateX(34%); } }
+  @keyframes ld-spark { to { transform: none; } }
+  html[data-splash='out'] .ld .moon, html[data-nav-in='reveal'] .ld .moon { opacity: 0; transform: translateY(-14px) scale(0.9); transition: opacity 0.25s, transform 0.35s; }
 
-  .l-launch-words {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 0.22em 0.36em;
-    margin-top: 0.2rem;
-  }
-  .l-launch-word {
-    display: inline-block;
-    opacity: 0;
-    font-size: clamp(2.05rem, 6.2vw, 4.45rem);
-    font-weight: 900;
-    line-height: 0.96;
-    letter-spacing: -0.03em;
-    color: var(--ink);
-    transition: color 0.2s ease-out, text-shadow 0.2s ease-out;
-    will-change: transform, opacity;
-  }
-  .l-intro-stage.is-vivid .l-launch-word.w-top,
-  .l-intro-stage.is-vivid .l-launch-word.w-bot {
-    color: #0f1747;
-  }
-  .l-intro-stage.is-vivid .l-launch-word.w-mid {
-    color: #313293;
-    background: linear-gradient(transparent 58%, #FECA0D 58% 92%, transparent 92%);
-    padding-inline: 0.08em;
-    border-radius: 6px;
-  }
-  .l-launch-sub {
-    margin: 0.35rem 0 0;
-    padding: 0.34rem 1rem;
-    border-radius: 10px 14px 9px 12px;
-    border: 2.5px solid var(--ink);
-    background: #FECA0D;
-    color: var(--ink);
-    box-shadow: 4px 4px 0 var(--ink);
-    font-size: clamp(0.84rem, 1.5vw, 1.02rem);
-    font-weight: 900;
-    transform: rotate(-1.4deg);
-    opacity: 0;
-  }
+  /* Nombre del colegio (solo intro) y etiqueta de la sección (entre páginas) */
+  .ld-brand, .ld-label { margin: 0; font-family: var(--font); }
+  .ld-brand { font-size: clamp(1.3rem, 1rem + 1.6vw, 2rem); font-weight: 900; letter-spacing: -0.02em; display: none; }
+  .ld-brand span { color: var(--yellow); }
+  html[data-splash] .ld-brand { display: block; opacity: 0; transform: translateY(10px); }
+  html[data-splash='1'] .ld-brand { animation: ld-up 0.5s 0.55s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+  .ld-label { font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase; opacity: 0; }
+  .ld-label span { opacity: 0.7; font-weight: 700; }
+  .ld-label b { font-weight: 900; }
+  html[data-nav-out] .ld-label { animation: ld-up 0.35s 0.42s ease forwards; }
+  html[data-nav-in='1'] .ld-label { opacity: 1; }
+  html[data-splash] .ld-label { display: none; }
+  @keyframes ld-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  html[data-splash='out'] .ld-brand, html[data-nav-in='reveal'] .ld-label { opacity: 0; transition: opacity 0.2s; animation: none; }
 
-  .l-cut-flash { position: absolute; inset: 0; z-index: 8; background: #fff; opacity: 0; pointer-events: none; }
-  html[data-splash='flash'] .l-cut-flash { animation: l-cut-flash 0.44s ease-out forwards; }
-  @keyframes l-cut-flash { 0% { opacity: 0.88; } 100% { opacity: 0; } }
+  .ld-skip { position: absolute; right: 1.2rem; bottom: 1.2rem; display: none; padding: 0.45rem 0.9rem; border: 1.5px solid rgb(255 255 255 / 0.5); border-radius: 999px; background: transparent; color: #fff; font: 800 0.75rem var(--font); letter-spacing: 0.06em; text-transform: uppercase; }
+  html[data-splash='1'] .ld-skip { display: block; }
 
-  .l-intro-skip {
-    position: absolute;
-    right: clamp(16px, 3vw, 34px);
-    bottom: 18px;
-    z-index: 10;
-    padding: 8px 12px;
-    border: 0;
-    background: none;
-    color: var(--muted-ink);
-    font-size: 14px;
-    font-weight: 800;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    cursor: pointer;
-  }
-  .l-intro-skip:hover { color: var(--ink); }
-  .l-intro-skip:focus-visible { outline: 3px solid #313293; outline-offset: 2px; border-radius: 8px; }
-  html[data-splash='flash'] .l-intro-skip { display: none; }
-
-  /* ================= 2. PORTAL CÓMIC ENTRE PÁGINAS (MASCOTA LUNITA) ================= */
-  .l-portal {
-    --p-bg: var(--nav-bg, #313293);
-    --p-accent: var(--nav-accent, #FECA0D);
-    --p-cx: var(--nav-cx, 50%);
-    --p-cy: var(--nav-cy, 50%);
-    position: fixed;
-    inset: 0;
-    z-index: 9998;
-    display: grid;
-    place-items: center;
-    overflow: hidden;
-    pointer-events: none;
-    opacity: 0;
-    clip-path: circle(0% at var(--p-cx) var(--p-cy));
-    background-color: var(--p-bg);
-    background-image: radial-gradient(circle at 2px 2px, rgb(255 255 255 / 0.14) 1.5px, transparent 2px);
-    background-size: 26px 26px;
-    transition: clip-path 0.36s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.18s ease;
-    will-change: clip-path, opacity;
-  }
-  html[data-nav-out='1'] .l-portal,
-  html[data-nav-in='1'] .l-portal {
-    opacity: 1;
-    clip-path: circle(155% at var(--p-cx) var(--p-cy));
-    pointer-events: auto;
-  }
-  html[data-nav-in='reveal'] .l-portal {
-    opacity: 0;
-    clip-path: circle(0% at 50% 50%);
-    transition: clip-path 0.38s cubic-bezier(0.7, 0, 0.25, 1), opacity 0.32s ease 0.08s;
-    pointer-events: none;
-  }
-
-  .lp-backdrop { position: absolute; inset: 0; display: grid; place-items: center; pointer-events: none; }
-  .lp-rays { width: min(155vmax, 1300px); height: min(155vmax, 1300px); }
-  .lp-ring { position: absolute; width: 220px; height: 220px; border-radius: 50%; border: 5px solid rgb(255 255 255 / 0.8); opacity: 0; }
-  .lp-ring.r2 { border-style: dashed; border-color: var(--p-accent); }
-
-  .lp-stage { position: relative; z-index: 2; display: grid; justify-items: center; gap: 0.75rem; text-align: center; padding: 1rem; }
-  .lp-mascot-wrap {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: 172px;
-    height: 172px;
-    border-radius: 50%;
-    background: #fff;
-    border: 3.5px solid #2a2a2e;
-    box-shadow: 0 8px 0 #2a2a2e, 0 24px 48px rgb(0 0 0 / 0.24);
-  }
-  .lp-mascot { transform-origin: center; }
-  .lp-spark {
-    position: absolute;
-    font-size: 1.55rem;
-    color: var(--p-accent);
-    text-shadow: 0 3px 0 #2a2a2e;
-    -webkit-text-stroke: 1.2px #2a2a2e;
-    pointer-events: none;
-  }
-  .lp-spark.k1 { top: -16px; right: -8px; }
-  .lp-spark.k2 { top: 14px; left: -24px; color: #fff; font-size: 1.35rem; }
-  .lp-spark.k3 { bottom: 8px; right: -26px; color: #fff; font-size: 1.25rem; }
-  .lp-spark.k4 { bottom: -14px; left: -6px; }
-
-  .lp-stamp {
-    display: grid;
-    gap: 0.1rem;
-    padding: 0.55rem 1.35rem 0.62rem;
-    border-radius: 12px 16px 10px 15px;
-    background: #f3f2ee;
-    color: #2a2a2e;
-    border: 3px solid #2a2a2e;
-    box-shadow: 5px 5px 0 #2a2a2e;
-    transform: rotate(-1.8deg);
-  }
-  .lp-kicker { font-size: 0.68rem; font-weight: 900; letter-spacing: 0.14em; color: #313293; }
-  .lp-label { font-size: clamp(1.05rem, 2.2vw, 1.3rem); font-weight: 900; letter-spacing: -0.02em; color: #2a2a2e; }
-  .lp-flash { position: absolute; inset: 0; z-index: 4; background: #fff; opacity: 0; pointer-events: none; }
-
-  @media (prefers-reduced-motion: no-preference) {
-    html[data-nav-out='1'] .lp-rays, html[data-nav-in='1'] .lp-rays { animation: lp-spin 12s linear infinite; }
-    html[data-nav-out='1'] .lp-ring.r1 { animation: lp-shock 0.52s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-    html[data-nav-out='1'] .lp-ring.r2 { animation: lp-shock 0.62s 0.08s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
-    html[data-nav-out='1'] .lp-mascot-wrap { animation: lp-swoop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-    html[data-nav-out='1'] .lp-mascot, html[data-nav-in='1'] .lp-mascot { animation: lp-lunita-joy 0.48s ease-in-out infinite alternate; }
-    html[data-nav-out='1'] .lp-stamp { animation: lp-stamp-slam 0.34s 0.08s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-    html[data-nav-out='1'] .lp-spark, html[data-nav-in='1'] .lp-spark { animation: lp-spark-pop 0.65s ease-in-out infinite alternate; }
-    .lp-spark.k2, .lp-spark.k4 { animation-delay: -0.32s; }
-    html[data-nav-in='reveal'] .lp-flash { animation: l-cut-flash 0.28s ease-out forwards; }
-  }
-  @keyframes lp-spin { to { transform: rotate(360deg); } }
-  @keyframes lp-shock { 0% { transform: scale(0.35); opacity: 0.95; } 100% { transform: scale(2.8); opacity: 0; } }
-  @keyframes lp-swoop {
-    0% { transform: translateY(70px) scale(0.35, 1.35) rotate(-14deg); opacity: 0; }
-    62% { transform: translateY(-10px) scale(1.12, 0.9) rotate(4deg); opacity: 1; }
-    100% { transform: translateY(0) scale(1, 1) rotate(0deg); opacity: 1; }
-  }
-  @keyframes lp-lunita-joy {
-    from { transform: translateY(4px) scale(1.04, 0.96) rotate(-4deg); }
-    to { transform: translateY(-10px) scale(0.96, 1.05) rotate(5deg); }
-  }
-  @keyframes lp-stamp-slam {
-    0% { transform: scale(1.85) rotate(6deg); opacity: 0; }
-    72% { transform: scale(0.94) rotate(-2.5deg); opacity: 1; }
-    100% { transform: scale(1) rotate(-1.8deg); opacity: 1; }
-  }
-  @keyframes lp-spark-pop { from { transform: scale(0.75) rotate(-12deg); } to { transform: scale(1.25) rotate(14deg); } }
+  @media (prefers-reduced-motion: reduce) { .ld { display: none; } }
 </style>
 
 <script>
@@ -461,236 +96,86 @@ const HERO_WORDS = [
 
   type RouteTheme = { re: RegExp; kicker: string; label: string; bg: string; accent: string };
   const ROUTE_THEMES: RouteTheme[] = [
-    { re: /^\/admisiones/, kicker: 'MATRÍCULAS 2027', label: '¡Rumbo a Admisiones!', bg: '#313293', accent: '#FECA0D' },
-    { re: /^\/modelo-stheami/, kicker: 'LABORATORIO', label: '¡Activando STHEAMI!', bg: '#6d28d9', accent: '#FECA0D' },
-    { re: /^\/niveles/, kicker: 'APRENDIZAJE', label: 'Preescolar a Once', bg: '#2e8b12', accent: '#FECA0D' },
-    { re: /^\/festival-de-bandas/, kicker: 'CIUDAD DE LA LUNA', label: '¡Suena la Banda Marcial!', bg: '#5b21b6', accent: '#FECA0D' },
-    { re: /^\/retos-2026/, kicker: '28 RETOS', label: '¡Despegando al 2026!', bg: '#1e1b4b', accent: '#38bdf8' },
-    { re: /^\/el-cole/, kicker: 'IDENTIDAD', label: 'Historia de El Cole', bg: '#1d4ed8', accent: '#FECA0D' },
-    { re: /^\/noticias/, kicker: 'VIDA ESCOLAR', label: '¡Últimas Noticias!', bg: '#c2410c', accent: '#FECA0D' },
-    { re: /^\/comunidad/, kicker: 'SIGA · MOODLE', label: 'Comunidad Lunita', bg: '#0284c7', accent: '#FECA0D' },
-    { re: /^\/contacto/, kicker: 'HABLEMOS', label: 'Canales de Contacto', bg: '#15803d', accent: '#FECA0D' },
-    { re: /^\/preguntas-frecuentes/, kicker: 'AYUDA RÁPIDA', label: 'Preguntas Frecuentes', bg: '#d97706', accent: '#fff' },
-    { re: /^\/$/, kicker: 'BIENVENIDOS', label: 'Volviendo al Inicio', bg: '#313293', accent: '#FECA0D' },
+    { re: /^\/admisiones/, kicker: 'Matrículas 2027', label: 'Admisiones', bg: '#303296', accent: '#ffc800' },
+    { re: /^\/modelo-stheami/, kicker: 'Modelo', label: 'STHEAMI', bg: '#1899d6', accent: '#ffc800' },
+    { re: /^\/niveles/, kicker: 'Aprendizaje', label: 'Niveles', bg: '#46a302', accent: '#ffc800' },
+    { re: /^\/festival-de-bandas/, kicker: 'Ciudad de la Luna', label: 'Festival de Bandas', bg: '#a568cc', accent: '#ffc800' },
+    { re: /^\/retos-2026/, kicker: 'Camino', label: 'Retos 2026', bg: '#0f1747', accent: '#ffc800' },
+    { re: /^\/el-cole/, kicker: 'Identidad', label: 'El Cole', bg: '#303296', accent: '#ffc800' },
+    { re: /^\/noticias/, kicker: 'Vida escolar', label: 'Noticias', bg: '#e08600', accent: '#fff' },
+    { re: /^\/comunidad/, kicker: 'Familias y docentes', label: 'Comunidad', bg: '#1cb0f6', accent: '#ffc800' },
+    { re: /^\/contacto/, kicker: 'Hablemos', label: 'Contacto', bg: '#46a302', accent: '#ffc800' },
+    { re: /^\/preguntas-frecuentes/, kicker: 'Ayuda', label: 'Preguntas frecuentes', bg: '#ff9600', accent: '#fff' },
+    { re: /^\/$/, kicker: 'Liceo Lunita', label: 'Inicio', bg: '#303296', accent: '#ffc800' },
   ];
+  const themeFor = (pathname: string): RouteTheme =>
+    ROUTE_THEMES.find((t) => t.re.test(pathname)) ?? { re: /.*/, kicker: 'Liceo Lunita', label: 'de Chía', bg: '#303296', accent: '#ffc800' };
 
-  const basePath = import.meta.env.BASE_URL || '/';
-  function themeFor(pathname: string): RouteTheme {
-    const rel = basePath !== '/' && pathname.startsWith(basePath) ? '/' + pathname.slice(basePath.length) : pathname;
-    for (const item of ROUTE_THEMES) {
-      if (item.re.test(rel)) return item;
-    }
-    return { re: /.*/, kicker: 'LICEO LUNITA', label: 'Viajando por Lunita…', bg: '#313293', accent: '#FECA0D' };
-  }
-
-  /* ================= 1. INTRO TOON CON 12 PRINCIPIOS DE ANIMACIÓN ================= */
-  let splashDone = false;
-  const splashTimers: number[] = [];
-
-  function finishSplash(instant = false) {
-    if (splashDone) return;
-    splashDone = true;
-    splashTimers.forEach((t) => clearTimeout(t));
-    try { sessionStorage.setItem('lunita-intro-seen', '1'); } catch {}
-    if (instant || reduce) {
-      delete html.dataset.splash;
-      return;
-    }
-    html.dataset.splash = 'flash';
-    setTimeout(() => { delete html.dataset.splash; }, 460);
-  }
-
+  /* ---------- 1. Intro (primera visita) ---------- */
   if (html.dataset.splash === '1') {
-    const splashEl = document.getElementById('lunita-splash');
-    const stageEl = document.querySelector<HTMLElement>('[data-intro-stage]');
-    const markEl = document.querySelector<HTMLElement>('[data-intro-mark]');
-    const cometEl = document.querySelector<HTMLElement>('[data-comet]');
-    const ringEl = document.querySelector<HTMLElement>('[data-impact-ring]');
-    const ovalPart = document.querySelector<SVGElement>('[data-cpart="oval"]');
-    const moonPart = document.querySelector<SVGElement>('[data-cpart="moon"]');
-    const starPart = document.querySelector<SVGElement>('[data-cpart="star"]');
-    const sparks = [...document.querySelectorAll<HTMLElement>('[data-cspark]')];
-    const words = [...document.querySelectorAll<HTMLElement>('[data-launch-word]')];
-    const subEl = document.querySelector<HTMLElement>('[data-intro-sub]');
-    const skipBtn = document.querySelector<HTMLButtonElement>('[data-skip-splash]');
-
-    skipBtn?.addEventListener('click', (e) => { e.stopPropagation(); finishSplash(true); });
-    splashEl?.addEventListener('click', () => finishSplash(false));
-    addEventListener('keydown', (e) => { if (e.key === 'Escape') finishSplash(true); }, { once: true });
-
-    if (reduce || !stageEl || !markEl) {
-      finishSplash(true);
-    } else {
-      stageEl.classList.add('is-ink');
-
-      // ACTO 1 (0–650 ms): Anticipación en la firma inferior + lanzamiento del cometa estrella en arco
-      splashTimers.push(window.setTimeout(() => {
-        if (splashDone) return;
-
-        // Anticipación: la firma se agacha (squash) antes de impulsar el cometa
-        markEl.animate([
-          { transform: 'translateY(0) scale(1, 1)', opacity: 1, offset: 0 },
-          { transform: 'translateY(8px) scale(1.12, 0.82)', opacity: 1, offset: 0.34 },
-          { transform: 'translateY(-18px) scale(0.86, 1.18)', opacity: 0.9, offset: 0.62 },
-          { transform: 'translateY(10px) scale(0.2)', opacity: 0, offset: 1 },
-        ], { duration: 420, easing: 'cubic-bezier(0.35, 0, 0.25, 1)', fill: 'forwards' });
-
-        // Cometa estrella sale en arco parabólico desde abajo hacia el centro del escudo
-        cometEl?.animate([
-          { transform: 'translate(-120px, 240px) scale(0.3) rotate(-40deg)', opacity: 0, offset: 0 },
-          { transform: 'translate(-95px, 160px) scale(1.15, 0.8) rotate(-15deg)', opacity: 1, offset: 0.2 },
-          { transform: 'translate(35px, -110px) scale(0.85, 1.25) rotate(120deg)', opacity: 1, offset: 0.62 },
-          { transform: 'translate(0px, -65px) scale(1.35) rotate(240deg)', opacity: 0, offset: 1 },
-        ], { duration: 540, delay: 110, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' });
-
-        // ACTO 2 (+420 ms): Ensamble del Escudo con Overlapping Action + Squash & Stretch
-        splashTimers.push(window.setTimeout(() => {
-          if (splashDone) return;
-
-          // Acción secundaria: onda circular de impacto al aterrizar el escudo
-          ringEl?.animate([
-            { transform: 'scale(0.35) rotate(0deg)', opacity: 0.9 },
-            { transform: 'scale(1.55) rotate(65deg)', opacity: 0 },
-          ], { duration: 560, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' });
-
-          // 1) Óvalo cae desde arriba con Squash & Stretch real
-          ovalPart?.animate([
-            { transform: 'translateY(-90px) scale(0.55, 1.38)', opacity: 0, offset: 0 },
-            { transform: 'translateY(10px) scale(1.22, 0.78)', opacity: 1, offset: 0.48 },
-            { transform: 'translateY(-8px) scale(0.92, 1.08)', opacity: 1, offset: 0.74 },
-            { transform: 'translateY(0px) scale(1, 1)', opacity: 1, offset: 1 },
-          ], { duration: 640, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' });
-
-          // 2) Media luna entra en arco orbital (+110 ms overlapping)
-          moonPart?.animate([
-            { transform: 'translate(-70px, 55px) rotate(-38deg) scale(0.5)', opacity: 0, offset: 0 },
-            { transform: 'translate(6px, -6px) rotate(6deg) scale(1.08)', opacity: 1, offset: 0.65 },
-            { transform: 'translate(0, 0) rotate(0deg) scale(1)', opacity: 1, offset: 1 },
-          ], { duration: 560, delay: 110, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', fill: 'forwards' });
-
-          // 3) Estrella del escudo encaja con giro de 360° y destello (+230 ms)
-          starPart?.animate([
-            { transform: 'translate(40px, -60px) rotate(-220deg) scale(0.1)', opacity: 0, offset: 0 },
-            { transform: 'translate(0, 0) rotate(18deg) scale(1.38)', opacity: 1, offset: 0.68 },
-            { transform: 'translate(0, 0) rotate(0deg) scale(1)', opacity: 1, offset: 1 },
-          ], { duration: 500, delay: 230, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', fill: 'forwards' });
-
-          // 4) Palabras "LICEO · LUNITA · DE CHÍA" entran en arco escalonado con squash
-          words.forEach((w, i) => {
-            const xOff = (i - 1) * 44;
-            w.animate([
-              { transform: `translate(${xOff}px, 85px) scale(0.45, 1.35) rotate(${(i - 1) * 9}deg)`, opacity: 0, offset: 0 },
-              { transform: 'translate(0px, -8px) scale(1.16, 0.84) rotate(0deg)', opacity: 1, offset: 0.58 },
-              { transform: 'translate(0px, 3px) scale(0.95, 1.05) rotate(0deg)', opacity: 1, offset: 0.82 },
-              { transform: 'translate(0px, 0px) scale(1, 1) rotate(0deg)', opacity: 1, offset: 1 },
-            ], { duration: 580, delay: 190 + i * 85, easing: 'cubic-bezier(0.22, 1, 0.36, 1)', fill: 'forwards' });
-          });
-
-          // 5) Golpe de color institucional + chispas + sello lema (+640 ms)
-          splashTimers.push(window.setTimeout(() => {
-            if (splashDone) return;
-            stageEl.classList.remove('is-ink');
-            stageEl.classList.add('is-vivid');
-
-            sparks.forEach((sp, i) => {
-              sp.animate([
-                { transform: 'scale(0) rotate(-35deg)', opacity: 0 },
-                { transform: 'scale(1.3) rotate(14deg)', opacity: 1, offset: 0.6 },
-                { transform: 'scale(1) rotate(0deg)', opacity: 1 },
-              ], { duration: 420, delay: i * 55, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', fill: 'forwards' });
-            });
-
-            subEl?.animate([
-              { transform: 'scale(1.55) rotate(5deg)', opacity: 0 },
-              { transform: 'scale(0.95) rotate(-2deg)', opacity: 1, offset: 0.68 },
-              { transform: 'scale(1) rotate(-1.4deg)', opacity: 1 },
-            ], { duration: 360, easing: 'cubic-bezier(0.34, 1.56, 0.64, 1)', fill: 'forwards' });
-          }, 640));
-
-          // ACTO 3 (+1280 ms): Anticipación de salida (pequeño impulso) -> Zoom-Out + Cut-Flash
-          splashTimers.push(window.setTimeout(() => {
-            if (splashDone) return;
-            stageEl.animate([
-              { transform: 'scale(1, 1) translateY(0)', opacity: 1, offset: 0 },
-              { transform: 'scale(1.06, 0.93) translateY(10px)', opacity: 1, offset: 0.36 },
-              { transform: 'scale(1.18, 1.18) translateY(-18px)', opacity: 0, offset: 1 },
-            ], { duration: 340, easing: 'cubic-bezier(0.45, 0, 0.85, 0.25)', fill: 'forwards' });
-
-            splashTimers.push(window.setTimeout(() => finishSplash(false), 180));
-          }, 1280));
-        }, 420));
-      }, 520));
-    }
+    let done = false;
+    const finish = () => {
+      if (done) return;
+      done = true;
+      try { sessionStorage.setItem('lunita-intro-seen', '1'); } catch {}
+      html.dataset.splash = 'out';
+      setTimeout(() => { delete html.dataset.splash; }, 900);
+    };
+    const timer = setTimeout(finish, 1500);
+    const skip = () => { clearTimeout(timer); finish(); };
+    document.querySelector('[data-skip-splash]')?.addEventListener('click', skip);
+    document.querySelector('.ld')?.addEventListener('click', skip);
+    addEventListener('keydown', (e) => { if (e.key === 'Escape') skip(); }, { once: true });
   }
 
-  /* ================= 2. PORTAL CÓMIC ENTRE PÁGINAS CON LUNITA ================= */
-  function waitPageReady(minMs = 260, maxMs = 900): Promise<void> {
+  /* ---------- 2. Transición entre páginas ---------- */
+  const waitReady = (minMs: number, maxMs: number) => {
     const delay = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
-    const fontsReady = document.fonts?.ready?.catch(() => {}) ?? Promise.resolve();
-    const domReady = document.readyState === 'complete'
-      ? Promise.resolve()
-      : new Promise<void>((r) => addEventListener('load', () => r(), { once: true }));
-    // Espera mínimo `minMs` para que la transición se aprecie bien, y hasta `maxMs` a que fuentes/DOM estén listos
-    return Promise.all([
-      delay(minMs),
-      Promise.race([Promise.all([fontsReady, domReady]), delay(maxMs)]),
-    ]).then(() => {});
-  }
+    const loaded = document.readyState === 'complete' ? Promise.resolve() : new Promise<void>((r) => addEventListener('load', () => r(), { once: true }));
+    return Promise.all([delay(minMs), Promise.race([loaded, delay(maxMs)])]);
+  };
 
-  function revealIncoming() {
-    if (html.dataset.navIn === '1') {
-      try {
-        const raw = sessionStorage.getItem('lunita-nav');
-        if (raw) {
-          const data = JSON.parse(raw);
-          if (data.bg) html.style.setProperty('--nav-bg', data.bg);
-          if (data.accent) html.style.setProperty('--nav-accent', data.accent);
-          if (data.label && labelEl) labelEl.textContent = data.label;
-          if (data.kicker && kickerEl) kickerEl.textContent = data.kicker;
-        }
-        sessionStorage.removeItem('lunita-nav');
-      } catch {}
-      waitPageReady(260, 900).then(() => {
-        if (html.dataset.navIn !== '1') return;
-        html.dataset.navIn = 'reveal';
-        setTimeout(() => { delete html.dataset.navIn; }, 420);
-      });
-    }
-  }
+  const revealIncoming = () => {
+    if (html.dataset.navIn !== '1') return;
+    try {
+      const d = JSON.parse(sessionStorage.getItem('lunita-nav') || '{}');
+      if (d.label && labelEl) labelEl.textContent = d.label;
+      if (d.kicker && kickerEl) kickerEl.textContent = d.kicker;
+      sessionStorage.removeItem('lunita-nav');
+    } catch {}
+    waitReady(180, 800).then(() => {
+      if (html.dataset.navIn !== '1') return;
+      html.dataset.navIn = 'reveal';
+      setTimeout(() => { delete html.dataset.navIn; }, 900);
+    });
+  };
   revealIncoming();
 
-  addEventListener('pageshow', () => {
-    delete html.dataset.navOut;
-    if (html.dataset.navIn === '1') revealIncoming();
+  addEventListener('pageshow', (e) => {
+    if ((e as PageTransitionEvent).persisted) delete html.dataset.navOut;
+    revealIncoming();
   });
 
   if (!reduce) {
     document.addEventListener('click', (e) => {
       if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
       const a = (e.target as Element | null)?.closest('a[href]') as HTMLAnchorElement | null;
-      if (!a) return;
-      if (a.target && a.target !== '_self') return;
-      if (a.hasAttribute('download')) return;
-
+      if (!a || (a.target && a.target !== '_self') || a.hasAttribute('download')) return;
       let url: URL;
       try { url = new URL(a.href, location.href); } catch { return; }
       if (url.origin !== location.origin) return;
       if (url.pathname === location.pathname && url.search === location.search) return;
+      if (/\.(pdf|ics|mp3|json|xml|txt)$/i.test(url.pathname)) return;
 
       e.preventDefault();
       const t = themeFor(url.pathname);
       html.style.setProperty('--nav-bg', t.bg);
       html.style.setProperty('--nav-accent', t.accent);
-      html.style.setProperty('--nav-cx', `${Math.round(e.clientX)}px`);
-      html.style.setProperty('--nav-cy', `${Math.round(e.clientY)}px`);
       if (labelEl) labelEl.textContent = t.label;
       if (kickerEl) kickerEl.textContent = t.kicker;
-      try {
-        sessionStorage.setItem('lunita-nav', JSON.stringify({ bg: t.bg, accent: t.accent, label: t.label, kicker: t.kicker }));
-      } catch {}
+      try { sessionStorage.setItem('lunita-nav', JSON.stringify(t)); } catch {}
       html.dataset.navOut = '1';
-      // 480 ms para disfrutar la explosión del portal, Lunita y el sello antes de cambiar de página
-      setTimeout(() => { location.href = url.href; }, 480);
+      setTimeout(() => { location.href = url.href; }, 620);
     });
   }
 </script>

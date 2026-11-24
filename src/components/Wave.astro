@@ -49,13 +49,13 @@ const uid = `wv${Math.random().toString(36).slice(2, 7)}`;
   .w-line { fill: none; vector-effect: non-scaling-stroke; }
   .w-orbit { stroke: var(--lc); stroke-width: 3; stroke-dasharray: 2 12; stroke-linecap: round; opacity: 0.85; }
   .w-muisca { stroke: var(--lc); stroke-width: 10; stroke-dasharray: 14 10; stroke-linecap: butt; }
-  .js .w-orbit { stroke-dasharray: 2 12; mask: none; clip-path: inset(0 100% 0 0); transition: clip-path 1.6s var(--ease); }
-  .js .w-muisca { clip-path: inset(0 100% 0 0); transition: clip-path 1.6s var(--ease); }
-  .js .wave.is-in .w-line { clip-path: inset(0 0 0 0); }
+  :global(.js) .w-orbit { stroke-dasharray: 2 12; mask: none; clip-path: inset(0 100% 0 0); transition: clip-path 1.6s var(--ease); }
+  :global(.js) .w-muisca { clip-path: inset(0 100% 0 0); transition: clip-path 1.6s var(--ease); }
+  :global(.js) .wave.is-in .w-line { clip-path: inset(0 0 0 0); }
   .w-star-layer { pointer-events: none; }
   .w-star { fill: var(--yellow); opacity: 0; }
   .wave.is-in .w-star { opacity: 1; }
-  @media (prefers-reduced-motion: reduce) { .js .w-line { clip-path: none !important; } }
+  @media (prefers-reduced-motion: reduce) { :global(.js) .w-line { clip-path: none !important; } }
 </style>
 
 <script>

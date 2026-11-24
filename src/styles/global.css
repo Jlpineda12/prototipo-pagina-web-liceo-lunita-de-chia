@@ -284,3 +284,4 @@ main > :first-child { padding-top: calc(var(--header-h) + 3rem) !important; }
 .js [data-reveal] .sticker--tile { transform: scale(0.4) rotate(-20deg); opacity: 0; transition: transform 0.6s var(--spring), opacity 0.3s; transition-delay: calc(var(--d, 0) * 80ms + 250ms); }
 .js [data-reveal].is-in .sticker--tile { transform: none; opacity: 1; }
 @media (prefers-reduced-motion: reduce) { .js [data-reveal='mask'] { opacity: 1; filter: none; transform: none; } .js [data-reveal] .sticker--tile { transform: none; opacity: 1; } }
+

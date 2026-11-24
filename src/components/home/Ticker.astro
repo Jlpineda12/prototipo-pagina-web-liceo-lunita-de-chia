@@ -1,55 +1,75 @@
 ---
 /**
- * "Lo último" como cinta curva que atraviesa la división entre el hero y la siguiente sección.
- * El texto corre SOBRE la curva (textPath) y debajo va una cinta de tejido muisca cuyos rombos siguen la onda.
- * La curva se recalcula con el ancho real de la pantalla para que el texto nunca se deforme.
+ * "Lo último": cinta curva que ES la división entre el hero y la sección siguiente.
+ *  - Banda gruesa azul marino estilo sticker: sombra plana debajo, igual que los botones del sitio.
+ *  - Etiqueta amarilla fija "Lo último" que sigue la inclinación de la curva (como un botón del sitio).
+ *  - Las noticias corren sobre la curva con su fecha y un punto de color de la paleta entre una y otra;
+ *    se pausan al pasar el cursor. Al iniciar el sitio la banda se dibuja de izquierda a derecha.
+ * La curva se recalcula con el ancho real para que el texto nunca se deforme.
  */
 import { getCollection } from 'astro:content';
 interface Props { from?: string; to?: string }
 const { from = 'var(--cobalt)', to = '#fff' } = Astro.props;
 const posts = (await getCollection('noticias', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()).slice(0, 6);
-const items = posts.map((p) => ({ t: p.data.title, u: `/noticias/${p.id}/` }));
+const fmt = new Intl.DateTimeFormat('es-CO', { day: 'numeric', month: 'short', timeZone: 'UTC' });
+const items = posts.map((p) => ({ t: p.data.title, u: `/noticias/${p.id}/`, d: fmt.format(p.data.date).replace('.', '').toUpperCase() }));
+const DOTS = ['#ffc800', '#1cb0f6', '#58cc02', '#ff86d0', '#ce82ff', '#ff9600'];
 ---
 
 <div class="ribbon-wrap" style={`--from:${from}; --to:${to}`} data-ribbon>
   <nav class="sr-only" aria-label="Lo último"><ul>{items.map((i) => <li><a href={i.u}>{i.t}</a></li>)}</ul></nav>
   <svg class="ribbon-svg" aria-hidden="true" data-ribbon-svg>
-    <defs><path id="rb-path" d="" /><path id="rb-path2" d="" /></defs>
+    <defs><path id="rb-path" d="" /></defs>
     <path class="rb-ground" d="" />
-    <use href="#rb-path2" class="rb-band" />
-    <g class="rb-diamonds"></g>
     <use href="#rb-path" class="rb-shadow" />
     <use href="#rb-path" class="rb-main" />
-    <text class="rb-text" dy="0.36em"><textPath href="#rb-path" startOffset="0">
+    <text class="rb-text" dy="0.35em"><textPath href="#rb-path" startOffset="0">
       {[0, 1, 2].map(() => (
         <>
-          <tspan class="rb-tag">✦ LO ÚLTIMO ✦</tspan>
-          {items.map((i) => (<><tspan>{'   '}</tspan><a href={i.u} tabindex="-1"><tspan class="rb-link">{i.t}</tspan></a><tspan class="rb-sep">{'   ★'}</tspan></>))}
-          <tspan>{'   '}</tspan>
+          {items.map((i, k) => (<><tspan class="rb-date">{i.d}</tspan><tspan>{'   '}</tspan><a href={i.u} tabindex="-1"><tspan class="rb-link">{i.t}</tspan></a><tspan>{'      '}</tspan><tspan class="rb-dot" style={`fill:${DOTS[k % DOTS.length]}`}>●</tspan><tspan>{'      '}</tspan></>))}
         </>
       ))}
     </textPath></text>
+    <g class="rb-badge" data-badge>
+      <g class="b-pop">
+        <rect class="b-shadow" x="-88" y="-24" width="176" height="48" rx="24" />
+        <rect class="b-face" x="-88" y="-24" width="176" height="48" rx="24" />
+        <path class="b-moon" transform="translate(-60 0) scale(0.9)" d="M4-14a14 14 0 1 0 10 24A11 11 0 0 1 4-14z" />
+        <text class="b-text" x="12" y="0" dy="0.36em" text-anchor="middle">LO ÚLTIMO</text>
+      </g>
+    </g>
   </svg>
 </div>
 
 <style>
-  .ribbon-wrap { position: relative; z-index: 6; height: clamp(150px, 16vw, 210px); margin-top: calc(-1 * clamp(110px, 11vw, 150px)); pointer-events: none; overflow-x: clip; }
+  .ribbon-wrap { position: relative; z-index: 6; height: clamp(180px, 18vw, 240px); margin-top: calc(-1 * clamp(125px, 12.5vw, 168px)); pointer-events: none; overflow-x: clip; --band: clamp(62px, 6vw, 86px); }
   .ribbon-svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
   .rb-ground { fill: var(--to); }
-  .rb-band { fill: none; stroke: var(--yellow); stroke-width: 26; stroke-linecap: round; }
-  .rb-diamonds :global(rect) { fill: var(--blue); }
-  .rb-diamonds :global(rect.alt) { fill: var(--navy); }
-  .rb-shadow { fill: none; stroke: rgb(0 0 0 / 0.22); stroke-width: 58; transform: translateY(6px); }
-  .rb-main { fill: none; stroke: var(--navy); stroke-width: 58; }
-  .rb-text { font: 900 19px var(--font); letter-spacing: 0.02em; fill: #fff; pointer-events: auto; white-space: pre; }
-  .rb-tag { fill: var(--yellow); letter-spacing: 0.12em; font-size: 16px; }
-  .rb-sep { fill: var(--yellow); }
+  .rb-shadow { fill: none; stroke: var(--navy-d); stroke-width: var(--band); transform: translateY(10px); }
+  .rb-main { fill: none; stroke: var(--navy); stroke-width: var(--band); }
+  .rb-text { font: 800 clamp(16px, 1.45vw, 21px) var(--font); letter-spacing: 0.005em; fill: #fff; pointer-events: auto; white-space: pre; }
+  .rb-date { fill: var(--yellow); font-weight: 900; font-size: 0.72em; letter-spacing: 0.12em; }
+  .rb-dot { font-size: 0.62em; }
   .rb-text a { cursor: pointer; }
   .rb-text a:hover .rb-link { fill: var(--yellow); text-decoration: underline; }
-  .js .ribbon-wrap .rb-main, .js .ribbon-wrap .rb-shadow, .js .ribbon-wrap .rb-band { stroke-dasharray: var(--len, 3000); stroke-dashoffset: var(--len, 3000); transition: stroke-dashoffset 1.4s var(--ease); }
-  .js .ribbon-wrap.is-in .rb-main, .js .ribbon-wrap.is-in .rb-shadow, .js .ribbon-wrap.is-in .rb-band { stroke-dashoffset: 0; }
-  .js .ribbon-wrap .rb-text, .js .ribbon-wrap .rb-diamonds { opacity: 0; transition: opacity 0.6s 1s; }
-  .js .ribbon-wrap.is-in .rb-text, .js .ribbon-wrap.is-in .rb-diamonds { opacity: 1; }
+
+  /* Etiqueta "Lo último": botón sticker amarillo con sombra plana */
+  .rb-badge { pointer-events: none; }
+  .b-shadow { fill: var(--yellow-d); transform: translateY(6px); }
+  .b-face { fill: var(--yellow); }
+  .b-moon { fill: var(--navy); }
+  .b-text { font: 900 16px var(--font); letter-spacing: 0.12em; fill: var(--navy); }
+
+  /* Se dibuja al iniciar: la banda (y su sombra) avanza de izquierda a derecha, salta la etiqueta y entra el texto */
+  :global(.js) .ribbon-wrap .rb-main, :global(.js) .ribbon-wrap .rb-shadow { stroke-dasharray: var(--len, 3000); stroke-dashoffset: var(--len, 3000); transition: stroke-dashoffset 1.5s cubic-bezier(0.65, 0, 0.35, 1); }
+  :global(.js) .ribbon-wrap .rb-shadow { transition-delay: 0.06s; }
+  :global(.js) .ribbon-wrap.is-in .rb-main, :global(.js) .ribbon-wrap.is-in .rb-shadow { stroke-dashoffset: 0; }
+  :global(.js) .ribbon-wrap .rb-text { opacity: 0; transition: opacity 0.7s 1.2s; }
+  :global(.js) .ribbon-wrap.is-in .rb-text { opacity: 1; }
+  :global(.js) .ribbon-wrap .b-pop { transform: scale(0); transition: transform 0.6s 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  :global(.js) .ribbon-wrap.is-in .b-pop { transform: none; }
+  @media (max-width: 560px) { .b-pop { scale: 0.8; } }
+  @media (prefers-reduced-motion: reduce) { :global(.js) .ribbon-wrap .b-pop { transition: none; } }
 </style>
 
 <script>
@@ -57,47 +77,36 @@ const items = posts.map((p) => ({ t: p.data.title, u: `/noticias/${p.id}/` }));
   if (wrap) {
     const svg = wrap.querySelector<SVGSVGElement>('[data-ribbon-svg]')!;
     const p1 = svg.querySelector<SVGPathElement>('#rb-path')!;
-    const p2 = svg.querySelector<SVGPathElement>('#rb-path2')!;
     const ground = svg.querySelector<SVGPathElement>('.rb-ground')!;
-    const diamonds = svg.querySelector<SVGGElement>('.rb-diamonds')!;
-    const tp = svg.querySelector<SVGTextPathElement>('textPath')!;
+    const badge = svg.querySelector<SVGGElement>('[data-badge]')!;
+    const tp = svg.querySelector<SVGTextPathElement>('.rb-text textPath')!;
     const text = svg.querySelector<SVGTextElement>('.rb-text')!;
     const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const NS = 'http://www.w3.org/2000/svg';
     let copy = 0, offset = 0, paused = false, raf = 0, visible = false;
 
     const layout = () => {
       const w = wrap.clientWidth, h = wrap.clientHeight;
       svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
-      // Onda: entra baja por la izquierda, sube al centro-izquierda y cae hacia la derecha
-      const y = (f: number) => h * f;
-      const main = `M-60 ${y(0.62)} C ${w * 0.22} ${y(0.08)}, ${w * 0.5} ${y(0.2)}, ${w * 0.68} ${y(0.5)} S ${w * 0.92} ${y(0.86)}, ${w + 60} ${y(0.5)}`;
-      const band = `M-60 ${y(0.86)} C ${w * 0.25} ${y(0.36)}, ${w * 0.52} ${y(0.46)}, ${w * 0.7} ${y(0.74)} S ${w * 0.93} ${y(1.06)}, ${w + 60} ${y(0.74)}`;
+      const y = (f: number) => (h * f).toFixed(1);
+      const main = `M-60 ${y(0.6)} C ${w * 0.24} ${y(0.12)}, ${w * 0.5} ${y(0.22)}, ${w * 0.7} ${y(0.5)} S ${w * 0.94} ${y(0.8)}, ${w + 60} ${y(0.46)}`;
       p1.setAttribute('d', main);
-      p2.setAttribute('d', band);
-      // El "suelo" (siguiente sección) sigue la cinta muisca: la división también es curva
-      ground.setAttribute('d', `${band} L ${w + 60} ${h + 40} L -60 ${h + 40} Z`);
+      // La división sigue exactamente la cinta: media cinta sobre el hero, media sobre la sección siguiente
+      const g = `M-60 ${y(0.6)} C ${w * 0.24} ${y(0.12)}, ${w * 0.5} ${y(0.22)}, ${w * 0.7} ${y(0.5)} S ${w * 0.94} ${y(0.8)}, ${w + 60} ${y(0.46)}`;
+      ground.setAttribute('d', `${g} L ${w + 60} ${h + 40} L -60 ${h + 40} Z`);
       const len = Math.ceil(p1.getTotalLength());
-      wrap.style.setProperty('--len', String(len + 200));
-      // Rombos del tejido muisca a lo largo de la cinta inferior
-      diamonds.replaceChildren();
-      const L2 = p2.getTotalLength();
-      for (let s = 10, i = 0; s < L2; s += 26, i++) {
-        const a = p2.getPointAtLength(s), b = p2.getPointAtLength(Math.min(L2, s + 1));
-        const ang = (Math.atan2(b.y - a.y, b.x - a.x) * 180) / Math.PI;
-        const r = document.createElementNS(NS, 'rect');
-        r.setAttribute('x', String(-6)); r.setAttribute('y', String(-6)); r.setAttribute('width', '12'); r.setAttribute('height', '12'); r.setAttribute('rx', '1.5');
-        r.setAttribute('transform', `translate(${a.x.toFixed(1)} ${a.y.toFixed(1)}) rotate(${(ang + 45).toFixed(1)})`);
-        if (i % 2) r.setAttribute('class', 'alt');
-        diamonds.append(r);
-      }
+      wrap.style.setProperty('--len', String(len + 260));
+      // Etiqueta fija cerca del inicio, inclinada según la curva
+      const d0 = 130 + w * 0.05;
+      const at = p1.getPointAtLength(d0), a2 = p1.getPointAtLength(d0 + 4);
+      const ang = (Math.atan2(a2.y - at.y, a2.x - at.x) * 180) / Math.PI;
+      badge.setAttribute('transform', `translate(${at.x.toFixed(1)} ${at.y.toFixed(1)}) rotate(${ang.toFixed(1)})`);
       copy = text.getComputedTextLength() / 3;
     };
 
     const tick = () => {
       raf = 0;
       if (!paused && visible) {
-        offset -= 0.6;
+        offset -= 0.55;
         if (offset < -copy) offset += copy;
         tp.setAttribute('startOffset', offset.toFixed(1));
       }
@@ -109,9 +118,17 @@ const items = posts.map((p) => ({ t: p.data.title, u: `/noticias/${p.id}/` }));
     document.fonts?.ready.then(layout);
     text.addEventListener('pointerenter', () => (paused = true));
     text.addEventListener('pointerleave', () => (paused = false));
+    // Se dibuja cuando la pantalla de carga ya se fue (al iniciar el sitio) y la cinta está a la vista
+    const html = document.documentElement;
+    const revealed = () => html.dataset.splash !== '1' && html.dataset.navIn !== '1';
+    const draw = () => {
+      if (!visible || wrap.classList.contains('is-in')) return;
+      if (revealed()) requestAnimationFrame(() => wrap.classList.add('is-in'));
+    };
+    new MutationObserver(draw).observe(html, { attributes: true, attributeFilter: ['data-splash', 'data-nav-in'] });
     new IntersectionObserver(([e]) => {
       visible = e.isIntersecting;
-      if (visible) { wrap.classList.add('is-in'); if (!raf && !reduce) raf = requestAnimationFrame(tick); }
+      if (visible) { draw(); if (!raf && !reduce) raf = requestAnimationFrame(tick); }
     }, { threshold: 0.2 }).observe(wrap);
   }
 </script>

@@ -223,7 +223,7 @@ const highlights = [
   .fines li { display: grid; grid-template-columns: auto 1fr; gap: 0.9rem; align-items: start; }
   .fines li p { margin: 0; font-size: 0.95rem; color: var(--ink-2); }
   .fn { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; background: var(--c); color: #fff; font-weight: 900; box-shadow: 0 3px 0 var(--cd); }
-  .js .fines:not(.open) .extra { display: none; }
+  :global(.js) .fines:not(.open) .extra { display: none; }
   .more-f { text-align: center; margin-top: 1.6rem; }
   .hymn { display: grid; gap: 2.5rem; align-items: start; }
   @media (min-width: 960px) { .hymn { grid-template-columns: 0.9fr 1.1fr; gap: 4rem; } }

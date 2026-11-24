@@ -150,8 +150,21 @@ export function initLunitas() {
 
   // 4. Rive opcional (solo si alguna instancia tiene `data-rive`)
   const riveEls = all.filter((el) => el.hasAttribute('data-rive'));
+  const introEls = riveEls.filter((el) => el.hasAttribute('data-intro'));
   const conn = (navigator as any).connection;
-  if (!riveEls.length || reduce() || conn?.saveData) return;
+  const fail = (el: HTMLElement) => { if (!el.hasAttribute('data-rive-ready')) el.setAttribute('data-rive-fail', ''); };
+  if (!riveEls.length || reduce() || conn?.saveData) { introEls.forEach(fail); return; }
+
+  // La entrada se reserva hasta que la pantalla de carga se haya ido
+  const html = document.documentElement;
+  const revealed = () => new Promise<void>((done) => {
+    const ok = () => html.dataset.splash !== '1' && html.dataset.navIn !== '1';
+    if (ok()) return done();
+    const mo = new MutationObserver(() => { if (ok()) { mo.disconnect(); done(); } });
+    mo.observe(html, { attributes: true, attributeFilter: ['data-splash', 'data-nav-in'] });
+  });
+  // Red de seguridad: si Rive no está listo poco después de revelarse la página, entra el SVG
+  revealed().then(() => setTimeout(() => introEls.forEach(fail), 2600));
 
   const go = async () => {
     try {
@@ -172,36 +185,56 @@ export function initLunitas() {
           onLoad: () => {
             r.resizeDrawingSurfaceToCanvas();
             const vm = (r as any).viewModelInstance;
+            const isIntro = el.hasAttribute('data-intro');
             const api: RiveApi = {
               celebrate: (on) => { const p = vm?.boolean('celebrate'); if (p) p.value = on; },
-              tap: () => vm?.trigger('tap')?.trigger(),
+              // Durante la espera o la entrada no se interrumpe con saltos
+              tap: () => { if (el.hasAttribute('data-rive-ready') && !el.hasAttribute('data-intro-playing')) vm?.trigger('tap')?.trigger(); },
             };
             (el as any).__lunita = api;
+            const setIntro = () => { const p = vm?.boolean('intro'); if (p) p.value = true; };
+            // Sin entrada pendiente, la máquina sale de "Espera" de inmediato
+            if (!isIntro) setIntro();
+            const ready = () => {
+              el.setAttribute('data-rive-ready', '');
+              el.dispatchEvent(new CustomEvent('lunita:ready', { bubbles: true }));
+            };
             const tStart = performance.now();
             const waitClean = () => {
               if (hasCleanRiveFrame(canvas)) {
-                el.setAttribute('data-rive-ready', '');
-                el.dispatchEvent(new CustomEvent('lunita:ready', { bubbles: true }));
+                if (!isIntro) return ready();
+                // Render verificado con el canvas aún invisible (Lunita quieta en "Espera").
+                // Cuando la página se revela, se activa `intro` y la entrada arranca desde el fotograma 0.
+                revealed().then(() => {
+                  if (el.hasAttribute('data-rive-fail')) { r.pause(); canvas.hidden = true; return; } // ya entró el SVG: se queda
+                  setIntro();
+                  el.setAttribute('data-intro-playing', '');
+                  setTimeout(() => el.removeAttribute('data-intro-playing'), 1500);
+                  setTimeout(ready, 50); // la máquina ya avanzó a la Intro antes de mostrar el canvas
+                });
                 return;
               }
               if (performance.now() - tStart > 6000) {
                 r.pause();
                 canvas.hidden = true;
+                fail(el);
                 return;
               }
               requestAnimationFrame(waitClean);
             };
             requestAnimationFrame(waitClean);
           },
-          onLoadError: () => { canvas.hidden = true; },
+          onLoadError: () => { canvas.hidden = true; fail(el); },
         });
         new ResizeObserver(() => r.resizeDrawingSurfaceToCanvas()).observe(canvas);
         new IntersectionObserver(([e]) => (e.isIntersecting ? r.play() : r.pause())).observe(el);
       }
     } catch {
-      /* respaldo SVG activo */
+      introEls.forEach(fail); /* respaldo SVG activo */
     }
   };
+  // Con una entrada pendiente (hero) se carga ya; si no, cuando el navegador esté libre
+  if (introEls.length) { go(); return; }
   const idle = (window as any).requestIdleCallback || ((cb: () => void) => setTimeout(cb, 800));
   if (document.readyState === 'complete') idle(go); else addEventListener('load', () => idle(go), { once: true });
 }
