@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lunita: animaciones SVG</title>
+<style>
+  @font-face { font-family: 'Nunito'; font-weight: 200 1000; font-display: swap; src: url('../../node_modules/@fontsource-variable/nunito/files/nunito-latin-wght-normal.woff2') format('woff2'); }
+  :root { --ivory: #fbf6ec; --navy: #0f1747; --muted: #666; --line: #e8e2d6; --yellow: #ffc800; --yellow-d: #e5a400; --blue: #3047d9; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--ivory); color: var(--navy); font: 600 16px/1.5 'Nunito', system-ui, sans-serif; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 40px 16px 80px; }
+  h1 { font-size: clamp(28px, 4vw, 42px); font-weight: 900; margin: 0 0 6px; letter-spacing: -0.01em; }
+  h2 { font-size: 22px; font-weight: 900; margin: 0; }
+  p.lead { margin: 0 0 28px; color: var(--muted); max-width: 62ch; }
+  .card { background: #fff; border: 2px solid var(--line); border-radius: 24px; box-shadow: 0 5px 0 var(--line); }
+
+  /* Escenario principal */
+  .stage { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; align-items: stretch; margin-bottom: 40px; }
+  .play { position: relative; display: grid; place-items: center; min-height: 460px; padding: 40px; background: var(--bg, var(--ivory)); border-radius: 24px; border: 2px solid var(--line); transition: background .3s; cursor: pointer; }
+  .play .luna { width: min(300px, 70%); }
+  .hint { position: absolute; bottom: 14px; left: 0; right: 0; text-align: center; font-size: 14px; color: var(--hint, var(--muted)); }
+  .side { padding: 24px; display: flex; flex-direction: column; gap: 18px; }
+  .row { display: flex; flex-wrap: wrap; gap: 8px; }
+  .lbl { font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-bottom: 6px; }
+  button { font: 800 15px 'Nunito', system-ui, sans-serif; color: var(--navy); background: #fff; border: 2px solid var(--line); border-radius: 14px; padding: 8px 14px; box-shadow: 0 3px 0 var(--line); cursor: pointer; transition: transform .1s, box-shadow .1s; }
+  button:active { transform: translateY(3px); box-shadow: none; }
+  button[aria-pressed="true"] { background: var(--yellow); border-color: var(--yellow-d); box-shadow: 0 3px 0 var(--yellow-d); }
+  .sizes { display: flex; align-items: flex-end; gap: 18px; }
+  .sizes figure { margin: 0; text-align: center; font-size: 12px; color: var(--muted); }
+  .sizes img { display: block; margin: 0 auto 4px; }
+
+  /* Catálogo */
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; }
+  .anim { padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .anim .box { display: grid; place-items: center; height: 240px; background: var(--ivory); border-radius: 16px; overflow: hidden; }
+  .anim .luna { width: 130px; }
+  .anim h3 { margin: 4px 0 0; font-size: 18px; font-weight: 900; }
+  .anim p { margin: 0; font-size: 14px; color: var(--muted); flex: 1; }
+  .tag { display: inline-block; font-size: 12px; font-weight: 800; padding: 2px 10px; border-radius: 99px; background: #eef1ff; color: #2a3cb8; }
+  .tag.loop { background: #fff3d6; color: #8c6400; }
+  @media (max-width: 820px) { .stage { grid-template-columns: 1fr; } .play { min-height: 380px; } }
+
+  /* ============ LUNITA: estilos y animaciones (esto es lo que se integra) ============ */
+  .luna { display: block; overflow: visible; --plate: #fff; }
+  .luna * { transform-box: view-box; }
+  .lc-plate { fill: var(--plate); }
+  .lc-ring { fill: #3047d9; }
+  .lc-trace { fill: none; stroke: #fff; stroke-width: 56; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 1 1; stroke-dashoffset: 0; }
+  .lc-spark { fill: var(--c); opacity: 0; transform-box: fill-box; transform-origin: center; }
+  .lc-z { fill: #3047d9; font: 900 1px 'Nunito', system-ui, sans-serif; opacity: 0; transform-box: fill-box; transform-origin: center; }
+  /* Pivotes (coordenadas del viewBox 440×580) */
+  .lc-body { transform-origin: 220px 576px; }
+  .lc-plate { transform-origin: 220px 290px; }
+  .lc-moon { transform-origin: 184px 320px; }
+  .lc-star { transform-origin: 299.5px 125.8px; }
+
+  /* 1. Entrada: la elipse se dibuja, la luna llega girando, la estrella salta y brilla */
+  [data-anim="intro"] .lc-plate { animation: lc-plate-in .55s cubic-bezier(.34, 1.56, .64, 1) both; }
+  [data-anim="intro"] .lc-trace { animation: lc-draw 1.1s .15s cubic-bezier(.65, 0, .35, 1) both; }
+  [data-anim="intro"] .lc-moon { transform-origin: 220px 290px; animation: lc-moon-in 1s .5s cubic-bezier(.3, 1.35, .5, 1) both; }
+  [data-anim="intro"] .lc-shade { animation: lc-shade-in .6s 1.15s ease-out both; }
+  [data-anim="intro"] .lc-star { animation: lc-star-in .7s 1.25s cubic-bezier(.34, 1.8, .64, 1) both; }
+  [data-anim="intro"] .lc-spark { animation: lc-burst .9s calc(1.45s + var(--i) * 30ms) ease-out both; }
+  @keyframes lc-plate-in { from { transform: scale(.3); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes lc-draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+  @keyframes lc-moon-in { from { transform: rotate(-150deg) scale(.15); opacity: 0; } 30% { opacity: 1; } to { transform: none; opacity: 1; } }
+  @keyframes lc-shade-in { from { opacity: 0; transform: translate(-16px, 4px); } to { opacity: 1; transform: none; } }
+  @keyframes lc-star-in { from { transform: scale(0) rotate(-200deg); } to { transform: none; } }
+  @keyframes lc-burst {
+    0% { opacity: 0; transform: rotate(var(--a)) translateY(calc(var(--r) * -0.85px)) scale(0); }
+    30% { opacity: 1; transform: rotate(var(--a)) translateY(calc(var(--r) * -1px - 30px)) scale(1.1); }
+    100% { opacity: 0; transform: rotate(var(--a)) translateY(calc(var(--r) * -1px - 70px)) scale(0); }
+  }
+
+  /* 2. Reposo: la luna se mece suave y la estrella titila de vez en cuando */
+  [data-anim="idle"] .lc-moon { animation: lc-rock 5s ease-in-out infinite; }
+  [data-anim="idle"] .lc-star { animation: lc-twinkle 3.4s ease-in-out infinite; }
+  @keyframes lc-rock { 0%, 100% { transform: rotate(-3deg) translateY(3px); } 50% { transform: rotate(3deg) translateY(-5px); } }
+  @keyframes lc-twinkle { 0%, 62%, 100% { transform: none; } 72% { transform: scale(.7) rotate(25deg); } 84% { transform: scale(1.22) rotate(-12deg); } 92% { transform: scale(.96) rotate(4deg); } }
+
+  /* 3. Saludo (hover): la luna "asiente" y la estrella da un saltito */
+  [data-anim="hello"] .lc-body { animation: lc-lean 1.2s ease-in-out both; }
+  [data-anim="hello"] .lc-moon { animation: lc-nod 1.2s cubic-bezier(.36, 0, .3, 1) both; }
+  [data-anim="hello"] .lc-star { animation: lc-star-hop 1s .1s cubic-bezier(.34, 1.4, .64, 1) both; }
+  @keyframes lc-lean { 0%, 100% { transform: none; } 25% { transform: rotate(-3deg); } 55% { transform: rotate(2deg); } 80% { transform: rotate(-1deg); } }
+  @keyframes lc-nod { 0%, 100% { transform: none; } 18% { transform: rotate(-14deg) translate(-6px, -4px); } 40% { transform: rotate(10deg); } 60% { transform: rotate(-6deg); } 78% { transform: rotate(3deg); } }
+  @keyframes lc-star-hop { 0%, 100% { transform: none; } 30% { transform: translateY(-26px) rotate(-30deg) scale(1.15); } 55% { transform: rotate(10deg) scale(.9, 1.05); } 75% { transform: translateY(-8px); } }
+
+  /* 4. Salto (clic): se agacha, salta, aterriza con rebote; la estrella gira */
+  [data-anim="hop"] .lc-body { animation: lc-hop .95s both; }
+  [data-anim="hop"] .lc-moon { animation: lc-lag .95s ease-in-out both; }
+  [data-anim="hop"] .lc-star { animation: lc-spin .9s .1s cubic-bezier(.5, 0, .3, 1) both; }
+  @keyframes lc-hop {
+    0% { transform: none; animation-timing-function: ease-out; }
+    14% { transform: scale(1.08, .9); animation-timing-function: cubic-bezier(.2, .7, .3, 1); }
+    42% { transform: translateY(-70px) scale(.95, 1.06); animation-timing-function: cubic-bezier(.6, 0, .9, .4); }
+    64% { transform: scale(1.08, .9); animation-timing-function: ease-out; }
+    80% { transform: scale(.98, 1.03); }
+    100% { transform: none; }
+  }
+  @keyframes lc-lag { 0%, 100% { transform: none; } 42% { transform: translateY(10px) rotate(-5deg); } 66% { transform: translateY(-8px) rotate(3deg); } }
+  @keyframes lc-spin { from { transform: none; } 50% { transform: rotate(200deg) scale(1.25); } to { transform: rotate(360deg); } }
+
+  /* 5. Celebración (loop): la luna da una vuelta completa dentro de la elipse y salen destellos */
+  [data-anim="party"] .lc-win, [data-anim="loading"] .lc-win { clip-path: var(--clip); }
+  [data-anim="party"] .lc-moon { transform-origin: 220px 290px; animation: lc-orbit 2.6s cubic-bezier(.7, 0, .3, 1) infinite; }
+  [data-anim="party"] .lc-star { animation: lc-party-star 2.6s ease-in-out infinite; }
+  [data-anim="party"] .lc-body { animation: lc-party-body 2.6s infinite; }
+  [data-anim="party"] .lc-spark { animation: lc-burst-loop 2.6s calc(var(--i) * 30ms) ease-out infinite; }
+  @keyframes lc-orbit { 0%, 12% { transform: none; } 66%, 100% { transform: rotate(360deg); } }
+  @keyframes lc-party-star { 0%, 40%, 100% { transform: none; } 20% { transform: translateY(-20px) rotate(-20deg) scale(1.3); } 72% { transform: translateY(-14px) rotate(15deg) scale(1.2); } 86% { transform: none; } }
+  @keyframes lc-party-body { 0%, 60%, 100% { transform: none; } 67% { transform: scale(1.05, .95); } 76% { transform: translateY(-26px) scale(.97, 1.03); } 86% { transform: scale(1.03, .97); } 93% { transform: none; } }
+  @keyframes lc-burst-loop {
+    0%, 64% { opacity: 0; transform: rotate(var(--a)) translateY(calc(var(--r) * -0.85px)) scale(0); }
+    74% { opacity: 1; transform: rotate(var(--a)) translateY(calc(var(--r) * -1px - 30px)) scale(1.1); }
+    96%, 100% { opacity: 0; transform: rotate(var(--a)) translateY(calc(var(--r) * -1px - 70px)) scale(0); }
+  }
+
+  /* 6. Cargando (loop): la elipse se dibuja y se borra mientras la luna orbita */
+  [data-anim="loading"] .lc-trace { animation: lc-chase 2.4s cubic-bezier(.65, 0, .35, 1) infinite; }
+  [data-anim="loading"] .lc-moon { transform-origin: 220px 290px; animation: lc-orbit-loop 2.4s cubic-bezier(.45, .05, .55, .95) infinite; }
+  [data-anim="loading"] .lc-star { animation: lc-blink 1.2s ease-in-out infinite; }
+  @keyframes lc-chase { 0% { stroke-dashoffset: 1; } 45%, 55% { stroke-dashoffset: 0; } 100% { stroke-dashoffset: -1; } }
+  @keyframes lc-orbit-loop { from { transform: none; } to { transform: rotate(360deg); } }
+  @keyframes lc-blink { 0%, 100% { transform: none; opacity: 1; } 50% { transform: scale(.65) rotate(30deg); opacity: .45; } }
+
+  /* 7. Dormida (loop, 404 / modo noche): la luna se inclina y respira, la estrella se apaga y salen "z" */
+  [data-anim="sleep"] .lc-moon { animation: lc-doze 1.2s ease-in-out both, lc-breathe 4s 1.2s ease-in-out infinite; }
+  [data-anim="sleep"] .lc-star { animation: lc-dim 1.2s ease-in-out both, lc-star-sleep 4s 1.2s ease-in-out infinite; }
+  [data-anim="sleep"] .lc-z { animation: lc-z 3.6s calc(1s + var(--d)) ease-out infinite; }
+  @keyframes lc-doze { from { transform: none; } to { transform: rotate(14deg) translateY(10px); } }
+  @keyframes lc-breathe { 0%, 100% { transform: rotate(14deg) translateY(10px); } 50% { transform: rotate(17deg) translateY(14px) scale(1.025); } }
+  @keyframes lc-dim { from { opacity: 1; } to { opacity: .4; } }
+  @keyframes lc-star-sleep { 0%, 100% { opacity: .4; transform: none; } 50% { opacity: .6; transform: translateY(-6px); } }
+  @keyframes lc-z { 0% { opacity: 0; transform: translate(0, 0) scale(.6); } 20% { opacity: 1; } 100% { opacity: 0; transform: translate(36px, -80px) scale(1.2); } }
+
+  /* Movimiento reducido: sin bucles; la entrada termina directamente en su pose final */
+  @media (prefers-reduced-motion: reduce) {
+    .luna * { animation-duration: .01ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Lunita: animaciones SVG</h1>
+  <p class="lead">El personaje nuevo redibujado en vector desde el PSD, con siete animaciones hechas solo con SVG y CSS (sin Rive ni librerías). Pasa el cursor sobre el escenario para el saludo y haz clic para el salto.</p>
+
+  <section class="stage">
+    <div class="play" data-play title="Pasa el cursor o haz clic">
+      <span class="hint">Cursor encima: saluda · Clic: salta</span>
+    </div>
+    <div class="card side">
+      <div>
+        <div class="lbl">Reproducir</div>
+        <div class="row" data-ctl>
+          <button data-a="intro">Entrada</button>
+          <button data-a="idle">Reposo</button>
+          <button data-a="hello">Saludo</button>
+          <button data-a="hop">Salto</button>
+          <button data-a="party">Celebración</button>
+          <button data-a="loading">Cargando</button>
+          <button data-a="sleep">Dormida</button>
+        </div>
+      </div>
+      <div>
+        <div class="lbl">Fondo</div>
+        <div class="row" data-bg>
+          <button aria-pressed="true" data-v="#fbf6ec">Marfil (hero)</button>
+          <button data-v="#ffffff">Blanco</button>
+          <button data-v="#1cb0f6">Celeste</button>
+          <button data-v="#0f1747" data-dark>Azul marino</button>
+        </div>
+      </div>
+      <div>
+        <div class="lbl">Interior de la elipse</div>
+        <div class="row" data-plate>
+          <button aria-pressed="true" data-v="#fff">Blanco (como el PSD)</button>
+          <button data-v="transparent">Transparente</button>
+        </div>
+      </div>
+      <div>
+        <div class="lbl">Tamaños pequeños</div>
+        <div class="sizes">
+          <figure><img src="luna.svg" width="18" alt="">18 px</figure>
+          <figure><img src="luna.svg" width="32" alt="">32 px</figure>
+          <figure><img src="luna.svg" width="56" alt="">56 px</figure>
+          <figure><img src="luna.svg" width="96" alt="">96 px</figure>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <h2 style="margin-bottom:16px">Las siete animaciones</h2>
+  <section class="grid" data-grid></section>
+</div>
+
+<script>
+  const P = {"ring":"M405.9 294.8L405.8 281.7L405.3 271.7L404.1 256.4L402.6 243.6L400.5 230.2L398.1 218.2L395.5 207.2L392.2 194.9L388.5 183.4L383.2 168.8L375 150L371 141.8L363.2 127.7L356.3 116.7L350 107.7L341.4 96.7L335.3 89.6L327.5 81.4L319.8 74L311.5 66.9L304.9 61.8L294.5 54.7L285.1 49.1L275.5 44.2L264.9 39.6L254.7 36L250.3 34.8L242.2 32.7L232.8 31L222.7 29.9L213.6 29.4L201.4 29.7L196.4 30.2L187.8 31.2L177.8 33.2L166.6 36.2L156 40L155.3 39.6L144.5 44.6L133.8 50.4L122.6 57.5L115.8 62.5L104.9 71.3L96.5 79.2L89.8 85.9L81 95.9L75.6 102.5L65.8 116L59.4 125.9L50.1 142.5L44.6 153.4L39 166.3L35.9 174.3L31.6 186.3L29.2 193.8L25.4 207.3L22 221.6L20.2 230.7L18.3 242.3L16.3 257.9L15.2 271.1L14.6 284.5L14.5 299.4L15.2 316.1L15.7 323.8L17.5 340.4L21 361.7L23.7 374.3L26.7 386L29.5 395.5L34.5 410.6L40.4 425.5L45 435.8L51.7 449L56.5 457.4L61.9 466.3L67.3 474.4L75.1 484.9L83 494.6L89.9 502.1L97 509.2L106.2 517.4L111.8 521.9L120.5 528.3L130 534.4L140.7 540.3L147.5 543.5L157.9 547.8L167.3 550.9L175.5 553.1L188.6 555.6L197.4 556.6L205.5 557L217.9 556.8L226.4 556L234.2 554.9L246.7 552.2L258.5 548.5L264.3 546.4L272.3 543L282.9 537.7L292.4 532.1L301.8 525.7L308.2 520.9L315.6 514.7L325.6 505.4L331.4 499.4L337.6 492.6L344 484.8L349.8 477.1L356.3 467.7L364.1 455L370.8 442.7L375.7 432.8L380.9 421L386 408L390.4 395.1L395.5 377L397.7 367.8L400.2 355L402.2 343.3L403.6 331.9L404.9 318.8L405.9 294.8ZM435.6 286.2L435.5 299.2L435 312.5L433.8 326.9L432.1 340.9L430.1 353.8L428.1 364.2L425.5 376.1L422.1 389L418.4 401.5L414.6 412.5L409.9 424.8L405.1 436.3L397.7 451.6L393.5 459.3L386.6 471.1L378.8 483L373.2 490.7L365 501.2L354.6 512.9L347.9 519.7L343.4 524L332.5 533.4L322.8 540.8L312.9 547.5L299.7 555.2L291.7 559.2L283.2 562.9L271.2 567.3L262.5 569.9L251.2 572.5L241.8 574.1L229.6 575.2L224.7 575.5L211.8 575.3L202.1 574.6L191.3 573.1L181.1 571L172.3 568.6L161.5 565L148.7 559.7L141.3 556.1L127.5 548.2L118.1 542L109.9 535.9L99.2 526.9L92 520.2L82.6 510.5L77 504.1L70.6 496.4L63.3 486.7L56.6 476.8L50.3 466.7L44.2 455.9L37 441.6L30.5 426.9L26.5 416.5L21.2 401.4L17.6 389.3L14.5 377.3L11.5 363.9L8.5 346.8L6.8 334L4.8 310.6L4.3 292L4.5 279.3L5.1 266.4L6.6 249.5L8.5 235.1L10.7 221.9L16.1 197.6L21.2 180L25.5 167.3L34.1 145.6L40.9 131.4L47 120L54 108.1L58.1 101.7L66.2 90.1L71.7 83L78.7 74.7L87.8 64.7L94.6 58L105 48.9L113.9 41.8L124.1 34.7L131.6 30L142.8 24L150.2 20.4L159.8 16.6L160 16L160.4 15.5L164.7 14L176.5 10.4L188.2 7.6L198.7 5.8L209.9 4.6L218.5 4.3L226.9 4.4L238.9 5.4L250.1 7L261.8 9.6L274.6 13.4L284.4 17.1L294.7 21.7L306.9 28.2L315.1 33.2L323.3 38.9L332 45.5L338.4 50.8L348.1 59.7L359.4 71.5L366.4 79.7L375.1 91L380.5 98.7L388.4 111.1L396.4 125.1L402.2 136.4L407.6 148.4L413 161.8L417.5 174.6L422.2 189.9L426.1 205.4L430.6 228.1L432.5 240.9L434.2 256.7L435.5 276.9L435.6 286.2Z","plate":"M405.9 289.9L405.8 300.5L405 317.5L402.9 338.3L400.9 351.2L398.7 363L395.6 376.4L393.1 385.9L390.4 395.1L386 408L382.4 417.3L377.5 428.9L372.8 438.8L368.3 447.5L361.1 460.1L356.3 467.7L349.8 477.1L344 484.8L337.6 492.6L327.1 503.9L318.6 512.1L313.3 516.7L304.7 523.6L296.8 529.2L282.9 537.7L272.3 543L264.3 546.4L258.5 548.5L246.7 552.2L238.5 554.1L229.1 555.6L218.1 556.8L212.1 557L205.5 557L192.5 556.1L183.4 554.7L174.8 552.9L167.3 550.9L159.9 548.5L151.8 545.4L143.9 541.9L135.6 537.6L126.6 532.3L120.5 528.3L111.8 521.9L103.1 514.7L95.3 507.5L89.9 502.1L83 494.6L75.1 484.9L67.3 474.4L61.9 466.3L56.4 457.4L51.7 449L45 435.8L37 417.3L32.8 405.9L29.5 395.5L26.1 383.8L22.5 369.2L18.2 345.7L16.2 328.6L15.3 318.5L14.6 303.4L14.5 290L15.1 272.2L16.3 257.9L19.4 235.2L22 221.6L25.4 207.3L29.2 193.8L32.3 184.2L36.6 172.3L41.5 160.5L46.4 149.8L53 137L59.4 125.9L65.8 116L72.4 106.7L80.5 96.5L89.8 85.9L96.5 79.2L104.9 71.3L115.8 62.5L122.6 57.5L133.8 50.4L144.5 44.6L155.3 39.6L156 40L163.6 37.2L174.4 34L183.2 32.1L190.7 30.8L201.4 29.7L212.8 29.4L222.7 29.9L232.8 31L242.2 32.7L253.8 35.8L262.1 38.5L271.9 42.5L280.1 46.5L288.4 51L298.9 57.6L306.3 62.8L317 71.5L325.2 79.1L335.3 89.6L341.4 96.7L350 107.7L356.3 116.7L363.2 127.7L371 141.8L376.4 153.1L380.2 161.6L383.2 168.8L389.2 185.4L393.9 200.9L397.1 213.6L399.6 225.4L401.7 237.4L402.8 244.9L404.7 262.9L405.6 278L405.9 289.9Z","moon":"M336 474.2L336.5 474.8L336.6 475.5L336.3 476.1L329.5 482.2L315.1 490.5L303.6 496.1L293.7 500.2L283.6 503.7L273.3 506.6L262.9 509L256.2 510.2L249.4 511.2L235.6 512.5L225.1 512.7L214 512.4L203.5 511.5L193 510.1L182.5 508L172.1 505.4L161.8 502.1L151.7 498.3L136.8 491.5L122.6 483.4L113.5 477.3L104.8 470.9L92.5 460.1L81.2 448.5L73.8 439.7L67 430.5L60.7 421L54.9 411L47.8 396.4L44.7 388.9L41.1 378.6L38.7 370.3L36 359L34 347.5L32.7 335.9L32.1 324.2L32.2 312.4L33 300.7L34.6 289L36.8 277.5L38.2 271.8L41.5 260.6L45.4 249.5L47.7 244.1L52.6 233.6L55.2 228.5L61.1 218.5L67.3 209.1L73.7 200.4L84.8 187.7L92.8 179.7L97.1 175.9L103.6 170.3L110.2 165.2L120.1 158.4L127.2 154L134.7 149.8L145.1 144.7L155.7 140.2L161.1 138.3L172.1 134.8L183 132L194.1 129.9L205 128.6L216 127.8L226.9 127.6L237.9 128.1L248.7 129.3L259.3 131.1L262.7 131.8L263.5 132.3L263.3 133.1L262.2 133.2L262.2 133.8L260.8 134.8L253.6 138.7L246.2 143.2L235.3 150.4L228.2 155.4L217.9 163.5L204.7 175.3L192.9 187.7L187.1 194.4L179.9 203.4L175.7 209.2L169.6 218.5L166.5 223.3L160.9 233.2L156 242.9L152.7 250.4L146.9 265.5L141.8 282.9L138.4 300.2L136.9 314L136.5 322L136.4 332.7L136.6 338.1L137.8 350.1L139.8 361.9L141.5 369.3L143.4 376.2L146.3 384.8L148.7 390.7L155.7 405.2L163 417L168.6 424.6L171.8 428.4L176.9 434.1L182.4 439.6L188.2 444.7L194.2 449.5L200.8 454.1L208.1 458.8L215.7 462.9L221.2 465.5L233.6 470.5L243 473.5L249.9 475.2L263.9 477.8L279.2 479.2L295.5 479.2L311.2 477.9L320.4 476.4L328.9 474.6L332.8 474.6L334.6 473.9L336 474.2ZM327.7 477.1L327.2 476.6L327.4 475L328.4 474.4L333.6 473.8L334.9 473.9L335.8 474.7L335.7 475.7L334.2 476.5L329 477.2L327.7 477.1Z","shade":"M340 471.8L340.5 472.9L339.8 474.1L336 477.3L336 478.2L335.3 479.3L327.6 481.8L315.2 485L306.2 486.8L291.6 488.9L281.7 489.7L271.7 489.9L261.1 489.6L250.4 488.6L242.6 487.5L234.8 486L224.4 483.3L214.3 480L206.8 477.1L192.5 470L185.6 465.9L178.8 461.4L172.2 456.5L164.2 449.6L153.2 438.1L149.8 434L143.3 425.4L137.6 416.3L132.5 406.9L128 396.9L126.1 391.9L122.7 381.4L121.2 376.2L119 365.5L117.4 354.8L116.3 338.5L116.6 322.2L117.6 311L119.3 299.9L121.5 289.3L124.3 278.9L129.6 263.4L133.7 253.5L138.2 243.8L145.9 229.6L151.7 220.4L157.8 211.4L167.8 198.5L174.9 190.4L182.5 182.5L196.4 169.7L202.6 164.6L211.2 158.1L220.4 151.7L224.9 148.9L233.3 144L241 140L252.6 134.6L258.4 132.3L259.2 132.4L259.4 132.9L259.2 133.5L259.7 134L259.9 134.8L259.6 136L259.1 136.5L249.5 142L242.8 146.4L232.5 153.6L225.8 158.9L218.8 164.8L212.1 170.9L203.5 179.4L197.9 185.5L187.6 198L178.8 210.1L171 222.6L165.7 232.1L162.5 238.5L156.9 251.1L154.5 257.3L150.2 270L148.5 275.9L145.6 287.8L143.2 302L142.3 310.4L141.8 318.6L141.8 334.1L143 349.1L144.2 356.7L146.1 365.9L150 379.3L155 392.4L162.2 406.3L167.1 414.1L171.2 419.9L180.2 430.7L190.5 440.7L196.2 445.5L202.6 450.2L214.4 457.4L221.8 461.3L227.4 463.8L241.5 468.9L254.7 472.3L268.4 474.5L279.8 475.4L291.9 475.4L303.6 474.8L312.2 473.8L320.2 472.6L331.4 470.4L338.9 470.5L339.7 470.9L340 471.8ZM258.2 135.8L257.4 134.7L257.8 133.2L258.6 132.5L261.3 131.7L262.6 131.8L263.3 132.1L263.5 132.8L263.3 133.5L262.7 134.1L259.3 135.8L258.2 135.8Z","star":"M317.2 117L321.2 117.4L322.7 118.2L323.1 120.3L322.6 121.9L319.5 125.3L314.2 128.7L310.6 131.4L312.9 137.4L314.9 145.5L314.7 147.1L314.1 147.8L313.1 148L312.1 147.6L309 144.7L305.9 142.4L299.7 138.8L299.1 139.5L296.8 141L287.6 146.7L285.3 147.4L284.4 147L283.7 145.9L283.4 144.4L283.6 142.8L285.4 137.9L288.7 131.2L287.6 130.7L277 122.4L275.5 120.5L276 119.2L277.3 118.4L280.5 117.8L287 118.1L293.5 119.1L298.9 104L299.3 103.3L300.1 103L301 103.4L301.5 104.3L305 116.8L311.1 116.7L317.2 117Z","sshade":"M303.3 117.4L302.2 114L299.4 103.3L299.7 103.8L300.1 103.2L301.6 105.9L305.2 116.7L305.1 117.5L304.7 118L304 118L303.3 117.4ZM310.2 131.6L309.7 130.6L310.2 129.6L311.1 128.7L321.1 119.3L322 119L322.7 119.4L323 120.2L323 121.1L322.5 121.8L315.2 128.2L311.3 131.3L310.2 131.6ZM313.8 146.6L312.8 144.1L311.6 139.1L310 134.3L309.8 131.5L310.2 130.4L310.8 130.7L313.8 138.6L316 146L315.8 147.1L315.2 147.6L314.4 147.5L313.8 146.6Z","trace":"M105.8 59.5 L112.9 53.5 L120.5 48.2 L128.1 42.6 L136.3 38.1 L144.7 33.9 L153.3 29.9 L162.1 26.7 L171.1 23.7 L180.3 21.2 L189.6 19.3 L199.0 17.9 L208.5 17.0 L218.0 16.8 L227.5 17.2 L237.0 18.5 L246.3 20.1 L255.6 22.2 L264.7 24.9 L273.6 28.0 L282.3 31.7 L290.8 35.8 L299.0 40.4 L306.9 45.5 L314.5 50.8 L321.8 56.5 L328.9 62.2 L335.6 68.5 L341.9 75.0 L348.0 81.5 L353.9 88.1 L359.3 95.1 L364.4 102.2 L369.3 109.3 L373.9 116.4 L378.3 123.6 L382.4 130.8 L386.1 138.2 L389.6 145.6 L392.9 152.9 L396.1 160.2 L398.9 167.6 L401.7 174.8 L404.2 182.1 L406.2 189.5 L408.4 196.8 L410.2 204.0 L412.0 211.2 L413.5 218.5 L415.1 225.6 L416.2 232.8 L417.5 239.9 L418.1 247.1 L419.1 254.1 L419.6 261.3 L419.9 268.4 L420.5 275.4 L420.9 282.5 L420.6 289.6 L420.9 296.7 L420.7 303.8 L420.1 310.8 L419.8 318.0 L419.3 325.1 L418.3 332.2 L417.5 339.3 L416.4 346.5 L415.2 353.7 L414.0 360.9 L412.3 368.1 L410.8 375.4 L408.7 382.6 L406.8 390.0 L404.7 397.4 L402.4 404.8 L399.6 412.1 L396.6 419.4 L393.7 426.9 L390.5 434.4 L387.0 441.8 L383.2 449.1 L379.3 456.6 L374.7 463.6 L370.2 471.0 L365.4 478.2 L360.2 485.4 L354.9 492.5 L349.0 499.2 L343.0 506.1 L336.5 512.5 L329.8 518.8 L322.8 524.9 L315.5 530.9 L307.8 536.4 L299.8 541.4 L291.6 546.3 L283.0 550.4 L274.3 554.3 L265.2 557.5 L256.1 560.5 L246.7 562.7 L237.2 564.3 L227.6 565.6 L218.0 566.0 L208.3 566.2 L198.7 565.3 L189.2 564.1 L179.7 562.3 L170.3 560.0 L161.2 557.0 L152.2 553.3 L143.5 549.3 L135.0 545.1 L126.7 540.3 L119.0 534.7 L111.3 529.3 L103.9 523.5 L97.0 517.2 L90.4 510.6 L84.0 504.0 L78.1 497.0 L72.5 489.9 L66.9 483.0 L61.8 475.7 L57.0 468.4 L52.7 460.8 L48.5 453.3 L44.5 445.8 L40.6 438.5 L37.4 430.7 L34.0 423.3 L31.1 415.6 L28.4 408.1 L26.1 400.4 L23.8 392.9 L21.5 385.4 L19.8 377.9 L17.7 370.5 L16.2 363.1 L15.0 355.5 L13.4 348.3 L12.5 340.8 L11.6 333.5 L10.8 326.1 L10.4 318.8 L9.9 311.5 L9.5 304.2 L9.3 296.9 L9.2 289.6 L9.3 282.3 L9.7 275.0 L10.3 267.8 L10.8 260.5 L11.6 253.2 L12.4 245.9 L13.3 238.6 L14.4 231.2 L16.0 224.0 L17.5 216.6 L19.0 209.2 L20.9 201.8 L22.8 194.4 L25.2 187.1 L27.6 179.7 L30.1 172.2 L32.8 164.7 L36.0 157.3 L39.3 150.0 L42.7 142.5 L46.3 135.0 L50.2 127.6 L54.5 120.3 L59.1 113.2 L64.0 106.1 L68.9 98.7 L74.2 91.7 L80.0 85.0 L85.9 78.3 L92.3 71.9 L98.8 65.3Z"};
+  const SPARK = 'M0-14C2-4 4-2 14 0C4 2 2 4 0 14C-2 4-4 2-14 0C-4-2-2-4 0-14Z';
+  const COLORS = ['#ffc800', '#1cb0f6', '#58cc02', '#ff86d0', '#ce82ff', '#ff9600', '#ffc800', '#1cb0f6'];
+  // Distancia de cada destello: radio de la elipse en ese ángulo + margen
+  const sparks = COLORS.map((c, i) => {
+    const a = i * 45 + 22.5, t = (a * Math.PI) / 180;
+    const r = Math.round(1 / Math.hypot(Math.sin(t) / 235, Math.cos(t) / 300)) + 20;
+    return `<path class="lc-spark" style="--a:${a}deg;--r:${r};--c:${c};--i:${i}" d="${SPARK}"/>`;
+  }).join('');
+  const zs = [[350, 92, 30, 0], [372, 70, 40, 1.2], [398, 44, 50, 2.4]]
+    .map(([x, y, s, d]) => `<text class="lc-z" x="${x}" y="${y}" style="font-size:${s}px;--d:${d}s">z</text>`).join('');
+  let n = 0;
+  const luna = (anim = 'idle') => {
+    const id = 'lc' + ++n;
+    return `<svg class="luna" viewBox="0 0 440 580" data-anim="${anim}" style="--clip:url(#${id}c)" aria-hidden="true">
+      <defs>
+        <mask id="${id}m" maskUnits="userSpaceOnUse" x="-40" y="-40" width="520" height="660"><path class="lc-trace" pathLength="1" d="${P.trace}"/></mask>
+        <clipPath id="${id}c"><path d="${P.plate}"/></clipPath>
+      </defs>
+      <g class="lc-body">
+        <path class="lc-plate" d="${P.plate}"/>
+        <g mask="url(#${id}m)"><path class="lc-ring" d="${P.ring}"/></g>
+        <g class="lc-win"><g class="lc-moon"><path fill="#ffc80d" d="${P.moon}"/><path class="lc-shade" fill="#ff9c02" d="${P.shade}"/></g></g>
+        <g class="lc-star"><path fill="#ffc80d" d="${P.star}"/><path fill="#ff9c02" d="${P.sshade}"/></g>
+        <g transform="translate(220 290)">${sparks}</g>
+        <g>${zs}</g>
+      </g>
+    </svg>`;
+  };
+  const ONE_SHOT = { intro: 1950, hello: 1250, hop: 1000 };
+  const play = (svg, name, then = 'idle') => {
+    clearTimeout(svg._t);
+    svg.dataset.anim = 'none';
+    void svg.getBoundingClientRect(); // reinicia la animación aunque sea la misma
+    svg.dataset.anim = name;
+    if (ONE_SHOT[name] && then) svg._t = setTimeout(() => (svg.dataset.anim = then), ONE_SHOT[name]);
+  };
+
+  // Escenario: entrada → reposo; cursor = saludo; clic = salto
+  const stage = document.querySelector('[data-play]');
+  stage.insertAdjacentHTML('afterbegin', luna('none'));
+  const hero = stage.querySelector('.luna');
+  const busy = () => ['intro', 'hop'].includes(hero.dataset.anim);
+  stage.addEventListener('pointerenter', () => { if (hero.dataset.anim === 'idle') play(hero, 'hello'); });
+  stage.addEventListener('click', () => { if (hero.dataset.anim !== 'intro') play(hero, 'hop'); });
+  requestAnimationFrame(() => play(hero, 'intro'));
+  document.querySelectorAll('[data-ctl] button').forEach((b) => b.addEventListener('click', () => {
+    const a = b.dataset.a;
+    play(hero, a, ONE_SHOT[a] ? 'idle' : null);
+  }));
+  const toggle = (sel, fn) => document.querySelectorAll(`${sel} button`).forEach((b, _, all) => b.addEventListener('click', () => {
+    all.forEach((x) => x.setAttribute('aria-pressed', x === b)); fn(b);
+  }));
+  toggle('[data-bg]', (b) => { stage.style.setProperty('--bg', b.dataset.v); stage.style.setProperty('--hint', b.hasAttribute('data-dark') ? '#cfd6ff' : ''); });
+  toggle('[data-plate]', (b) => document.querySelectorAll('.luna').forEach((s) => s.style.setProperty('--plate', b.dataset.v)));
+
+  // Catálogo
+  const LIST = [
+    ['intro', 'Entrada', 'La elipse se dibuja desde el trazo, la luna llega girando y la estrella salta con destellos. Una vez, al cargar el sitio.', 'Hero, al irse la pantalla de carga'],
+    ['idle', 'Reposo', 'La luna se mece suave y la estrella titila cada tanto. Tranquila, no distrae del texto.', 'Hero y secciones'],
+    ['hello', 'Saludo', 'La luna asiente y la estrella da un saltito. Al pasar el cursor.', 'Hover en el hero'],
+    ['hop', 'Salto', 'Se agacha, salta y aterriza con rebote; la luna llega un poco tarde y la estrella gira.', 'Clic o toque'],
+    ['party', 'Celebración', 'La luna da una vuelta completa dentro de la elipse y salen destellos de colores.', 'Formulario enviado, logros, Retos'],
+    ['loading', 'Cargando', 'La elipse se dibuja y se borra mientras la luna orbita dentro.', 'Pantalla de carga, búsqueda'],
+    ['sleep', 'Dormida', 'La luna se inclina y respira, la estrella se apaga y salen "z".', 'Página 404, horario fuera de clase'],
+  ];
+  const grid = document.querySelector('[data-grid]');
+  for (const [a, t, d, w] of LIST) {
+    const el = document.createElement('article');
+    el.className = 'card anim';
+    const loop = !ONE_SHOT[a];
+    el.innerHTML = `<div class="box">${luna('none')}</div>
+      <div><span class="tag ${loop ? 'loop' : ''}">${loop ? 'En bucle' : 'Una vez'}</span></div>
+      <h3>${t}</h3><p>${d}<br><b>Uso:</b> ${w}</p>
+      ${loop ? '' : '<div><button>Repetir</button></div>'}`;
+    grid.append(el);
+    const svg = el.querySelector('.luna');
+    // Las de "una vez" se repiten solas cada pocos segundos para poder verlas
+    const run = () => play(svg, a, loop ? null : 'none');
+    el.querySelector('button')?.addEventListener('click', run);
+    new IntersectionObserver(([e]) => {
+      clearInterval(svg._iv);
+      if (!e.isIntersecting) return;
+      run();
+      if (!loop) svg._iv = setInterval(run, ONE_SHOT[a] + 1800);
+    }, { threshold: 0.4 }).observe(el);
+  }
+</script>
+</body>
+</html>

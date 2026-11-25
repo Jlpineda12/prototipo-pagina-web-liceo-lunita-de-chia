@@ -1,7 +1,7 @@
 ---
 /**
  * Hero centrado (inspirado en la estructura de SuperHi, con la esencia Lunita):
- *  - Lunita (Rive) arriba: entra con un rebote, reacciona al cursor y salta cada vez que cambia la palabra.
+ *  - Lunita (SVG animado) arriba: se dibuja al entrar, reacciona al cursor y salta cada vez que cambia la palabra.
  *  - Titular grande con palabra rotativa en "sticker" de color (luz propia · ciencia · arte · música · valores).
  *  - Fondo claro y sencillo con figuras planas del mundo Lunita (luna, planeta, cerro, estrella, rombo muisca,
  *    sol) que se asoman por los bordes, flotan, siguen el cursor (paralaje) y se abren al hacer scroll.
@@ -90,7 +90,7 @@ const PATHS: Record<string, string> = {
         <span class="sat" style="--r:680; --t:120s; --c:#58cc02; --z:12px; --a0:180deg"><i></i></span>
       </div>
       <span class="glow" aria-hidden="true"></span>
-      <Lunita size={230} pose="hola" class="hero-luni" rive intro label="Lunita, la mascota del Liceo Lunita de Chía" />
+      <Lunita size={230} pose="hola" class="hero-luni" intro label="Lunita, la mascota del Liceo Lunita de Chía" />
     </div>
 
     <h1 id="hero-title" class="title">
@@ -229,7 +229,7 @@ const PATHS: Record<string, string> = {
   .luni-wrap { position: relative; width: clamp(140px, 16vw, 230px); margin-bottom: 0.6rem; }
   .glow { position: absolute; inset: 8%; border-radius: 50%; background: radial-gradient(circle, rgb(255 200 0 / 0.45), transparent 68%); filter: blur(6px); }
   :global(.hero-luni) { position: relative; width: 100%; height: auto; cursor: pointer; }
-  /* La entrada de Lunita la hace Rive (animación Intro); aquí solo se enciende el halo */
+  /* La entrada de Lunita la hace su propio SVG (animación intro); aquí solo se enciende el halo */
   :global(.js) .glow { animation: glow-in 1.1s 0.15s cubic-bezier(0.22, 1, 0.36, 1) both; }
   @keyframes glow-in { from { opacity: 0; transform: scale(0.2); } }
 

@@ -1,7 +1,7 @@
 ---
-/** Modelo STHEAMI interactivo: 7 burbujas de color (una por componente) que orbitan el escudo. */
+/** Modelo STHEAMI interactivo: 7 burbujas de color (una por componente) que orbitan a Lunita. */
 import { STHEAMI } from '@/data/site';
-import Emblem from '../brand/Emblem.astro';
+import Lunita from '../brand/Lunita.astro';
 import Icon from '../Icon.astro';
 interface Props { compact?: boolean }
 const { compact = false } = Astro.props;
@@ -32,10 +32,10 @@ const { compact = false } = Astro.props;
       {!compact && <a class="link" href="/modelo-stheami/">Conoce el modelo completo <Icon name="arrow" /></a>}
     </div>
 
-    <div class="system" data-system>
+    <div class="system" data-system style={`--sel:${STHEAMI[0].color}`}>
       <div class="ring r1" aria-hidden="true"></div>
       <div class="ring r2" aria-hidden="true"></div>
-      <div class="core"><Emblem size={120} decorative /></div>
+      <div class="core"><Lunita size={170} pose="base" track={false} label="Lunita en el centro del universo STHEAMI" /></div>
       <ul class="planets" role="tablist" aria-label="Componentes del modelo STHEAMI">
         {
           STHEAMI.map((s, i) => (
@@ -71,7 +71,12 @@ const { compact = false } = Astro.props;
   .r1 { inset: 5%; animation: spin 80s linear infinite; }
   .r2 { inset: 27%; border-style: solid; border-color: rgb(255 255 255 / 0.15); background: rgb(255 255 255 / 0.06); }
   .core { position: absolute; inset: 0; display: grid; place-items: center; }
-  .core :global(.emblem) { width: 24%; height: auto; animation: bob 4s ease-in-out infinite; }
+  /* Lunita en el centro: flota, se tiñe del color del mundo elegido y lo mira */
+  .core::before { content: ''; position: absolute; width: 30%; aspect-ratio: 1; border-radius: 50%; background: var(--sel); opacity: 0.35; filter: blur(28px); transition: background-color 0.6s ease; }
+  .core :global(.lunita) { width: 34%; --lun-plate: color-mix(in srgb, var(--sel) 16%, #fff); animation: bob 4s ease-in-out infinite; }
+  /* Rayo de luz que une a Lunita con el mundo seleccionado (gira con las órbitas) */
+  .planets li::before { content: ''; position: absolute; left: 0; top: 0; width: 4px; height: 22cqi; translate: -50% 0; border-radius: 4px; background: linear-gradient(var(--c), transparent); opacity: 0; transform-origin: top; transform: scaleY(0); transition: opacity 0.3s, transform 0.5s var(--spring); }
+  .planets li:has([aria-selected='true'])::before { opacity: 0.9; transform: none; }
   .planets { position: absolute; inset: 0; list-style: none; margin: 0; padding: 0; animation: spin 70s linear infinite; }
   .system:hover .planets, .system:focus-within .planets { animation-play-state: paused; }
   .planets li { position: absolute; left: 50%; top: 50%; transform: rotate(var(--a)) translate(0, -45cqi); }
@@ -83,7 +88,7 @@ const { compact = false } = Astro.props;
   .system:hover .planets button span, .system:focus-within .planets button span { animation-play-state: paused; }
   .planets button:hover, .planets button[aria-selected='true'] { transform: scale(1.18); }
   .planets button[aria-selected='true'] { outline: 4px solid #fff; box-shadow: 0 5px 0 color-mix(in oklab, var(--c) 75%, #000), 0 0 0 8px color-mix(in oklab, var(--c) 30%, transparent); }
-  @media (prefers-reduced-motion: reduce) { .planets, .planets button span, .r1 { animation: none; } }
+  @media (prefers-reduced-motion: reduce) { .planets, .planets button span, .r1, .core :global(.lunita) { animation: none; } }
 </style>
 
 <script>
@@ -91,15 +96,30 @@ const { compact = false } = Astro.props;
     const section = sys.closest('section')!;
     const btns = [...sys.querySelectorAll<HTMLButtonElement>('[data-planet]')];
     const panels = [...section.querySelectorAll<HTMLElement>('[data-panel]')];
-    let current = 0, timer = 0, touched = false;
-    const select = (i: number) => {
+    const luni = sys.querySelector<HTMLElement>('.lunita');
+    const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = 0, timer = 0, touched = false, lastNod = 0;
+    // Lunita reacciona a cada mundo: toma su color, se inclina hacia él y asiente (o salta, al hacer clic)
+    const react = (i: number, hop = false) => {
+      sys.style.setProperty('--sel', btns[i].closest('li')!.style.getPropertyValue('--c'));
+      if (!luni || reduce) return;
+      const a = btns[i].getBoundingClientRect(), r = luni.getBoundingClientRect();
+      const k = Math.max(-1, Math.min(1, (a.left + a.width / 2 - (r.left + r.width / 2)) / (r.width * 1.2)));
+      luni.style.setProperty('--tilt', `${(k * 8).toFixed(1)}deg`);
+      const api = (luni as any).__lunita;
+      if (hop) api?.tap();
+      else if (performance.now() - lastNod > 1300) { lastNod = performance.now(); api?.play('hello'); }
+    };
+    const select = (i: number, hop = false) => {
+      const changed = i !== current;
       current = i;
       btns.forEach((b, j) => b.setAttribute('aria-selected', String(i === j)));
       panels.forEach((p, j) => (p.hidden = i !== j));
+      if (changed || hop) react(i, hop);
     };
     btns.forEach((b, i) => {
       const go = () => { touched = true; select(i); };
-      b.addEventListener('click', go);
+      b.addEventListener('click', () => { touched = true; select(i, true); });
       b.addEventListener('pointerenter', go);
       b.addEventListener('focus', go);
     });
