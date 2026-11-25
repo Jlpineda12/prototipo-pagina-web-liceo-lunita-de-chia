@@ -274,8 +274,19 @@ const star = (cx: number, cy: number, R: number, r: number) =>
   /* Con intro: nada visible hasta que Rive arranca su entrada; si Rive falla, el SVG entra con un pop */
   .js .lunita[data-intro]:not([data-rive-ready]):not([data-rive-fail]) .lun-svg { opacity: 0; transition: none; }
   .lunita[data-intro][data-rive-ready] .lun-rive { transition-duration: 0.12s; }
-  .lunita[data-intro][data-rive-fail]:not([data-rive-ready]) .lun-svg { animation: lun-intro 0.9s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
-  @keyframes lun-intro { 0% { opacity: 0; transform: translateY(30px) scale(0.3) rotate(-30deg); } 50% { opacity: 1; } 100% { transform: none; } }
+  /* Entrada del SVG (móvil o sin Rive): misma coreografía que la Intro de Rive — pop girando, rebote y saltito */
+  .lunita[data-intro][data-rive-fail]:not([data-rive-ready]) .lun-svg { transform-origin: 50% 85%; animation: lun-intro 1.4s linear both; }
+  @keyframes lun-intro {
+    0% { opacity: 0; transform: scale(0) rotate(-45deg); animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+    8% { opacity: 1; }
+    24% { transform: scale(1.12) rotate(10deg); animation-timing-function: ease-in-out; }
+    36% { transform: scale(0.94) rotate(-4deg); animation-timing-function: ease-in-out; }
+    46% { transform: scale(1) rotate(0); }
+    54% { transform: scale(1.06, 0.92); animation-timing-function: cubic-bezier(0.2, 0.6, 0.35, 1); }
+    66% { transform: translateY(-12%) scale(0.95, 1.06); animation-timing-function: cubic-bezier(0.6, 0, 0.8, 0.4); }
+    76% { transform: scale(1.08, 0.9); animation-timing-function: ease-in-out; }
+    86%, 100% { opacity: 1; transform: none; }
+  }
 
   .lunita .lun-float { transform-origin: 520px 880px; }
   /* Modo escena: solo se ven los accesorios de la pose activa; entran y salen con escala */

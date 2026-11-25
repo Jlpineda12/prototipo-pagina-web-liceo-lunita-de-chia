@@ -55,7 +55,7 @@ const roles = [
 
   <section class="section" aria-labelledby="heu-title">
     <div class="wrap">
-      <div class="section-head"><p class="kicker" style="color:var(--green-d)"><span class="dot"></span>Heutagogía</p><h2 id="heu-title">Aprender a <span class="hl">aprender</span></h2><p>La heutagogía es el aprendizaje autodeterminado: autonomía y autodidactismo, con responsabilidad y alegría.</p></div>
+      <div class="section-head"><p class="kicker" style="color:var(--green-ink)"><span class="dot"></span>Heutagogía</p><h2 id="heu-title">Aprender a <span class="hl">aprender</span></h2><p>La heutagogía es el aprendizaje autodeterminado: autonomía y autodidactismo, con responsabilidad y alegría.</p></div>
       <div class="grid cols-3">
         {roles.map((r, i) => (
           <article class={`card role ${r.theme}`} data-reveal style={`--d:${i}`}>
@@ -87,5 +87,5 @@ const roles = [
   .card p { margin: 0; color: var(--muted); font-size: 0.95rem; }
   .role ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.5rem; }
   .role li { display: flex; gap: 0.5rem; align-items: start; font-weight: 700; color: var(--ink-2); }
-  .role li :global(svg) { flex: none; color: var(--cd); margin-top: 3px; }
+  .role li :global(svg) { flex: none; color: var(--ct); margin-top: 3px; }
 </style>

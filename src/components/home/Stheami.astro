@@ -39,7 +39,7 @@ const { compact = false } = Astro.props;
       <ul class="planets" role="tablist" aria-label="Componentes del modelo STHEAMI">
         {
           STHEAMI.map((s, i) => (
-            <li style={`--a:${(360 / STHEAMI.length) * i}deg; --c:${s.color}`}>
+            <li role="presentation" style={`--a:${(360 / STHEAMI.length) * i}deg; --c:${s.color}`}>
               <button type="button" role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-planet={i} aria-label={`${s.k}: ${s.name}`}><span>{s.k}</span></button>
             </li>
           ))

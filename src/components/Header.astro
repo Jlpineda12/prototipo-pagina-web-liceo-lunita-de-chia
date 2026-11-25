@@ -106,7 +106,7 @@ const isActive = (href: string, children?: { href: string }[]) =>
   .brand { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; flex: none; }
   .brand-text { display: flex; flex-direction: column; line-height: 1.05; }
   .brand-text b { font-size: 1.2rem; font-weight: 900; color: var(--blue); letter-spacing: -0.02em; }
-  .brand-text span { font-size: 0.85rem; font-weight: 800; color: var(--yellow-d); }
+  .brand-text span { font-size: 0.85rem; font-weight: 800; color: var(--yellow-ink); }
 
   .nav-desktop { display: none; margin-inline: auto; }
   .nav-desktop > ul { display: flex; gap: 0.15rem; list-style: none; margin: 0; padding: 0; }
@@ -115,7 +115,7 @@ const isActive = (href: string, children?: { href: string }[]) =>
     display: inline-flex; align-items: center; gap: 0.2rem; padding: 0.55rem 0.75rem; border-radius: 12px; text-decoration: none;
     font-size: 0.82rem; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); white-space: nowrap; transition: color 0.15s, background 0.15s;
   }
-  .nav-desktop > ul > li > a:hover, .nav-desktop > ul > li:focus-within > a { color: var(--sky-d); background: var(--sky-l); }
+  .nav-desktop > ul > li > a:hover, .nav-desktop > ul > li:focus-within > a { color: var(--sky-ink); background: var(--sky-l); }
   .nav-desktop a[aria-current='page'] { color: var(--blue); }
   .nav-desktop a[aria-current='page']::after { content: ''; position: absolute; left: 0.75rem; right: 0.75rem; bottom: 2px; height: 4px; border-radius: 4px; background: var(--yellow); }
   .chev { transition: transform 0.25s; }
@@ -134,7 +134,7 @@ const isActive = (href: string, children?: { href: string }[]) =>
     display: inline-flex; align-items: center; gap: 0.45rem; height: 44px; padding: 0 0.8rem; border-radius: 14px; border: 2px solid var(--line);
     background: #fff; color: var(--muted); font-weight: 700; font-size: 0.9rem;
   }
-  .search-btn:hover { border-color: var(--sky); color: var(--sky-d); }
+  .search-btn:hover { border-color: var(--sky); color: var(--sky-ink); }
   .search-btn .lbl, .search-btn kbd { display: none; }
   .search-btn kbd { font: 700 0.72rem var(--font); padding: 0.1rem 0.4rem; border-radius: 6px; background: var(--bg-2); border: 1px solid var(--line); }
   .cta { display: none; }
@@ -158,7 +158,7 @@ const isActive = (href: string, children?: { href: string }[]) =>
     background: #fff; border-top: 2px solid var(--line); padding: 0.35rem 0.25rem calc(0.35rem + env(safe-area-inset-bottom));
   }
   .tabbar a, .tabbar button { display: grid; justify-items: center; gap: 2px; padding: 0.3rem 0; border: 0; background: none; text-decoration: none; color: var(--muted); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.02em; }
-  .tabbar [aria-current='page'] { color: var(--sky-d); }
+  .tabbar [aria-current='page'] { color: var(--sky-ink); }
   .tab-star { width: 46px; height: 46px; margin-top: -22px; border-radius: 16px; display: grid; place-items: center; background: var(--yellow); color: var(--navy); box-shadow: 0 4px 0 var(--yellow-d); }
   :global(body) { padding-bottom: 72px; }
 

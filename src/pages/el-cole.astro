@@ -66,7 +66,7 @@ const highlights = [
     <div class="wrap two center">
       <div class="emblem-art" data-reveal="pop"><Emblem size={300} animate decorative /></div>
       <div>
-        <p class="kicker" style="color:var(--yellow-d)"><span class="dot"></span>Nuestro nombre</p>
+        <p class="kicker" style="color:var(--yellow-ink)"><span class="dot"></span>Nuestro nombre</p>
         <h2 id="h-nombre">Un homenaje a la <span class="hl">diosa Chía</span></h2>
         <div class="prose">
           <p>El nombre del Liceo Lunita de Chía rinde homenaje a la diosa Chía, también conocida como Chíe, venerada en la mitología muisca como la diosa de la luna. Considerada la esposa del sol (Sua o Zhúa), simboliza la fiesta, la alegría y la creatividad.</p>
@@ -96,7 +96,7 @@ const highlights = [
 
   <section class="section bg-2" id="valores" aria-labelledby="h-valores">
     <div class="wrap">
-      <div class="section-head"><p class="kicker" style="color:var(--red-d)"><span class="dot"></span>Valores institucionales</p><h2 id="h-valores">Doce estrellas que <span class="hl">nos guían</span></h2><p>Toca cada valor para conocerlo.</p></div>
+      <div class="section-head"><p class="kicker" style="color:var(--red-ink)"><span class="dot"></span>Valores institucionales</p><h2 id="h-valores">Doce estrellas que <span class="hl">nos guían</span></h2><p>Toca cada valor para conocerlo.</p></div>
       <ul class="values">
         {valores.map(([n, t, th], i) => (
           <li data-reveal="pop" style={`--d:${i % 4}`}>
@@ -112,7 +112,7 @@ const highlights = [
 
   <section class="section" id="fines" aria-labelledby="h-fines">
     <div class="wrap">
-      <div class="section-head"><p class="kicker" style="color:var(--green-d)"><span class="dot"></span>Fines educativos</p><h2 id="h-fines">15 propósitos que <span class="hl">orientan cada clase</span></h2><p>De conformidad con el artículo 67 de la Constitución Política, la educación en el Liceo Lunita de Chía atiende a estos fines.</p></div>
+      <div class="section-head"><p class="kicker" style="color:var(--green-ink)"><span class="dot"></span>Fines educativos</p><h2 id="h-fines">15 propósitos que <span class="hl">orientan cada clase</span></h2><p>De conformidad con el artículo 67 de la Constitución Política, la educación en el Liceo Lunita de Chía atiende a estos fines.</p></div>
       <ol class="fines">
         {FINES.map((f, i) => (
           <li class:list={['card t-green', { extra: i >= 6 }]} data-reveal style={`--d:${i % 3}`}><span class="fn">{i + 1}</span><p>{f}</p></li>
@@ -124,7 +124,7 @@ const highlights = [
 
   <section class="section" id="simbolos" aria-labelledby="h-simbolos">
     <div class="wrap">
-      <div class="section-head"><p class="kicker" style="color:var(--purple-d)"><span class="dot"></span>Símbolos</p><h2 id="h-simbolos">Escudo, bandera <span class="hl">e himno</span></h2></div>
+      <div class="section-head"><p class="kicker" style="color:var(--purple-ink)"><span class="dot"></span>Símbolos</p><h2 id="h-simbolos">Escudo, bandera <span class="hl">e himno</span></h2></div>
       <div class="grid cols-3 symbols">
         <article class="card t-blue" data-reveal>
           <div class="sym-art"><Emblem size={160} decorative /></div>
@@ -171,7 +171,7 @@ const highlights = [
 
   <section class="section bg-cloud" id="logros" aria-labelledby="h-logros">
     <div class="wrap">
-      <div class="section-head"><p class="kicker" style="color:var(--orange-d)"><span class="dot"></span>Logros y reconocimientos</p><h2 id="h-logros">Una trayectoria <span class="hl">reconocida</span></h2><p>Nominaciones al Premio Compartir al Mejor Rector, reconocimientos de la Secretaría de Educación de Chía y un modelo destacado por su impacto social.</p></div>
+      <div class="section-head"><p class="kicker" style="color:var(--orange-ink)"><span class="dot"></span>Logros y reconocimientos</p><h2 id="h-logros">Una trayectoria <span class="hl">reconocida</span></h2><p>Nominaciones al Premio Compartir al Mejor Rector, reconocimientos de la Secretaría de Educación de Chía y un modelo destacado por su impacto social.</p></div>
       <ol class="achv">
         {ACHIEVEMENTS.map((a, i) => <li class="card" data-reveal style={`--d:${i % 3}`}><span class="yr">{a.year}</span><div><h3>{a.title}</h3><p>{a.org}</p></div></li>)}
       </ol>

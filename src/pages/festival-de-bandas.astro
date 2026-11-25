@@ -30,7 +30,7 @@ const posts = (await getCollection('noticias', ({ data }) => data.category === '
   <section class="section" aria-labelledby="hist-title">
     <div class="wrap two">
       <div>
-        <p class="kicker" style="color:var(--purple-d)"><span class="dot"></span>Nuestra historia</p>
+        <p class="kicker" style="color:var(--purple-ink)"><span class="dot"></span>Nuestra historia</p>
         <h2 id="hist-title">Nació después de la <span class="hl">pandemia</span></h2>
         <div class="prose">
           <p>Al retomar la presencialidad, el Liceo Lunita de Chía fortaleció su banda marcial como un proceso educativo basado en la disciplina, la coordinación, el trabajo en equipo y la identidad.</p>
@@ -88,5 +88,5 @@ const posts = (await getCollection('noticias', ({ data }) => data.category === '
   .tl p { margin: 0; color: var(--muted); font-size: 0.93rem; }
   .vals { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
   .vals li { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.1rem; border-radius: 16px; background: var(--l); border: 2px solid var(--c); border-bottom-width: 4px; font-weight: 800; color: var(--navy); }
-  .vals li :global(svg) { color: var(--cd); }
+  .vals li :global(svg) { color: var(--ct); }
 </style>

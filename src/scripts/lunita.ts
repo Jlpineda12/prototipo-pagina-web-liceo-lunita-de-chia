@@ -153,7 +153,10 @@ export function initLunitas() {
   const introEls = riveEls.filter((el) => el.hasAttribute('data-intro'));
   const conn = (navigator as any).connection;
   const fail = (el: HTMLElement) => { if (!el.hasAttribute('data-rive-ready')) el.setAttribute('data-rive-fail', ''); };
-  if (!riveEls.length || reduce() || conn?.saveData) { introEls.forEach(fail); return; }
+  // Rive (motor wasm ~1 MB) solo en pantallas grandes con mouse; en móvil/táctil el SVG hace la entrada
+  // con CSS: misma Lunita, mucho menos peso y sin bloquear el hilo principal en teléfonos.
+  const roomy = matchMedia('(min-width: 900px) and (pointer: fine)').matches;
+  if (!riveEls.length || reduce() || conn?.saveData || !roomy) { introEls.forEach(fail); return; }
 
   // La entrada se reserva hasta que la pantalla de carga se haya ido
   const html = document.documentElement;

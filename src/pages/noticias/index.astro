@@ -18,7 +18,8 @@ const themeByCat: Record<string, string> = { Bandas: 't-purple', Celebraciones: 
 >
   <PageHero kicker="Vida escolar" title='Noticias <span class="hl">de Lunita</span>' lead="Celebraciones, viajes, logros y todo lo que vivimos como comunidad." crumbs={[{ name: 'Noticias', href: '/noticias/' }]} theme="t-red" pose="celebra" />
 
-  <section class="section" aria-label="Listado de noticias">
+  <section class="section" aria-labelledby="h-listado">
+    <h2 id="h-listado" class="sr-only">Todas las noticias</h2>
     <div class="wrap">
       <div class="filters" role="group" aria-label="Filtrar por categoría" data-filters>
         <button type="button" class="f t-sky" aria-pressed="true" data-f="all">Todas <b>{posts.length}</b></button>
