@@ -10,7 +10,7 @@ const themeByCat: Record<string, string> = { Bandas: 't-purple', Celebraciones: 
 
 <article class:list={['news-card card', themeByCat[category], { featured }]} data-reveal style={`--d:${index}`}>
   <div class="media">
-    {cover && <Image src={cover} alt="" widths={featured ? [480, 760, 1100] : [400, 640]} sizes={featured ? '(min-width: 960px) 50vw, 100vw' : '(min-width: 960px) 25vw, (min-width: 720px) 45vw, 100vw'} loading={eager ? 'eager' : 'lazy'} format="webp" quality={70} />}
+    {cover && <Image src={cover} alt="" widths={featured ? [360, 560, 800, 1100] : [320, 480, 640]} sizes={featured ? '(min-width: 960px) 50vw, calc(100vw - 32px)' : '(min-width: 960px) 25vw, (min-width: 720px) 45vw, calc(100vw - 32px)'} loading={eager ? 'eager' : 'lazy'} decoding="async" fetchpriority={eager ? 'auto' : 'low'} format="webp" quality={featured ? 68 : 60} />}
   </div>
   <div class="body">
     <div class="meta"><span class="chip">{category}</span><time datetime={date.toISOString()}>{formatDate(date)}</time></div>

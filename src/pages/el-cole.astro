@@ -1,16 +1,25 @@
 ---
 import Sticker from '@/components/Sticker.astro';
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import Base from '@/layouts/Base.astro';
 import PageHero from '@/components/PageHero.astro';
 import Emblem from '@/components/brand/Emblem.astro';
 import Icon from '@/components/Icon.astro';
 import NextSteps from '@/components/NextSteps.astro';
-import { ACHIEVEMENTS } from '@/data/site';
+import { ACHIEVEMENTS, TEAM } from '@/data/site';
 import { FINES, HIMNO } from '@/data/institucional';
 import HymnPlayer from '@/components/HymnPlayer.astro';
 import { EMBLEM } from '@/components/brand/emblem';
 import vision from '@/assets/site/vision.webp';
+import organigrama from '@/assets/site/organigrama-2026.webp';
+
+// Equipo 2026: fotos en src/assets/equipo/<photo>.jpg
+const photos = import.meta.glob<{ default: ImageMetadata }>('../assets/equipo/*.jpg', { eager: true });
+const photoOf = (key: string) => photos[`../assets/equipo/${key}.jpg`].default;
+const [rector, ...staff] = TEAM;
+const teamGroups = [...new Set(staff.map((p) => p.group))].map((g) => [g, staff.filter((p) => p.group === g)] as const);
+const RING = ['var(--sky)', 'var(--green)', 'var(--orange)', 'var(--purple)', 'var(--pink)', 'var(--yellow)'];
+const organigramaFull = await getImage({ src: organigrama, width: 2000, format: 'webp', quality: 80 });
 
 const valores: [string, string, string][] = [
   ['Amor', 'El gran articulador de la convivencia: reconoce al otro y es motor para cumplir grandes sueños.', 't-red'],
@@ -26,7 +35,7 @@ const valores: [string, string, string][] = [
   ['Fe', 'Reconocer la inspiración cristiana y un ser superior que fortalece el espíritu.', 't-purple'],
   ['Disciplina', 'Autorregulación justa, como experiencia constructiva y no impositiva.', 't-blue'],
 ];
-const toc = [['historia', 'Historia', 't-blue'], ['nombre', 'Nuestro nombre', 't-yellow'], ['mision', 'Misión y visión', 't-sky'], ['valores', 'Valores', 't-red'], ['fines', 'Fines educativos', 't-green'], ['simbolos', 'Símbolos', 't-purple'], ['himno', 'Himno', 't-blue'], ['logros', 'Logros', 't-orange'], ['/retos-2026/', 'Retos 2026', 't-yellow']];
+const toc = [['historia', 'Historia', 't-blue'], ['nombre', 'Nuestro nombre', 't-yellow'], ['mision', 'Misión y visión', 't-sky'], ['equipo', 'Equipo', 't-green'], ['valores', 'Valores', 't-red'], ['fines', 'Fines educativos', 't-green'], ['simbolos', 'Símbolos', 't-purple'], ['himno', 'Himno', 't-blue'], ['logros', 'Logros', 't-orange'], ['/retos-2026/', 'Retos 2026', 't-yellow']];
 const highlights = [
   ['Modelo propio STHEAMI', 'Proyectos interdisciplinarios y heutagogía: el estudiante gestiona su propio aprendizaje.', 'globe', 't-purple'],
   ['Resultados destacados', 'Primeros lugares municipales en Pruebas Saber, con reconocimientos departamentales y nacionales.', 'award', 't-yellow'],
@@ -91,6 +100,35 @@ const highlights = [
           <p>En 2030, el Liceo Lunita de Chía será reconocido como un modelo internacional de excelencia educativa, destacándose por la formación integral de líderes éticos, innovadores y socialmente comprometidos. Inspirará a los estudiantes a aprender por convicción y no por obligación, fortaleciendo la inclusión, la identidad cultural del resguardo indígena y áreas como la educación aeroespacial, la robótica y el pensamiento crítico.</p>
         </article>
       </div>
+    </div>
+  </section>
+
+  <section class="section bg-cloud" id="equipo" aria-labelledby="h-equipo">
+    <div class="wrap">
+      <div class="section-head"><p class="kicker" style="color:var(--green-ink)"><span class="dot"></span>Nuestro equipo 2026</p><h2 id="h-equipo">Las personas detrás de <span class="hl">cada logro</span></h2><p>Directivas, docentes y personal de apoyo que acompañan a cada estudiante.</p></div>
+      <article class="card rector t-yellow" data-reveal>
+        <Image class="face" src={photoOf(rector.photo)} alt={`${rector.name}, ${rector.role.toLowerCase()} del Liceo Lunita de Chía`} widths={[180, 360]} sizes="180px" format="webp" quality={75} />
+        <div>
+          <span class="chip">{rector.role}</span>
+          <h3>{rector.name}</h3>
+          <p>Fundó el Liceo Lunita de Chía y lo dirige con la convicción de educar con amor, identidad y propósito.</p>
+          <a class="btn sm outline" href={organigramaFull.src} target="_blank" rel="noopener">Ver organigrama 2026 <Icon name="arrow-up-right" /></a>
+        </div>
+      </article>
+      {teamGroups.map(([group, people]) => (
+        <div class="team-group">
+          <h3>{group}</h3>
+          <ul class="people">
+            {people.map((p, i) => (
+              <li style={`--ring:${RING[i % RING.length]}; --d:${i % 4}`} data-reveal>
+                <Image class="face" src={photoOf(p.photo)} alt={`${p.name}, ${p.role.toLowerCase()}`} widths={[120, 240]} sizes="120px" format="webp" quality={72} loading="lazy" />
+                <strong>{p.name}</strong>
+                <span>{p.role}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
     </div>
   </section>
 
@@ -201,6 +239,19 @@ const highlights = [
   .emblem-art :global(.emblem) { width: min(70%, 300px); height: auto; }
   .mv h3 { font-size: var(--step-3); margin-top: 1rem; }
   .mv p { margin: 0; color: var(--ink-2); }
+  /* Equipo */
+  .rector { display: grid; gap: 1.4rem; align-items: center; justify-items: center; text-align: center; border-color: var(--c); border-bottom-width: 5px; margin-bottom: 2.4rem; }
+  @media (min-width: 720px) { .rector { grid-template-columns: auto 1fr; justify-items: start; text-align: left; } }
+  .rector :global(.face) { width: 170px; height: 170px; border-radius: 50%; object-fit: cover; border: 5px solid var(--c); box-shadow: 0 5px 0 var(--cd); }
+  .rector h3 { font-size: var(--step-3); margin: 0.5rem 0 0.3rem; }
+  .rector p { margin: 0 0 1rem; color: var(--ink-2); max-width: 52ch; }
+  .team-group + .team-group { margin-top: 2.2rem; }
+  .team-group h3 { font-size: var(--step-1); margin: 0 0 1.1rem; color: var(--navy); }
+  .people { list-style: none; padding: 0; margin: 0; display: grid; gap: 1.4rem 1rem; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .people li { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.15rem; }
+  .people :global(.face) { width: 112px; height: 112px; border-radius: 50%; object-fit: cover; border: 4px solid var(--ring); margin-bottom: 0.5rem; background: #fff; }
+  .people strong { color: var(--navy); font-weight: 900; line-height: 1.2; }
+  .people span { font-size: 0.85rem; font-weight: 700; color: var(--muted); line-height: 1.3; }
   .values { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.8rem; grid-template-columns: repeat(2, 1fr); }
   @media (min-width: 900px) { .values { grid-template-columns: repeat(4, 1fr); } }
   .value { padding: 0; height: 100%; }

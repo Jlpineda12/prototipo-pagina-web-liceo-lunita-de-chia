@@ -169,6 +169,7 @@ const star = (cx: number, cy: number, R: number, r: number) =>
   .js .lunita[data-intro]:not([data-played]) .lun-svg { opacity: 0; }
   .lunita[data-intro] .lun-svg[data-anim='intro'] [data-acc] { animation: lun-acc-in 0.6s 1.3s cubic-bezier(.34, 1.56, .64, 1) both; }
   @keyframes lun-acc-in { from { opacity: 0; } }
+  .lunita[data-off] .lun-svg * { animation-play-state: paused !important; }
 
   /* Modo escena: solo se ven los accesorios de la pose activa; entran y salen con escala */
   .lunita[data-scene] [data-acc] { opacity: 0; transform: scale(0.4); transform-box: fill-box; transform-origin: center; transition: opacity 0.3s ease, transform 0.45s cubic-bezier(.34, 1.56, .64, 1); }

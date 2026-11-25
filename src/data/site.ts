@@ -151,20 +151,68 @@ export const ADMISSION_STEPS = [
 
 /** Lista de verificación orientativa. Confirmar requisitos vigentes con secretaría. */
 export const ADMISSION_DOCS = [
-  'Registro civil de nacimiento y/o tarjeta de identidad del estudiante',
-  'Documento de identidad de los padres o acudiente',
-  'Certificados de estudio de los años anteriores (desde primaria)',
-  'Paz y salvo del colegio de procedencia',
-  'Certificado de afiliación a EPS',
-  'Carné de vacunas (preescolar y primaria)',
-  'Fotos tamaño documento',
-  'Certificado médico, visual y auditivo',
+  'Registro civil y/o tarjeta de identidad del estudiante',
+  'Cédulas de los padres o acudiente',
+  'Hoja de vida de los padres (sencilla)',
+  'Certificado laboral de los padres',
+  'Último boletín y paz y salvo del colegio anterior',
+  'Retiro del SIMAT',
+  'Copia del observador del estudiante',
+  '2 fotos tamaño documento',
+  'Certificado médico',
+  'Fotocopia del carné de la EPS',
+  'Fotocopia del carné de vacunas',
+];
+
+/** Costos publicados por el colegio (año 2026). Actualice aquí los valores de cada año. */
+export const COSTS = {
+  year: 2026,
+  form: 110000,
+  enrollment: [
+    { level: 'Preescolar', value: 674000 },
+    { level: 'Primaria', value: 714000 },
+    { level: 'Bachillerato', value: 756000 },
+  ],
+  tuition: [
+    { level: 'Preescolar', grades: 'Jardín y Transición', value: 400000 },
+    { level: 'Primaria', grades: '1.°, 2.°, 3.° y 4.°', value: 430000 },
+    { level: 'Grados 5.° a 9.°', grades: '5.°, 6.°, 7.°, 8.° y 9.°', value: 460000 },
+    { level: 'Grados 10.° y 11.°', grades: 'Décimo y undécimo', value: 500000 },
+  ],
+  other: 1760000,
+  pending: 'grados, pruebas ICFES y PREICFES',
+};
+
+export const SCHEDULE = {
+  classes: '6:45 a. m. a 3:00 p. m.',
+  enrollment: 'Jornada continua de 8:00 a. m. a 3:00 p. m.',
+};
+
+/** Equipo 2026 (fotos en src/assets/equipo/<photo>.jpg) */
+export const TEAM = [
+  { name: 'Elizabet Barrera', role: 'Rectora y fundadora', photo: 'elizabet-barrera', group: 'Directivas y administración' },
+  { name: 'Alejandro Pineda', role: 'Secretario general', photo: 'alejandro-pineda', group: 'Directivas y administración' },
+  { name: 'Paula Rodríguez', role: 'Secretaria', photo: 'paula-rodriguez', group: 'Directivas y administración' },
+  { name: 'Sandra Milena Mora', role: 'Auxiliar contable', photo: 'sandra-milena-mora', group: 'Directivas y administración' },
+  { name: 'Clara Inés Prieto', role: 'Enfermera', photo: 'clara-ines-prieto', group: 'Directivas y administración' },
+  { name: 'Rosenayda Bravo', role: 'Servicios generales', photo: 'rosenayda-bravo', group: 'Directivas y administración' },
+  { name: 'Andrea Osorio', role: 'Docente titular de preescolar', photo: 'andrea-osorio', group: 'Docentes' },
+  { name: 'Jennifer Rodríguez', role: 'Docente auxiliar de primera infancia', photo: 'jennifer-rodriguez', group: 'Docentes' },
+  { name: 'Paola Triana', role: 'Docente de grado tercero', photo: 'paola-triana', group: 'Docentes' },
+  { name: 'Ana María Murcia', role: 'Docente de idiomas', photo: 'ana-maria-murcia', group: 'Docentes' },
+  { name: 'Constanza Rodríguez', role: 'Docente de lengua castellana', photo: 'constanza-rodriguez', group: 'Docentes' },
+  { name: 'Diego López', role: 'Docente de matemáticas', photo: 'diego-lopez', group: 'Docentes' },
+  { name: 'Catalina Quecán', role: 'Docente de ciencias naturales', photo: 'catalina-quecan', group: 'Docentes' },
+  { name: 'Gabriel Puentes', role: 'Docente de ciencias naturales', photo: 'gabriel-puentes', group: 'Docentes' },
+  { name: 'Sebastián Quecán', role: 'Docente de ciencias sociales', photo: 'sebastian-quecan', group: 'Docentes' },
+  { name: 'Andrés González', role: 'Docente de filosofía', photo: 'andres-gonzalez', group: 'Docentes' },
 ];
 
 export const FAQ = [
   { q: '¿Qué niveles ofrece el Liceo Lunita de Chía?', a: 'Ofrecemos Preescolar (Jardín y Transición), Primaria (primero a quinto) y Bachillerato (sexto a once), con el modelo pedagógico STHEAMI.', cat: 'Admisiones' },
   { q: '¿Cuándo son las matrículas 2027?', a: 'El proceso de matrículas 2027 está programado del 1 al 17 de diciembre de 2026 y se realiza en línea a través de la plataforma SIGA.', cat: 'Admisiones' },
-  { q: '¿Dónde consulto los requisitos y costos?', a: 'Los requisitos y costos actualizados se publican en la plataforma de matrícula SIGA. También puedes escribirnos por WhatsApp para recibir orientación.', cat: 'Admisiones' },
+  { q: '¿Cuánto cuestan la matrícula y la pensión?', a: 'En 2026 la matrícula fue de $674.000 en preescolar, $714.000 en primaria y $756.000 en bachillerato, y la pensión mensual de $400.000 a $500.000 según el grado. El formulario cuesta $110.000. Consulta el detalle en la página de Admisiones; los valores de 2027 se confirman al momento de la matrícula.', cat: 'Admisiones' },
+  { q: '¿Cuál es el horario de clases?', a: 'La jornada de clases es de 6:45 a. m. a 3:00 p. m. Durante las matrículas atendemos en jornada continua de 8:00 a. m. a 3:00 p. m.', cat: 'Admisiones' },
   { q: '¿Qué es el modelo STHEAMI?', a: 'Es nuestro modelo pedagógico propio que integra Ciencia, Tecnología, Humanidades, Ingeniería, Artes, Matemáticas e Inclusión en proyectos interdisciplinarios, junto con la heutagogía: el estudiante como gestor de su propio aprendizaje.', cat: 'Aprendizaje' },
   { q: '¿Qué es la heutagogía?', a: 'Es el aprendizaje autodeterminado: el estudiante aprende a aprender con autonomía y responsabilidad, mientras el docente actúa como guía, mediador y orientador.', cat: 'Aprendizaje' },
   { q: '¿El colegio tiene convenios internacionales?', a: 'Sí. Contamos con un convenio de bachillerato internacional con Florida Global University, además de intercambios culturales y viajes pedagógicos para grado once.', cat: 'Aprendizaje' },

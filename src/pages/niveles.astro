@@ -6,22 +6,28 @@ import PageHero from '@/components/PageHero.astro';
 import Icon from '@/components/Icon.astro';
 import NextSteps from '@/components/NextSteps.astro';
 import convenio from '@/assets/site/convenio-florida.jpeg';
+import fotoPreescolar from '@/assets/niveles/preescolar.jpg';
+import fotoPrimaria from '@/assets/niveles/primaria.jpg';
+import fotoBachillerato from '@/assets/niveles/bachillerato.jpg';
 
 const levels = [
   {
     id: 'preescolar', name: 'Preescolar', theme: 't-orange', grades: ['Jardín', 'Transición'], icon: 'sparkle',
     text: 'Los primeros pasos se dan jugando. Exploración, lenguaje, arte, música y movimiento en un ambiente lúdico, seguro y lleno de afecto.',
     focus: ['Desarrollo socioemocional', 'Lenguaje y pre-lectura', 'Arte, música y movimiento', 'Exploración del entorno'],
+    photo: fotoPreescolar, alt: 'Estudiantes de Jardín del Liceo Lunita de Chía con sus docentes en el patio del colegio',
   },
   {
     id: 'primaria', name: 'Primaria', theme: 't-green', grades: ['Primero', 'Segundo', 'Tercero', 'Cuarto', 'Quinto'], icon: 'book',
     text: 'Proyectos STHEAMI que despiertan la curiosidad: lectura, ciencia, matemáticas, tecnología y banda marcial para crecer con autonomía.',
     focus: ['Lectura y escritura', 'Pensamiento matemático', 'Ciencia y robótica', 'Valores y convivencia'],
+    photo: fotoPrimaria, alt: 'Estudiantes de grado primero del Liceo Lunita de Chía con su uniforme amarillo',
   },
   {
     id: 'bachillerato', name: 'Bachillerato', theme: 't-sky', grades: ['Sexto', 'Séptimo', 'Octavo', 'Noveno', 'Décimo', 'Once'], icon: 'rocket',
     text: 'Rigor académico y proyecto de vida: PREICFES, tecnología, educación aeroespacial, convenio de bachillerato internacional y viajes pedagógicos en grado once.',
     focus: ['Preparación Pruebas Saber 11', 'Bachillerato internacional', 'Proyectos de investigación', 'Viajes pedagógicos'],
+    photo: fotoBachillerato, alt: 'Estudiantes de grado noveno del Liceo Lunita de Chía con su director de grupo',
   },
 ];
 ---
@@ -44,10 +50,13 @@ const levels = [
           <p class="lead">{l.text}</p>
           <ul class="grades" aria-label={`Grados de ${l.name}`}>{l.grades.map((g) => <li>{g}</li>)}</ul>
         </div>
-        <div class="card focus">
-          <h3>Enfoque del nivel</h3>
-          <ul>{l.focus.map((f) => <li><span class="tick"><Icon name="check" size={16} /></span>{f}</li>)}</ul>
-          <a class="btn sm" href="/admisiones/">Quiero inscribirme <Icon name="arrow" /></a>
+        <div class="side">
+          <figure class="card pic level-pic"><Image src={l.photo} alt={l.alt} widths={[360, 560, 800]} sizes="(min-width: 960px) 40vw, calc(100vw - 32px)" format="webp" quality={68} loading="lazy" /></figure>
+          <div class="card focus">
+            <h3>Enfoque del nivel</h3>
+            <ul>{l.focus.map((f) => <li><span class="tick"><Icon name="check" size={16} /></span>{f}</li>)}</ul>
+            <a class="btn sm" href="/admisiones/">Quiero inscribirme <Icon name="arrow" /></a>
+          </div>
         </div>
       </div>
     </section>
@@ -84,4 +93,7 @@ const levels = [
   .tick { width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; background: var(--c); color: #fff; flex: none; }
   .pic { margin: 0; padding: 0; overflow: hidden; }
   .pic :global(img) { width: 100%; }
+  .side { display: grid; gap: 1.2rem; }
+  .level-pic { border-color: var(--c); }
+  .level-pic :global(img) { display: block; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
 </style>

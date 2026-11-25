@@ -61,7 +61,7 @@ const share = encodeURIComponent(`${title} — ${url}`);
     </header>
     {cover && (
       <div class="wrap cover-wrap">
-        <figure class="cover card"><Image src={cover} alt={coverAlt} widths={[480, 800, 1200]} sizes="(min-width: 1000px) 960px, 100vw" loading="eager" fetchpriority="high" format="webp" quality={75} /></figure>
+        <figure class="cover card"><Image src={cover} alt={coverAlt} widths={[360, 600, 900, 1200]} sizes="(min-width: 1000px) 960px, calc(100vw - 32px)" loading="eager" fetchpriority="high" format="webp" quality={72} /></figure>
       </div>
     )}
     <div class="wrap narrow body">

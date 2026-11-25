@@ -3,7 +3,7 @@
  */
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
-import { DOCS, FAQ, LEVELS, NAV, SITE, STHEAMI } from '@/data/site';
+import { COSTS, DOCS, FAQ, LEVELS, NAV, SITE, STHEAMI, TEAM } from '@/data/site';
 import { FINES, RETOS } from '@/data/institucional';
 
 export const GET: APIRoute = async () => {
@@ -24,6 +24,9 @@ export const GET: APIRoute = async () => {
   for (const l of LEVELS) items.push({ t: l.name, d: `${l.grades}. ${l.text}`, u: `/niveles/#${l.id}`, c: 'Niveles', k: 'grado curso' });
   for (const s of STHEAMI) items.push({ t: `${s.name} (STHEAMI)`, d: s.text, u: '/modelo-stheami/', c: 'Modelo STHEAMI' });
   for (const r of RETOS) items.push({ t: `Reto ${r.n}: ${r.title}`, d: r.items[0] ?? '', u: '/retos-2026/', c: 'Retos 2026' });
+  items.push({ t: `Costos y horarios ${COSTS.year}`, d: 'Matrícula, pensión, formulario y otros costos; horario de clases y de matrículas', u: '/admisiones/#costos', c: 'Admisiones', k: 'precio valor pension matricula costo horario jornada' });
+  items.push({ t: 'Nuestro equipo 2026', d: 'Rectora, directivas, docentes y personal de apoyo', u: '/el-cole/#equipo', c: 'El Cole', k: 'profesores docentes rectora organigrama' });
+  for (const p of TEAM) items.push({ t: p.name, d: p.role, u: '/el-cole/#equipo', c: 'Equipo', k: 'profesor docente' });
   items.push({ t: 'Fines educativos', d: FINES[0], u: '/el-cole/#fines', c: 'El Cole', k: 'constitución artículo 67' });
   items.push({ t: 'Himno Muyscanto (audio y letra)', d: 'Himno del Resguardo Indígena de Chía con música del Liceo Lunita', u: '/el-cole/#himno', c: 'El Cole', k: 'himno cancion letra muisca' });
   for (const d of DOCS) items.push({ t: d.t, d: `Documento PDF · ${d.cat} · ${d.year}`, u: d.href, c: 'Documentos', k: 'pdf descargar' });

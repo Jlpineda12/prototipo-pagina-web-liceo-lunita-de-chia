@@ -26,7 +26,7 @@ const themeByCat: Record<string, string> = { Bandas: 't-purple', Celebraciones: 
         {cats.map((c) => <button type="button" class={`f ${themeByCat[c]}`} aria-pressed="false" data-f={c}>{c} <b>{posts.filter((p) => p.data.category === c).length}</b></button>)}
       </div>
       <div class="list" data-list>
-        {posts.map((p, i) => <div data-cat={p.data.category}><NewsCard post={p} index={i % 3} eager={i < 3} /></div>)}
+        {posts.map((p, i) => <div data-cat={p.data.category}><NewsCard post={p} index={i % 3} /></div>)}
       </div>
     </div>
   </section>

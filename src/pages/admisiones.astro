@@ -5,22 +5,23 @@ import Lunita from '@/components/brand/Lunita.astro';
 import PageHero from '@/components/PageHero.astro';
 import Icon from '@/components/Icon.astro';
 import NextSteps from '@/components/NextSteps.astro';
-import { ADMISSION_DOCS, ADMISSION_STEPS, FAQ, LEVELS, SITE } from '@/data/site';
+import { ADMISSION_DOCS, ADMISSION_STEPS, COSTS, FAQ, LEVELS, SCHEDULE, SITE } from '@/data/site';
 
 const themes = ['t-yellow', 't-sky', 't-green', 't-purple'];
 const faqs = FAQ.filter((f) => f.cat === 'Admisiones');
 
 // Agrupación visual de los documentos oficiales para facilitar la organización de la carpeta familiar
 const DOC_GROUPS = [
-  { id: 'identidad', title: 'Identidad y familia', tag: 'Básicos', indices: [0, 1] },
-  { id: 'academico', title: 'Historial académico', tag: 'Desde primaria', indices: [2, 3] },
-  { id: 'salud', title: 'Salud y presentación', tag: 'Bienestar', indices: [4, 5, 6, 7] },
+  { id: 'identidad', title: 'Identidad y familia', tag: 'Básicos', indices: [0, 1, 2, 3] },
+  { id: 'academico', title: 'Historial académico', tag: 'Colegio anterior', indices: [4, 5, 6] },
+  { id: 'salud', title: 'Salud y presentación', tag: 'Bienestar', indices: [7, 8, 9, 10] },
 ];
+const money = (n: number) => `$${n.toLocaleString('es-CO')}`;
 ---
 
 <Base
   title="Admisiones y matrículas 2027"
-  description="Matrículas 2027 en el Liceo Lunita de Chía: proceso de admisión en 4 pasos, lista de documentos y matrícula en línea por SIGA del 1 al 17 de diciembre de 2026."
+  description="Matrículas 2027 en el Liceo Lunita de Chía: proceso de admisión en 4 pasos, costos de matrícula y pensión, requisitos y matrícula en línea por SIGA del 1 al 17 de diciembre de 2026."
   breadcrumbs={[{ name: 'Admisiones', href: '/admisiones/' }]}
   schema={{ '@context': 'https://schema.org', '@type': 'FAQPage', mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })) }}
 >
@@ -45,6 +46,37 @@ const DOC_GROUPS = [
     </div>
   </section>
 
+  <section class="section bg-cloud" id="costos" aria-labelledby="costs-title">
+    <div class="wrap">
+      <div class="section-head"><p class="kicker"><span class="dot"></span>Inversión {COSTS.year}</p><h2 id="costs-title">Costos <span class="hl">claros</span>, sin sorpresas</h2><p>Valores publicados por el colegio para {COSTS.year}. Los de 2027 se confirman al momento de la matrícula.</p></div>
+      <div class="grid cols-3 costs">
+        <article class="card t-sky" data-reveal>
+          <span class="chip">Pago único</span>
+          <h3>Matrícula</h3>
+          <dl>{COSTS.enrollment.map((c) => <div><dt>{c.level}</dt><dd>{money(c.value)}</dd></div>)}</dl>
+        </article>
+        <article class="card t-green" data-reveal style="--d:1">
+          <span class="chip">Mensual</span>
+          <h3>Pensión</h3>
+          <dl>{COSTS.tuition.map((c) => <div><dt>{c.level}<small>{c.grades}</small></dt><dd>{money(c.value)}</dd></div>)}</dl>
+        </article>
+        <article class="card t-yellow" data-reveal style="--d:2">
+          <span class="chip">Al matricular</span>
+          <h3>Otros valores</h3>
+          <dl>
+            <div><dt>Formulario de inscripción</dt><dd>{money(COSTS.form)}</dd></div>
+            <div><dt>Otros costos<small>Se cancelan en el momento de la matrícula</small></dt><dd>{money(COSTS.other)}</dd></div>
+          </dl>
+          <p class="note"><Icon name="sparkle" size={16} /> Se pagan aparte: {COSTS.pending}.</p>
+        </article>
+      </div>
+      <ul class="hours">
+        <li><Icon name="clock" size={20} /><span><b>Horario de clases</b>{SCHEDULE.classes}</span></li>
+        <li><Icon name="calendar" size={20} /><span><b>Atención en matrículas</b>{SCHEDULE.enrollment}</span></li>
+      </ul>
+    </div>
+  </section>
+
   <!-- Carpeta de Matrícula 2027 — Diseño propio Liceo Lunita de Chía -->
   <section class="section bg-2" aria-labelledby="docs-title">
     <div class="wrap two">
@@ -56,7 +88,7 @@ const DOC_GROUPS = [
           <Emblem size={38} decorative />
           <p><strong>Consejo de secretaría:</strong> Ten los documentos en PDF o foto nítida antes de iniciar el registro en línea en SIGA.</p>
         </div>
-        <a class="btn" href={SITE.platforms.matricula} target="_blank" rel="noopener noreferrer">Ver requisitos y costos en SIGA <Icon name="arrow-up-right" /></a>
+        <a class="btn" href="#costos">Ver costos y horarios <Icon name="arrow" /></a>
       </div>
 
       <div class="folder" data-checklist data-wa={SITE.whatsapp}>
@@ -162,6 +194,20 @@ const DOC_GROUPS = [
 </Base>
 
 <style>
+  /* Costos */
+  .costs .card { --tl: var(--l); display: flex; flex-direction: column; gap: 0.4rem; border-color: var(--c); border-bottom-width: 5px; }
+  .costs .chip { align-self: flex-start; background: var(--tl); }
+  .costs h3 { font-size: var(--step-2); margin: 0.3rem 0 0.4rem; }
+  .costs dl { margin: 0; display: grid; }
+  .costs dl > div { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; padding: 0.6rem 0; border-top: 2px dashed var(--line); }
+  .costs dt { font-weight: 800; color: var(--ink-2); }
+  .costs dt small { display: block; font-weight: 700; font-size: 0.8rem; color: var(--muted); }
+  .costs dd { margin: 0; font-weight: 900; font-size: 1.15rem; color: var(--navy); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .costs .note { display: flex; gap: 0.4rem; align-items: center; margin: auto 0 0; padding-top: 0.6rem; font-size: 0.85rem; font-weight: 700; color: var(--ct); }
+  .hours { list-style: none; padding: 0; margin: 1.5rem 0 0; display: flex; flex-wrap: wrap; gap: 0.8rem; }
+  .hours li { display: flex; gap: 0.7rem; align-items: center; padding: 0.8rem 1.1rem; border-radius: 18px; background: #fff; border: 2px solid var(--line); color: var(--sky-ink); }
+  .hours span { display: grid; color: var(--ink-2); font-weight: 700; }
+  .hours b { color: var(--navy); font-weight: 900; }
   .hero-ctas { display: flex; flex-wrap: wrap; gap: 0.8rem; margin-top: 1.6rem; }
   h2 { font-size: var(--step-4); }
   .muted { color: var(--muted); }
@@ -348,7 +394,7 @@ const DOC_GROUPS = [
     const waText = box.querySelector<HTMLElement>('[data-wa-text]')!;
     const resetBtn = box.querySelector<HTMLButtonElement>('[data-reset]')!;
     const waPhone = box.dataset.wa || '';
-    const KEY = 'lunita-docs-2027';
+    const KEY = 'lunita-docs-2027-v2'; // v2: lista oficial de 11 documentos
 
     const update = () => {
       const checked = inputs.filter((i) => i.checked);

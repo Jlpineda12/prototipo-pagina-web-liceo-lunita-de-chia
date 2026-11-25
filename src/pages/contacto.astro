@@ -12,6 +12,11 @@ const channels = [
   { t: 'Celular', d: SITE.phoneDisplay, href: `tel:${SITE.phone.replace(/\s/g, '')}`, icon: 'phone', theme: 't-orange', note: 'Atención a familias' },
   { t: 'Correo', d: SITE.email, href: `mailto:${SITE.email}`, icon: 'mail', theme: 't-purple', note: 'Respuesta por escrito' },
 ];
+const socials = [
+  { t: 'Facebook', d: 'Liceo Lunita de Chía', href: SITE.social.facebook, icon: 'facebook', theme: 't-blue' },
+  { t: 'Instagram', d: '@liceo_lunita_de_chia', href: SITE.social.instagram, icon: 'instagram', theme: 't-purple' },
+  { t: 'YouTube', d: 'Videos del colegio', href: SITE.social.youtube, icon: 'youtube', theme: 't-red' },
+];
 const topics = ['Admisiones y matrículas', 'Información académica', 'Plataformas (SIGA / Aula Virtual)', 'Banda marcial y festival', 'Otro tema'];
 ---
 
@@ -36,6 +41,14 @@ const topics = ['Admisiones y matrículas', 'Información académica', 'Platafor
           </li>
         ))}
       </ul>
+      <div class="follow">
+        <p class="kicker"><span class="dot"></span>Síguenos</p>
+        <ul>
+          {socials.map((s) => (
+            <li><a class={s.theme} href={s.href} target="_blank" rel="noopener noreferrer"><span class="ico"><Icon name={s.icon} size={22} /></span><span><strong>{s.t}</strong>{s.d}</span></a></li>
+          ))}
+        </ul>
+      </div>
     </div>
     <div class="wrap two">
       <form class="card form" data-contact>
@@ -73,6 +86,14 @@ const topics = ['Admisiones y matrículas', 'Información académica', 'Platafor
   .ch small { font-weight: 800; font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ct); }
   .ch strong { color: var(--navy); font-size: 1.15rem; }
   .val { color: var(--ink-2); font-weight: 700; word-break: break-word; }
+  .follow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem 1.4rem; margin: -1rem 0 3rem; }
+  .follow .kicker { margin: 0; }
+  .follow ul { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 0.7rem; }
+  .follow a { display: flex; align-items: center; gap: 0.7rem; padding: 0.55rem 1rem 0.55rem 0.55rem; border-radius: 18px; border: 2px solid var(--line); background: #fff; box-shadow: 0 4px 0 var(--line); text-decoration: none; color: var(--ink-2); font-weight: 700; font-size: 0.88rem; transition: transform 0.15s, border-color 0.15s; }
+  .follow a:hover { border-color: var(--c); transform: translateY(-2px); }
+  .follow a > span:last-child { display: grid; line-height: 1.25; }
+  .follow strong { color: var(--navy); font-size: 1rem; }
+  .follow .ico { width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; background: var(--c); color: #fff; box-shadow: 0 3px 0 var(--cd); }
   .two { display: grid; gap: 1.5rem; }
   @media (min-width: 960px) { .two { grid-template-columns: 1fr 1fr; } }
   .form h2 { font-size: var(--step-2); margin-bottom: 0.3rem; }

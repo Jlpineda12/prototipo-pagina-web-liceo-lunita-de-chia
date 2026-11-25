@@ -25,7 +25,13 @@ export function initLunitas() {
     mo.observe(html, { attributes: true, attributeFilter: ['data-splash', 'data-nav-in'] });
   });
 
+  // Las animaciones SVG se calculan en el hilo principal: se pausan mientras Lunita no está en pantalla
+  const offscreen = new IntersectionObserver((entries) => {
+    for (const e of entries) e.target.toggleAttribute('data-off', !e.isIntersecting);
+  }, { rootMargin: '120px' });
+
   for (const el of all) {
+    offscreen.observe(el);
     const svg = el.querySelector<SVGSVGElement>('.lun-svg');
     if (!svg) continue;
     const base = (el.dataset.base || 'idle') as Anim;
