@@ -1,7 +1,7 @@
 ---
 title: "Convenio con el SENA para fortalecer el inglés"
 description: "Estudiantes de octavo a once acceden a programas y recursos del SENA para mejorar sus habilidades en inglés."
-date: 2024-06-13
+date: 2024-06-14
 cover: ../../assets/noticias/convenio-sena-ingles.jpg
 coverAlt: "Estudiantes del Liceo Lunita en el programa de inglés con el SENA"
 category: Académico

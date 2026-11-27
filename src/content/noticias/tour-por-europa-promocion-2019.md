@@ -1,7 +1,8 @@
 ---
-title: "La promoción recorre más de ocho países de Europa"
+title: "Grado once recorre más de ocho países de Europa"
 description: "Los estudiantes de grado once viajaron por Francia, Italia, España, Portugal, Alemania y otros países en su viaje pedagógico."
 date: 2019-02-14
+dateText: "2019"
 cover: ../../assets/noticias/tour-por-europa-promocion-2019.jpg
 coverAlt: "Estudiantes de grado once del Liceo Lunita en Europa"
 category: Excursiones

@@ -2,6 +2,7 @@
 title: "Excursión 2024: la promoción viaja a Europa"
 description: "La promoción 2024 vivió su viaje pedagógico internacional por Europa, una tradición del grado once."
 date: 2024-11-28
+dateText: "2024"
 cover: ../../assets/noticias/excursion-europa-2024.jpg
 coverAlt: "Estudiantes de la promoción 2024 del Liceo Lunita en Europa"
 category: Excursiones
