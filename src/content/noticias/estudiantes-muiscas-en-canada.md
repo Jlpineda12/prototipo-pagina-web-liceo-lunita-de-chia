@@ -1,8 +1,8 @@
 ---
 title: "Once estudiantes llevan la cultura muisca a Canadá"
 description: "Durante cuatro semanas, un grupo de estudiantes presentó en colegios canadienses la música, el arte y las tradiciones muiscas."
-date: 2019-02-12
-dateText: "2019"
+date: 2013-06-01
+dateText: "2013"
 cover: ../../assets/noticias/estudiantes-muiscas-en-canada.jpg
 coverAlt: "Grupo de estudiantes del Liceo Lunita que viajó a Canadá"
 category: Excursiones

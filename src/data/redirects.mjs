@@ -45,6 +45,7 @@ const pages = {
   '/fotos-2024': '/noticias/',
   '/events/matriculas-2027': '/admisiones/',
   '/celebraciones': '/noticias/',
+  '/noticias/tour-por-europa-promocion-2019': '/noticias/tour-por-europa-promocion-2015/',
   '/ganador-de-los-premios-a-la-excelencia-educativa-2026': '/noticias/premios-excelencia-educativa-2026/',
 };
 
@@ -70,7 +71,7 @@ const renamed = {
   'conoce-los-resultados-de-las-pruebas-icfes-2018': 'logros-academicos-2018',
   'maraton-de-robotica-el-ingenio-y-creatividad-puesto-a-prueba': 'maraton-de-robotica-2018',
   'estudiantes-del-liceo-lunita-de-chia-viajaran-a-canada': 'estudiantes-muiscas-en-canada',
-  'estudiantes-del-liceo-lunita-de-chia-se-encuentran-en-un-tour-por-europa': 'tour-por-europa-promocion-2019',
+  'estudiantes-del-liceo-lunita-de-chia-se-encuentran-en-un-tour-por-europa': 'tour-por-europa-promocion-2015',
   'exitosa-participacion-en-el-festival-de-astronomia-de-villa-de-leiva': 'festival-astronomia-villa-de-leyva-2019',
   'inicia-el-proyecto-estacion-espacial-lunita': 'estacion-espacial-lunita',
   'rectora-del-liceo-lunita-de-chia-obtiene-grado-de-magister-en-educacion': 'rectora-magister-en-educacion',
