@@ -64,6 +64,7 @@ const posts = [
 
 // Historias del sitio anterior reescritas con un slug nuevo: /slug-anterior/ → /noticias/slug-nuevo/
 const renamed = {
+  'torneo-de-rubik': 'speedcubing-chia-capital-del-cubo-rubik',
   'liceo-lunita-de-chia-recibe-reconocimiento-a-la-excelente-calidad-educativa-en-chia': 'reconocimiento-calidad-educativa-isce-2016',
   'en-el-ano-2016-tuvimos-nuestra-primera-inmersion-en-el-centro-educativo-nasa-de-la-florida': 'primera-inmersion-nasa-2016',
   'estudiantes-y-docentes-del-lunita-de-chia-asisten-a-capacitacion-en-la-nasa': 'docentes-lunita-capacitacion-nasa',
