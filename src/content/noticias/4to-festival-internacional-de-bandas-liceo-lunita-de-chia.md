@@ -5,6 +5,7 @@ date: 2026-07-30
 cover: ../../assets/noticias/4to-festival-internacional-de-bandas-liceo-lunita-de-chia.webp
 coverAlt: "4to Festival Internacional de Bandas Liceo Lunita de Chía"
 category: Bandas
+hito: true
 legacyUrl: /4to-festival-internacional-de-bandas-liceo-lunita-de-chia/
 ---
 

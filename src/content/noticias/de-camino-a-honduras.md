@@ -5,6 +5,7 @@ date: 2026-09-10
 cover: ../../assets/noticias/de-camino-a-honduras.webp
 coverAlt: "¡De camino a Honduras!"
 category: Bandas
+hito: true
 legacyUrl: /de-camino-a-honduras/
 ---
 

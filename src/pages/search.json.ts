@@ -25,6 +25,7 @@ export const GET: APIRoute = async () => {
   for (const s of STHEAMI) items.push({ t: `${s.name} (STHEAMI)`, d: s.text, u: '/modelo-stheami/', c: 'Modelo STHEAMI' });
   for (const r of RETOS) items.push({ t: `Reto ${r.n}: ${r.title}`, d: r.items[0] ?? '', u: '/retos-2026/', c: 'Retos 2026' });
   items.push({ t: `Costos y horarios ${COSTS.year}`, d: 'Matrícula, pensión, formulario y otros costos; horario de clases y de matrículas', u: '/admisiones/#costos', c: 'Admisiones', k: 'precio valor pension matricula costo horario jornada' });
+  items.push({ t: 'Nuestra historia año por año', d: 'Línea de tiempo con los hitos del colegio: viajes, ciencia, bandas, competencias y reconocimientos', u: '/noticias/historia/', c: 'Noticias', k: 'historia trayectoria linea de tiempo logros viajes convenios nasa' });
   items.push({ t: 'Nuestro equipo 2026', d: 'Rectora, directivas, docentes y personal de apoyo', u: '/el-cole/#equipo', c: 'El Cole', k: 'profesores docentes rectora organigrama' });
   for (const p of TEAM) items.push({ t: p.name, d: p.role, u: '/el-cole/#equipo', c: 'Equipo', k: 'profesor docente' });
   items.push({ t: 'Fines educativos', d: FINES[0], u: '/el-cole/#fines', c: 'El Cole', k: 'constitución artículo 67' });
@@ -32,7 +33,7 @@ export const GET: APIRoute = async () => {
   for (const d of DOCS) items.push({ t: d.t, d: `Documento PDF · ${d.cat} · ${d.year}`, u: d.href, c: 'Documentos', k: 'pdf descargar' });
   for (const f of FAQ) items.push({ t: f.q, d: f.a, u: '/preguntas-frecuentes/', c: 'Preguntas frecuentes' });
   const posts = (await getCollection('noticias', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-  for (const p of posts) items.push({ t: p.data.title, d: p.data.description, u: `/noticias/${p.id}/`, c: 'Noticias', k: p.data.category });
+  for (const p of posts) items.push({ t: p.data.title, d: p.data.description, u: `/noticias/${p.id}/`, c: 'Noticias', k: `${p.data.category} ${p.data.date.getUTCFullYear()}` });
 
   const base = import.meta.env.BASE_URL;
   const withBase = (u: string) => (u.startsWith('/') && !u.startsWith(base) ? `${base}${u.slice(1)}` : u);

@@ -4,56 +4,115 @@ import Base from '@/layouts/Base.astro';
 import PageHero from '@/components/PageHero.astro';
 import NewsCard from '@/components/NewsCard.astro';
 import NextSteps from '@/components/NextSteps.astro';
+import Icon from '@/components/Icon.astro';
+import { CATEGORIES, CAT_THEME, CAT_LABEL } from '@/lib/categories';
 
+const PAGE = 12;
 const posts = (await getCollection('noticias', ({ data }) => !data.draft)).sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
-const cats = [...new Set(posts.map((p) => p.data.category))];
-const themeByCat: Record<string, string> = { Bandas: 't-purple', Celebraciones: 't-orange', Académico: 't-green', Excursiones: 't-sky', Noticias: 't-red' };
+const cats = CATEGORIES.filter((c) => posts.some((p) => p.data.category === c));
+const years = [...new Set(posts.map((p) => p.data.date.getUTCFullYear()))];
+const first = years.at(-1);
 ---
 
 <Base
   title="Noticias del Liceo Lunita de Chía"
-  description="Noticias, celebraciones, excursiones y logros de la banda marcial del Liceo Lunita de Chía."
+  description="Noticias, viajes, competencias, logros y la historia del Liceo Lunita de Chía desde 2016: ciencia, banda marcial, celebraciones y vida escolar."
   breadcrumbs={[{ name: 'Noticias', href: '/noticias/' }]}
   schema={{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Noticias del Liceo Lunita de Chía', hasPart: posts.map((p) => ({ '@type': 'NewsArticle', headline: p.data.title, url: `https://liceolunita.edu.co/noticias/${p.id}/`, datePublished: p.data.date.toISOString() })) }}
 >
-  <PageHero kicker="Vida escolar" title='Noticias <span class="hl">de Lunita</span>' lead="Celebraciones, viajes, logros y todo lo que vivimos como comunidad." crumbs={[{ name: 'Noticias', href: '/noticias/' }]} theme="t-red" pose="celebra" />
+  <PageHero kicker="Vida escolar" title='Noticias <span class="hl">de Lunita</span>' lead="Celebraciones, viajes, competencias, logros y todo lo que vivimos como comunidad." crumbs={[{ name: 'Noticias', href: '/noticias/' }]} theme="t-red" pose="celebra">
+    <a class="btn sm" href="/noticias/historia/"><Icon name="moon" /> Nuestra historia año por año</a>
+  </PageHero>
 
   <section class="section" aria-labelledby="h-listado">
     <h2 id="h-listado" class="sr-only">Todas las noticias</h2>
     <div class="wrap">
-      <div class="filters" role="group" aria-label="Filtrar por categoría" data-filters>
-        <button type="button" class="f t-sky" aria-pressed="true" data-f="all">Todas <b>{posts.length}</b></button>
-        {cats.map((c) => <button type="button" class={`f ${themeByCat[c]}`} aria-pressed="false" data-f={c}>{c} <b>{posts.filter((p) => p.data.category === c).length}</b></button>)}
+      <div class="bar">
+        <div class="filters" role="group" aria-label="Filtrar por categoría" data-filters>
+          <button type="button" class="f t-sky" aria-pressed="true" data-f="all">Todas <b>{posts.length}</b></button>
+          {cats.map((c) => <button type="button" class={`f ${CAT_THEME[c]}`} aria-pressed="false" data-f={c}>{CAT_LABEL[c]} <b>{posts.filter((p) => p.data.category === c).length}</b></button>)}
+        </div>
+        <label class="year">
+          <span>Año</span>
+          <select data-year>
+            <option value="all">Todos</option>
+            {years.map((y) => <option value={String(y)}>{y}</option>)}
+          </select>
+        </label>
       </div>
       <div class="list" data-list>
-        {posts.map((p, i) => <div data-cat={p.data.category}><NewsCard post={p} index={i % 3} /></div>)}
+        {posts.map((p, i) => <div data-cat={p.data.category} data-y={p.data.date.getUTCFullYear()} data-late={i >= PAGE ? '' : undefined}><NewsCard post={p} index={i % 3} /></div>)}
       </div>
+      <p class="empty" data-empty hidden>No hay noticias con estos filtros.</p>
+      <p class="more" data-more-wrap hidden>
+        <button type="button" class="btn outline" data-more>Ver más noticias <Icon name="chevron" /></button>
+      </p>
+      <a class="history card t-blue" href="/noticias/historia/">
+        <span class="h-ic"><Icon name="moon" size={26} /></span>
+        <span><strong>Más de una década de historias</strong> Recorre la línea de tiempo de Lunita desde {first}: viajes, ciencia, bandas y reconocimientos.</span>
+        <Icon name="arrow" />
+      </a>
     </div>
   </section>
   <NextSteps items={['bandas', 'comunidad', 'cole']} />
 </Base>
 
 <style>
-  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2rem; }
+  .bar { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: 2rem; }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; }
   .f { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 0.9rem; border-radius: 14px; border: 2px solid var(--line); border-bottom-width: 4px; background: #fff; font-weight: 800; color: var(--ink-2); }
   .f b { font-size: 0.75rem; padding: 0.05rem 0.45rem; border-radius: 8px; background: var(--bg-2); }
   .f[aria-pressed='true'] { background: var(--l); border-color: var(--c); color: var(--navy); }
   .f:active { transform: translateY(2px); border-bottom-width: 2px; }
+  .year { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 800; color: var(--ink-2); }
+  .year select { font: inherit; font-weight: 800; color: var(--navy); padding: 0.5rem 2rem 0.5rem 0.8rem; border-radius: 14px; border: 2px solid var(--line); border-bottom-width: 4px; background: #fff; cursor: pointer; }
   .list { display: grid; gap: 1.2rem; }
   @media (min-width: 720px) { .list { grid-template-columns: repeat(2, 1fr); } }
   @media (min-width: 1024px) { .list { grid-template-columns: repeat(3, 1fr); } }
   .list > div { display: grid; }
   .list > div[hidden] { display: none; }
+  :global(.js) .list > div[data-late] { display: none; }
+  .empty { text-align: center; color: var(--muted); font-weight: 700; margin: 2rem 0 0; }
+  .more { text-align: center; margin: 2rem 0 0; }
+  .history { margin-top: 2.5rem; display: flex; align-items: center; gap: 1rem; text-decoration: none; color: var(--ink-2); border-color: var(--c); background: var(--l); transition: transform 0.2s var(--ease); }
+  .history:hover { transform: translateY(-3px); }
+  .history strong { display: block; color: var(--navy); font-size: 1.1rem; }
+  .history > span:nth-child(2) { flex: 1; }
+  .h-ic { width: 52px; height: 52px; flex: none; border-radius: 16px; display: grid; place-items: center; background: var(--c); color: #fff; box-shadow: 0 4px 0 var(--cd); }
 </style>
 
 <script>
+  const PAGE = 12;
   const wrap = document.querySelector<HTMLElement>('[data-filters]');
-  if (wrap) {
+  const year = document.querySelector<HTMLSelectElement>('[data-year]');
+  const more = document.querySelector<HTMLButtonElement>('[data-more]');
+  const moreWrap = document.querySelector<HTMLElement>('[data-more-wrap]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]');
+  const items = [...document.querySelectorAll<HTMLElement>('[data-list] > [data-cat]')];
+  if (wrap && year && more && moreWrap && empty) {
     const btns = [...wrap.querySelectorAll<HTMLButtonElement>('[data-f]')];
-    const items = [...document.querySelectorAll<HTMLElement>('[data-list] > [data-cat]')];
+    let cat = 'all';
+    let shown = PAGE;
+    const render = () => {
+      const match = items.filter((it) => (cat === 'all' || it.dataset.cat === cat) && (year.value === 'all' || it.dataset.y === year.value));
+      items.forEach((it) => { it.hidden = true; it.removeAttribute('data-late'); });
+      match.slice(0, shown).forEach((it) => (it.hidden = false));
+      moreWrap.hidden = match.length <= shown;
+      empty.hidden = match.length > 0;
+    };
     btns.forEach((b) => b.addEventListener('click', () => {
       btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-      items.forEach((it) => (it.hidden = b.dataset.f !== 'all' && it.dataset.cat !== b.dataset.f));
+      cat = b.dataset.f ?? 'all';
+      shown = PAGE;
+      render();
     }));
+    year.addEventListener('change', () => { shown = PAGE; render(); });
+    render();
+    more.addEventListener('click', () => {
+      const firstNew = shown;
+      shown += PAGE;
+      render();
+      items.filter((it) => !it.hidden)[firstNew]?.querySelector<HTMLAnchorElement>('h3 a')?.focus({ preventScroll: true });
+    });
   }
 </script>

@@ -6,7 +6,8 @@ import Base from '@/layouts/Base.astro';
 import Icon from '@/components/Icon.astro';
 import NewsCard from '@/components/NewsCard.astro';
 import { SITE } from '@/data/site';
-import { formatDate, readingTime } from '@/lib/format';
+import { postDate, readingTime } from '@/lib/format';
+import { CAT_THEME } from '@/lib/categories';
 
 export const getStaticPaths = (async () => {
   const posts = await getCollection('noticias', ({ data }) => !data.draft);
@@ -22,7 +23,7 @@ const mins = readingTime(post.body ?? '');
 const related = (await getCollection('noticias', ({ id, data }) => id !== post.id && !data.draft))
   .sort((a, b) => Number(b.data.category === category) - Number(a.data.category === category) || b.data.date.valueOf() - a.data.date.valueOf())
   .slice(0, 3);
-const themeByCat: Record<string, string> = { Bandas: 't-purple', Celebraciones: 't-orange', Académico: 't-green', Excursiones: 't-sky', Noticias: 't-red' };
+const when = postDate(post.data);
 const share = encodeURIComponent(`${title} — ${url}`);
 ---
 
@@ -50,13 +51,13 @@ const share = encodeURIComponent(`${title} — ${url}`);
     inLanguage: 'es-CO',
   }}
 >
-  <article class={`article ${themeByCat[category]}`}>
-    <header class="head">
+  <article class={`article ${CAT_THEME[category]}`}>
+    <header class:list={['head', { 'no-cover': !cover }]}>
       <div class="wrap narrow">
         <nav aria-label="Migas de pan" class="crumbs"><a href="/">Inicio</a> › <a href="/noticias/">Noticias</a></nav>
         <span class="chip">{category}</span>
         <h1>{title}</h1>
-        <p class="meta"><Icon name="calendar" size={16} /> <time datetime={date.toISOString()}>{formatDate(date)}</time> · {mins} min de lectura</p>
+        <p class="meta"><Icon name="calendar" size={16} /> <time datetime={when.iso}>{when.label}</time> · {mins} min de lectura{post.data.hito && <> · <a class="tl-link" href={`/noticias/historia/#y${date.getUTCFullYear()}`}><Icon name="moon" size={16} /> Hito de nuestra historia</a></>}</p>
       </div>
     </header>
     {cover && (
@@ -88,11 +89,13 @@ const share = encodeURIComponent(`${title} — ${url}`);
 <style>
   .narrow { max-width: 820px; }
   .head { background: var(--l); padding: 2.5rem 0 6rem; }
+  .head.no-cover { padding-bottom: 2.5rem; }
   .crumbs { font-size: 0.85rem; font-weight: 700; color: var(--muted); margin-bottom: 1.2rem; }
   .crumbs a { color: var(--ct); text-decoration: none; }
   .chip { --c: var(--cd); }
   h1 { font-size: var(--step-4); margin: 0.8rem 0; }
-  .meta { display: flex; align-items: center; gap: 0.4rem; margin: 0; font-weight: 700; color: var(--muted); }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0; font-weight: 700; color: var(--muted); }
+  .tl-link { display: inline-flex; align-items: center; gap: 0.3rem; color: var(--ct); }
   .cover-wrap { max-width: 1000px; margin-top: -4.5rem; }
   .cover { margin: 0; padding: 0; overflow: hidden; }
   .cover :global(img) { width: 100%; max-height: 560px; object-fit: cover; }

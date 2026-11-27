@@ -1,0 +1,171 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '@/layouts/Base.astro';
+import PageHero from '@/components/PageHero.astro';
+import Icon from '@/components/Icon.astro';
+import Sticker from '@/components/Sticker.astro';
+import NextSteps from '@/components/NextSteps.astro';
+import { postDate } from '@/lib/format';
+import { CATEGORIES, CAT_THEME, CAT_LABEL, CAT_ICON } from '@/lib/categories';
+
+const hitos = (await getCollection('noticias', ({ data }) => !data.draft && data.hito)).sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+const byYear = new Map<number, typeof hitos>();
+for (const h of hitos) {
+  const y = h.data.date.getUTCFullYear();
+  byYear.set(y, [...(byYear.get(y) ?? []), h]);
+}
+const years = [...byYear.keys()];
+const cats = CATEGORIES.filter((c) => hitos.some((h) => h.data.category === c));
+const all = await getCollection('noticias', ({ data }) => !data.draft);
+const count = (c: string) => all.filter((p) => p.data.category === c).length;
+const stats = [
+  { n: hitos.length, t: 'hitos en la línea de tiempo', theme: 't-purple', icon: 'moon' },
+  { n: count('Excursiones'), t: 'viajes y salidas pedagógicas', theme: 't-sky', icon: 'globe' },
+  { n: count('Ciencia'), t: 'experiencias de ciencia y espacio', theme: 't-blue', icon: 'rocket' },
+  { n: count('Logros'), t: 'logros y reconocimientos', theme: 't-yellow', icon: 'award' },
+];
+---
+
+<Base
+  title="Nuestra historia: línea de tiempo del Liceo Lunita de Chía"
+  description={`Los hitos del Liceo Lunita de Chía desde ${years[0]}: viajes internacionales, NASA y ciencia, banda marcial, competencias de robótica, convenios y reconocimientos.`}
+  breadcrumbs={[{ name: 'Noticias', href: '/noticias/' }, { name: 'Nuestra historia', href: '/noticias/historia/' }]}
+  schema={{ '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Nuestra historia — Liceo Lunita de Chía', hasPart: hitos.map((h) => ({ '@type': 'NewsArticle', headline: h.data.title, url: `https://liceolunita.edu.co/noticias/${h.id}/`, datePublished: h.data.date.toISOString() })) }}
+>
+  <PageHero kicker="Nuestra historia" title='Lunita, <span class="hl">año por año</span>' lead="Viajes, ciencia, bandas, competencias y reconocimientos que han marcado el camino de nuestra comunidad." crumbs={[{ name: 'Noticias', href: '/noticias/' }, { name: 'Nuestra historia', href: '/noticias/historia/' }]} theme="t-blue" pose="espacio">
+    <nav class="years" aria-label="Ir a un año">{years.map((y) => <a href={`#y${y}`}>{y}</a>)}</nav>
+  </PageHero>
+
+  <section class="section stats-wrap" aria-label="La historia en cifras">
+    <ul class="wrap stats">
+      {stats.map((s, i) => <li class={`card ${s.theme}`} data-reveal style={`--d:${i}`}><Sticker name={s.icon} size={48} /><strong>{s.n}</strong><span>{s.t}</span></li>)}
+    </ul>
+  </section>
+
+  <section class="section tl-section" aria-labelledby="h-tl">
+    <div class="wrap">
+      <h2 id="h-tl" class="sr-only">Línea de tiempo</h2>
+      <div class="filters" role="group" aria-label="Filtrar hitos por tema" data-filters>
+        <button type="button" class="f t-blue" aria-pressed="true" data-f="all">Todo</button>
+        {cats.map((c) => <button type="button" class={`f ${CAT_THEME[c]}`} aria-pressed="false" data-f={c}>{CAT_LABEL[c]}</button>)}
+      </div>
+
+      <ol class="timeline" data-tl>
+        {years.map((y) => (
+          <li class="year" id={`y${y}`} data-year>
+            <h3 class="y-badge"><Icon name="moon" size={20} /> {y}</h3>
+            <ol class="events">
+              {byYear.get(y)!.map((h, i) => {
+                const when = postDate(h.data);
+                return (
+                  <li class={`event ${CAT_THEME[h.data.category]}`} data-cat={h.data.category} data-reveal style={`--d:${i % 3}`}>
+                    <article class="card ev">
+                      <div class="thumb">
+                        {h.data.cover
+                          ? <Image src={h.data.cover} alt="" widths={[200, 400]} sizes="(min-width: 720px) 200px, 30vw" format="webp" quality={60} loading="lazy" decoding="async" />
+                          : <div class="ph" aria-hidden="true"><Sticker name={CAT_ICON[h.data.category]} size={56} /></div>}
+                      </div>
+                      <div class="txt">
+                        <p class="meta"><span class="chip">{CAT_LABEL[h.data.category]}</span><time datetime={when.iso}>{when.label}</time></p>
+                        <h4><a href={`/noticias/${h.id}/`}>{h.data.title}</a></h4>
+                        <p class="desc">{h.data.description}</p>
+                      </div>
+                    </article>
+                  </li>
+                );
+              })}
+            </ol>
+          </li>
+        ))}
+        <li class="year now">
+          <h3 class="y-badge"><Icon name="sparkle" size={20} /> Lo que viene</h3>
+          <div class="card next t-green">
+            <p><strong>La próxima página la escribimos juntos.</strong> Matrículas abiertas para 2027: conoce cómo ser parte de la familia Lunita.</p>
+            <a class="btn sm green" href="/admisiones/">Quiero inscribirme <Icon name="arrow" /></a>
+          </div>
+        </li>
+      </ol>
+      <p class="all"><a class="btn outline" href="/noticias/">Ver todas las noticias <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <NextSteps items={['cole', 'stheami', 'bandas']} />
+</Base>
+
+<style>
+  .years { display: flex; flex-wrap: wrap; gap: 0.45rem; margin-top: 1.4rem; }
+  .years a { padding: 0.35rem 0.75rem; border-radius: 12px; background: #fff; border: 2px solid var(--line); border-bottom-width: 4px; font-weight: 900; color: var(--navy); text-decoration: none; }
+  .years a:hover { border-color: var(--c); background: var(--l); }
+
+  .stats-wrap { padding-block: 2.5rem 0; }
+  .stats { list-style: none; margin: 0 auto; padding: 0; display: grid; gap: 1rem; grid-template-columns: repeat(2, 1fr); }
+  @media (min-width: 900px) { .stats { grid-template-columns: repeat(4, 1fr); } }
+  .stats li { display: grid; justify-items: start; gap: 0.35rem; border-color: var(--c); }
+  .stats strong { font-size: var(--step-4); line-height: 1; color: var(--navy); }
+  .stats span { color: var(--ink-2); font-weight: 700; line-height: 1.3; }
+
+  .tl-section { padding-top: 2.5rem; }
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 2.5rem; }
+  .f { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.5rem 0.9rem; border-radius: 14px; border: 2px solid var(--line); border-bottom-width: 4px; background: #fff; font-weight: 800; color: var(--ink-2); }
+  .f[aria-pressed='true'] { background: var(--l); border-color: var(--c); color: var(--navy); }
+  .f:active { transform: translateY(2px); border-bottom-width: 2px; }
+
+  .timeline, .events { list-style: none; margin: 0; padding: 0; }
+  .timeline { position: relative; display: grid; gap: 2.5rem; --rail: 22px; }
+  .timeline::before { content: ''; position: absolute; left: var(--rail); top: 0.5rem; bottom: 0.5rem; width: 4px; margin-left: -2px; border-radius: 4px; background: repeating-linear-gradient(to bottom, var(--blue) 0 10px, transparent 10px 18px); opacity: 0.35; }
+  .year { position: relative; scroll-margin-top: 6rem; }
+  .year[hidden] { display: none; }
+  .y-badge { position: relative; z-index: 1; display: inline-flex; align-items: center; gap: 0.45rem; margin: 0 0 1.2rem; padding: 0.45rem 1rem 0.45rem 0.8rem; border-radius: 999px; background: var(--navy); color: #fff; font-size: var(--step-1); box-shadow: 0 4px 0 rgba(0, 0, 0, 0.18); }
+  .events { display: grid; gap: 1rem; padding-left: calc(var(--rail) * 2 + 0.4rem); }
+  .event { position: relative; }
+  .event[hidden] { display: none; }
+  .event::before { content: ''; position: absolute; left: calc(-1 * (var(--rail) + 0.4rem) - 8px); top: 1.6rem; width: 16px; height: 16px; border-radius: 50%; background: var(--c); border: 3px solid #fff; box-shadow: 0 0 0 2px var(--c); }
+  .ev { display: grid; grid-template-columns: 96px 1fr; gap: 1rem; padding: 0.8rem; align-items: start; position: relative; transition: transform 0.2s var(--ease), border-color 0.2s; }
+  .ev:hover { transform: translateY(-3px); border-color: var(--c); }
+  @media (min-width: 720px) { .ev { grid-template-columns: 200px 1fr; gap: 1.3rem; padding: 1rem; } }
+  .thumb { aspect-ratio: 4 / 3; border-radius: 14px; overflow: hidden; background: var(--l); }
+  .thumb :global(img) { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .ph { height: 100%; display: grid; place-items: center; }
+  .txt { display: grid; gap: 0.35rem; min-width: 0; }
+  .meta { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; margin: 0; font-size: 0.8rem; font-weight: 700; color: var(--muted); }
+  .chip { --l: color-mix(in srgb, var(--c) 14%, #fff); }
+  h4 { margin: 0; font-size: 1.08rem; line-height: 1.25; }
+  h4 a { color: var(--navy); text-decoration: none; }
+  h4 a::after { content: ''; position: absolute; inset: 0; }
+  .desc { margin: 0; color: var(--ink-2); font-size: 0.95rem; display: none; }
+  @media (min-width: 720px) { .desc { display: block; } }
+
+  @media (min-width: 1024px) {
+    .timeline { --rail: 50%; }
+    .y-badge { left: 50%; transform: translateX(-50%); }
+    .events { padding-left: 0; grid-template-columns: 1fr 1fr; column-gap: 4rem; row-gap: 1.2rem; }
+    .event:nth-child(odd) { grid-column: 1; }
+    .event:nth-child(even) { grid-column: 2; margin-top: 3rem; }
+    .event::before { left: auto; right: calc(-2rem - 8px); }
+    .event:nth-child(even)::before { right: auto; left: calc(-2rem - 8px); }
+  }
+
+  .now .next { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1rem; margin-left: calc(var(--rail) * 2 + 0.4rem); border-color: var(--c); background: var(--l); }
+  .now .next p { margin: 0; color: var(--ink-2); flex: 1 1 280px; }
+  .now .next strong { color: var(--navy); }
+  @media (min-width: 1024px) { .now { text-align: center; } .now .next { margin: 0 auto; max-width: 720px; text-align: left; } }
+  .all { margin-top: 2.5rem; text-align: center; }
+</style>
+
+<script>
+  const wrap = document.querySelector<HTMLElement>('[data-filters]');
+  if (wrap) {
+    const btns = [...wrap.querySelectorAll<HTMLButtonElement>('[data-f]')];
+    const years = [...document.querySelectorAll<HTMLElement>('[data-tl] [data-year]')];
+    btns.forEach((b) => b.addEventListener('click', () => {
+      btns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+      const f = b.dataset.f;
+      years.forEach((y) => {
+        const evs = [...y.querySelectorAll<HTMLElement>('[data-cat]')];
+        evs.forEach((ev) => (ev.hidden = f !== 'all' && ev.dataset.cat !== f));
+        y.hidden = evs.every((ev) => ev.hidden);
+      });
+    }));
+  }
+</script>
